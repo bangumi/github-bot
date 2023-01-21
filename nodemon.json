@@ -1,5 +1,5 @@
 {
   "ext": "go",
   "delay": 1000,
-  "exec": "go run ./ || exit 1"
+  "exec": "godotenv go run ./ || exit 1"
 }

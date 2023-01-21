@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"net/http"
 	"os"
 
 	"github.com/gorilla/sessions"
@@ -45,10 +44,7 @@ func main() {
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 	e.GET("/", Index)
 	setupBangumiOAuth(e)
-	e.GET("/oauth/github", func(c echo.Context) error {
-		return c.Redirect(http.StatusFound, "")
-	})
-	e.GET("/oauth/github/callback", githubHandler)
+	setupGithubOAuth(e)
 
 	// Start server
 	e.Logger.Fatal(e.Start("127.0.0.1:1323"))

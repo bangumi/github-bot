@@ -1,13 +1,13 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"net/http"
-	"time"
+	"os"
 
 	"golang.org/x/oauth2"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -56,40 +56,54 @@ func getGithubID(s *sessions.Session) int {
 	return raw.(int)
 }
 
-func setupBangumiOAuth(e *echo.Echo) {
-	ctx := context.Background()
+var client = resty.New()
 
+func setupBangumiOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
-		ClientID:     "YOUR_CLIENT_ID",
-		ClientSecret: "YOUR_CLIENT_SECRET",
-		Scopes:       []string{"SCOPE1", "SCOPE2"},
+		ClientID:     os.Getenv("BANGUMI_OAUTH_APP_ID"),
+		ClientSecret: os.Getenv("BANGUMI_OAUTH_APP_SECRET"),
+		RedirectURL:  "https://contributors.bgm38.com/oauth/bangumi/callback",
 		Endpoint: oauth2.Endpoint{
-			TokenURL: "https://provider.com/o/oauth2/token",
-			AuthURL:  "https://provider.com/o/oauth2/auth",
+			TokenURL: "https://bgm.tv/oauth/access_token",
+			AuthURL:  "https://bgm.tv/oauth/authorize",
 		},
 	}
 
-	// Redirect user to consent page to ask for permission
-	// for the scopes specified above.
-	url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline)
-	fmt.Printf("Visit the URL for the auth dialog: %v", url)
+	{
+		// Redirect user to consent page to ask for permission
+		// for the scopes specified above.
+		url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline)
+		fmt.Printf("Visit the URL for the auth dialog: %v", url)
 
-	// Use the custom HTTP client when requesting a token.
-	httpClient := &http.Client{Timeout: 2 * time.Second}
-	ctx = context.WithValue(ctx, oauth2.HTTPClient, httpClient)
-
-	e.GET("/oauth/bangumi", func(c echo.Context) error {
-		return c.Redirect(http.StatusFound, "")
-	})
+		e.GET("/oauth/bangumi", func(c echo.Context) error {
+			return c.Redirect(http.StatusFound, url)
+		})
+	}
 
 	e.GET("/oauth/bangumi/callback", func(c echo.Context) error {
-		token, err := conf.Exchange(ctx, c.QueryParams().Get("code"))
+		token, err := conf.Exchange(c.Request().Context(), c.QueryParams().Get("code"))
 		if err != nil {
 			logger.Err(err).Msg("failed to auth")
 			return err
 		}
 
-		_ = token
+		var data struct {
+			ID int `json:"id"`
+		}
+
+		res, err := client.R().SetHeader(echo.HeaderAuthorization, "Bearer "+token.AccessToken).SetResult(&data).Get("https://api.bgm.tv/v0/me")
+		if err != nil {
+			logger.Err(err).Msg("failed to fetch user info from API")
+			return err
+		}
+
+		if res.StatusCode() > 300 {
+			logger.Error().
+				Int("response_code", res.StatusCode()).
+				Str("response_body", res.String()).
+				Msg("failed to fetch user info, wrong http code")
+			return c.NoContent(http.StatusInternalServerError)
+		}
 
 		s, _ := session.Get("session", c)
 		if s == nil {
@@ -97,7 +111,7 @@ func setupBangumiOAuth(e *echo.Echo) {
 		}
 		s.Options = &sessions.Options{Path: "/", HttpOnly: true}
 
-		s.Values["bangumi_id"] = 1
+		s.Values["bangumi_id"] = data.ID
 
 		err = s.Save(c.Request(), c.Response())
 		if err != nil {
@@ -108,19 +122,66 @@ func setupBangumiOAuth(e *echo.Echo) {
 	})
 }
 
-func githubHandler(c echo.Context) error {
-	s, _ := session.Get("session", c)
-	if s == nil {
+func setupGithubOAuth(e *echo.Echo) {
+	conf := &oauth2.Config{
+		ClientID:     os.Getenv("GITHUB_OAUTH_APP_ID"),
+		ClientSecret: os.Getenv("GITHUB_OAUTH_APP_SECRET"),
+		RedirectURL:  "https://contributors.bgm38.com/oauth/bangumi/callback",
+		Endpoint: oauth2.Endpoint{
+			TokenURL: "https://bgm.tv/oauth/access_token",
+			AuthURL:  "https://bgm.tv/oauth/authorize",
+		},
+	}
+
+	{
+		// Redirect user to consent page to ask for permission
+		// for the scopes specified above.
+		url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline)
+		fmt.Printf("Visit the URL for the auth dialog: %v", url)
+
+		e.GET("/oauth/github", func(c echo.Context) error {
+			return c.Redirect(http.StatusFound, url)
+		})
+	}
+
+	e.GET("/oauth/github/callback", func(c echo.Context) error {
+		token, err := conf.Exchange(c.Request().Context(), c.QueryParams().Get("code"))
+		if err != nil {
+			logger.Err(err).Msg("failed to auth")
+			return err
+		}
+
+		var data struct {
+			ID int `json:"id"`
+		}
+
+		res, err := client.R().SetHeader(echo.HeaderAuthorization, "Bearer "+token.AccessToken).SetResult(&data).Get("https://api.bgm.tv/v0/me")
+		if err != nil {
+			logger.Err(err).Msg("failed to fetch user info from API")
+			return err
+		}
+
+		if res.StatusCode() > 300 {
+			logger.Error().
+				Int("response_code", res.StatusCode()).
+				Str("response_body", res.String()).
+				Msg("failed to fetch user info, wrong http code")
+			return c.NoContent(http.StatusInternalServerError)
+		}
+
+		s, _ := session.Get("session", c)
+		if s == nil {
+			return nil
+		}
+		s.Options = &sessions.Options{Path: "/", HttpOnly: true}
+
+		s.Values["github_id"] = data.ID
+
+		err = s.Save(c.Request(), c.Response())
+		if err != nil {
+			return err
+		}
+
 		return nil
-	}
-	s.Options = &sessions.Options{Path: "/", HttpOnly: true}
-
-	s.Values["github_id"] = 1
-
-	err := s.Save(c.Request(), c.Response())
-	if err != nil {
-		return err
-	}
-
-	return nil
+	})
 }
