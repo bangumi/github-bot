@@ -118,10 +118,11 @@ func setupBangumiOAuth(e *echo.Echo) {
 			return err
 		}
 
-		return nil
+		return c.Redirect(http.StatusFound, "/")
 	})
 }
 
+// TODO: finish this
 func setupGithubOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
 		ClientID:     os.Getenv("GITHUB_OAUTH_APP_ID"),
