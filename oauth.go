@@ -22,22 +22,22 @@ func Index(c echo.Context) error {
 	}
 	sess.Options = &sessions.Options{Path: "/", HttpOnly: true}
 
-	bangumiId := getBangumiID(sess)
 	githubId := getGithubID(sess)
 
 	var html string
 
-	if bangumiId == 0 {
-		html += `<p> bangumi 未链接，请认证 <a href="/oauth/bangumi">bangumi oauth</a> </p>`
-	} else {
-		html += fmt.Sprintf(`<p> bangumi id %d </p>`, bangumiId)
+	if githubId == 0 {
+		return c.HTML(http.StatusOK, `<p> github 未链接，请认证 <a href="/oauth/github">github oauth</a> </p>`)
 	}
 
-	if githubId == 0 {
-		html += `<p> github 未链接，请认证 <a href="/oauth/github">github oauth</a> </p>`
-	} else {
-		html += fmt.Sprintf(`<p> github id %d </p>`, githubId)
+	html += fmt.Sprintf(`<p> github id %d </p>`, githubId)
+
+	bangumiId := getBangumiID(sess)
+	if bangumiId == 0 {
+		return c.HTML(http.StatusOK, `<p> bangumi 未链接，请认证 <a href="/oauth/bangumi">bangumi oauth</a> </p>`)
 	}
+
+	html += fmt.Sprintf(`<p> bangumi id %d </p>`, bangumiId)
 
 	return c.HTML(http.StatusOK, html)
 }
