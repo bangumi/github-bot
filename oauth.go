@@ -124,7 +124,6 @@ func setupBangumiOAuth(e *echo.Echo) {
 	})
 }
 
-// TODO: finish this
 func setupGithubOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
 		ClientID:     os.Getenv("GITHUB_OAUTH_APP_ID"),
@@ -152,10 +151,6 @@ func setupGithubOAuth(e *echo.Echo) {
 		if err != nil {
 			logger.Err(err).Msg("failed to auth")
 			return err
-		}
-
-		var data struct {
-			ID int `json:"id"`
 		}
 
 		gh := github.NewClient(oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(token)))
