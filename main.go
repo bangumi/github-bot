@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
 
+	"github.com/google/go-github/v49/github"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
@@ -37,7 +39,9 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	h := PRHandle{logger: logger}
+	tr := &AddHeaderTransport{T: http.DefaultTransport, token: os.Getenv("GITHUB_COMMITTER_ACCESS_TOKEN")}
+
+	h := PRHandle{logger: logger, ent: client, github: github.NewClient(&http.Client{Transport: tr})}
 
 	// Routes
 	e.POST("/event-pr", h.Handle)
@@ -48,4 +52,14 @@ func main() {
 
 	// Start server
 	e.Logger.Fatal(e.Start("127.0.0.1:1323"))
+}
+
+type AddHeaderTransport struct {
+	T     http.RoundTripper
+	token string
+}
+
+func (adt *AddHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	req.Header.Set(echo.HeaderAuthorization, "Bearer "+os.Getenv("GITHUB_COMMITTER_ACCESS_TOKEN"))
+	return adt.T.RoundTrip(req)
 }

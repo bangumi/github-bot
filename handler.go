@@ -16,7 +16,7 @@ import (
 
 type PRHandle struct {
 	logger zerolog.Logger
-	ent    ent.Client
+	ent    *ent.Client
 	github *github.Client
 }
 
