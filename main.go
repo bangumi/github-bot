@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"net/http"
 	"os"
 
 	"github.com/google/go-github/v49/github"
@@ -12,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rs/zerolog"
+	"golang.org/x/oauth2"
 
 	"github-bot/ent"
 )
@@ -39,9 +39,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	tr := &AddHeaderTransport{T: http.DefaultTransport, token: os.Getenv("GITHUB_COMMITTER_ACCESS_TOKEN")}
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: os.Getenv("GITHUB_COMMITTER_ACCESS_TOKEN")},
+	)
 
-	h := PRHandle{logger: logger, ent: client, github: github.NewClient(&http.Client{Transport: tr})}
+	h := PRHandle{logger: logger, ent: client, github: github.NewClient(oauth2.NewClient(ctx, ts))}
 
 	// Routes
 	e.POST("/event-pr", h.Handle)
@@ -52,14 +55,4 @@ func main() {
 
 	// Start server
 	e.Logger.Fatal(e.Start("127.0.0.1:1323"))
-}
-
-type AddHeaderTransport struct {
-	T     http.RoundTripper
-	token string
-}
-
-func (adt *AddHeaderTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req.Header.Set(echo.HeaderAuthorization, "Bearer "+os.Getenv("GITHUB_COMMITTER_ACCESS_TOKEN"))
-	return adt.T.RoundTrip(req)
 }
