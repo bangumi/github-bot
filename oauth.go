@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
 
+	"github.com/google/go-github/v49/github"
 	"golang.org/x/oauth2"
 
 	"github.com/go-resty/resty/v2"
@@ -127,10 +129,10 @@ func setupGithubOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
 		ClientID:     os.Getenv("GITHUB_OAUTH_APP_ID"),
 		ClientSecret: os.Getenv("GITHUB_OAUTH_APP_SECRET"),
-		RedirectURL:  "https://contributors.bgm38.com/oauth/bangumi/callback",
+		RedirectURL:  "https://contributors.bgm38.com/oauth/github/callback",
 		Endpoint: oauth2.Endpoint{
-			TokenURL: "https://bgm.tv/oauth/access_token",
-			AuthURL:  "https://bgm.tv/oauth/authorize",
+			TokenURL: "https://github.com/login/oauth/access_token",
+			AuthURL:  "https://github.com/login/oauth/authorize",
 		},
 	}
 
@@ -156,18 +158,12 @@ func setupGithubOAuth(e *echo.Echo) {
 			ID int `json:"id"`
 		}
 
-		res, err := client.R().SetHeader(echo.HeaderAuthorization, "Bearer "+token.AccessToken).SetResult(&data).Get("https://api.bgm.tv/v0/me")
-		if err != nil {
-			logger.Err(err).Msg("failed to fetch user info from API")
-			return err
-		}
+		gh := github.NewClient(oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(token)))
 
-		if res.StatusCode() > 300 {
-			logger.Error().
-				Int("response_code", res.StatusCode()).
-				Str("response_body", res.String()).
-				Msg("failed to fetch user info, wrong http code")
-			return c.NoContent(http.StatusInternalServerError)
+		u, _, err := gh.Users.Get(c.Request().Context(), "")
+		if err != nil {
+			logger.Err(err).Msg("failed to get github user info")
+			return err
 		}
 
 		s, _ := session.Get("session", c)
@@ -176,7 +172,7 @@ func setupGithubOAuth(e *echo.Echo) {
 		}
 		s.Options = &sessions.Options{Path: "/", HttpOnly: true}
 
-		s.Values["github_id"] = data.ID
+		s.Values["github_id"] = int(*u.ID)
 
 		err = s.Save(c.Request(), c.Response())
 		if err != nil {
