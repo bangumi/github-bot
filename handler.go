@@ -58,11 +58,17 @@ func (h PRHandle) Index(c echo.Context) error {
 func (h PRHandle) Handle(c echo.Context) error {
 	ctx := c.Request().Context()
 	var payload struct {
+		Action      string             `json:"action"`
 		PullRequest github.PullRequest `json:"pull_request"`
 	}
 	if err := json.NewDecoder(c.Request().Body).Decode(&payload); err != nil {
 		return err
 	}
+
+	h.logger.Info().
+		Str("action", payload.Action).
+		Str("repo", payload.PullRequest.Head.Repo.GetName()).
+		Msg("new pull webhook")
 
 	h.logger.Debug().Interface("payload", payload).Msg("new event")
 
