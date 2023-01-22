@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -75,7 +74,6 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		// Redirect user to consent page to ask for permission
 		// for the scopes specified above.
 		url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline)
-		fmt.Printf("Visit the URL for the auth dialog: %v", url)
 
 		e.GET("/oauth/bangumi", func(c echo.Context) error {
 			return c.Redirect(http.StatusFound, url)
