@@ -75,8 +75,6 @@ func (h PRHandle) Handle(c echo.Context) error {
 		return nil
 	}
 
-	h.logger.Debug().Interface("payload", payload).Msg("new event")
-
 	return h.handle(ctx, payload.PullRequest)
 }
 
