@@ -57,6 +57,8 @@ func (h PRHandle) Index(c echo.Context) error {
 	return c.HTML(http.StatusOK, html)
 }
 
+var repoToIgnore = []string{"dev-docs", "dev-env", "issue", "api", "scripts"}
+
 func (h PRHandle) Handle(c echo.Context) error {
 	ctx := c.Request().Context()
 	var payload struct {
@@ -73,7 +75,13 @@ func (h PRHandle) Handle(c echo.Context) error {
 		Msg("new pull webhook")
 
 	if payload.PullRequest.User.GetType() == "Bot" {
+		h.logger.Info().Msg("ignore bot pr")
 		return nil
+	}
+
+	repo := payload.PullRequest.Base.Repo.GetName()
+	if lo.Contains(repoToIgnore, repo) || repo == "" {
+		h.logger.Info().Str("repo", repo).Msg("skip non-code repo")
 	}
 
 	return h.handle(ctx, payload.PullRequest)
