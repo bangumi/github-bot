@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/google/go-github/v49/github"
@@ -107,11 +108,13 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 	}
 
 	if u.BangumiID == 0 && p.Comment == nil {
-		c, _, err := h.github.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
+		c, res, err := h.github.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
 			Body: lo.ToPtr("请关联您的 bangumi ID 以方便进行贡献者统计\n\nhttps://contributors.bgm38.com/"),
 		})
 
 		if err != nil {
+			b, _ := io.ReadAll(res.Body)
+			logger.Err(err).Bytes("body", b).Msg("failed to create issue")
 			return err
 		}
 
