@@ -22,14 +22,16 @@ type PRHandle struct {
 
 func (h PRHandle) Handle(c echo.Context) error {
 	ctx := c.Request().Context()
-	var payload github.PullRequest
+	var payload struct {
+		PullRequest github.PullRequest `json:"pull_request"`
+	}
 	if err := json.NewDecoder(c.Request().Body).Decode(&payload); err != nil {
 		return err
 	}
 
 	h.logger.Debug().Interface("payload", payload).Msg("new event")
 
-	return h.handle(ctx, payload)
+	return h.handle(ctx, payload.PullRequest)
 }
 
 func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error {
