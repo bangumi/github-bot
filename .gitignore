@@ -12,3 +12,8 @@ config.yaml
 tmp/
 .env
 static/style
+
+server.crt
+server.key
+data/
+*.bolt

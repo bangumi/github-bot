@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"net/http"
 
 	"github.com/google/go-github/v49/github"
+	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 	"github.com/samber/lo"
@@ -29,9 +29,7 @@ func (h PRHandle) Handle(c echo.Context) error {
 
 	h.logger.Debug().Interface("payload", payload).Msg("new event")
 
-	h.handle(ctx, payload)
-
-	return c.String(http.StatusOK, "Hello, World!")
+	return h.handle(ctx, payload)
 }
 
 func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error {
@@ -70,6 +68,24 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		if err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
+	githubId := int64(s.GetFloat64Default("github_id", 0))
+	bangumiId := int64(s.GetFloat64Default("bangumi_id", 0))
+
+	if githubId == 0 || bangumiId == 0 {
+		return nil
+	}
+
+	err := h.ent.User.Create().SetGithubID(githubId).SetBangumiID(bangumiId).
+		OnConflict().UpdateNewValues().Exec(ctx)
+	if err != nil {
+		logger.Err(err).Msg("failed to save authorized user to db")
+		return err
 	}
 
 	return nil

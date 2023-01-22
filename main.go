@@ -5,8 +5,7 @@ import (
 	"os"
 
 	"github.com/google/go-github/v49/github"
-	"github.com/gorilla/sessions"
-	"github.com/labstack/echo-contrib/session"
+	"github.com/kataras/go-sessions/v3/sessiondb/boltdb"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/mattn/go-sqlite3"
@@ -22,7 +21,7 @@ func main() {
 	logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	zerolog.DefaultContextLogger = &logger
 
-	client, err := ent.Open("sqlite3", "file:ent?mode=memory&cache=shared&_fk=1")
+	client, err := ent.Open("sqlite3", "file:./data/ent.sqlite?cache=shared&_fk=1")
 	if err != nil {
 		logger.Fatal().Err(err).Msg("failed opening connection to sqlite")
 	}
@@ -31,6 +30,12 @@ func main() {
 	if err := client.Schema.Create(context.Background()); err != nil {
 		logger.Fatal().Err(err).Msg("failed creating schema resources")
 	}
+
+	b, err := boltdb.New("./session.bolt", 0644)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("failed to open bolt file to store session")
+	}
+	session.UseDatabase(b)
 
 	// Echo instance
 	e := echo.New()
@@ -48,11 +53,10 @@ func main() {
 
 	// Routes
 	e.POST("/event-pr", h.Handle)
-	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-	e.GET("/", Index)
-	setupBangumiOAuth(e)
-	setupGithubOAuth(e)
+	e.GET("/", h.Index)
+	h.setupGithubOAuth(e)
+	h.setupBangumiOAuth(e)
 
 	// Start server
-	e.Logger.Fatal(e.Start("127.0.0.1:1323"))
+	e.Logger.Fatal(e.StartTLS("127.0.0.1:443", "server.crt", "server.key"))
 }

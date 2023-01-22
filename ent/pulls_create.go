@@ -10,6 +10,7 @@ import (
 	"github-bot/ent/user"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 )
@@ -19,6 +20,7 @@ type PullsCreate struct {
 	config
 	mutation *PullsMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetOwner sets the "owner" field.
@@ -165,6 +167,7 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	_spec.OnConflict = pc.conflict
 	if value, ok := pc.mutation.Owner(); ok {
 		_spec.SetField(pulls.FieldOwner, field.TypeString, value)
 		_node.Owner = value
@@ -212,10 +215,341 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Pulls.Create().
+//		SetOwner(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.PullsUpsert) {
+//			SetOwner(v+v).
+//		}).
+//		Exec(ctx)
+func (pc *PullsCreate) OnConflict(opts ...sql.ConflictOption) *PullsUpsertOne {
+	pc.conflict = opts
+	return &PullsUpsertOne{
+		create: pc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Pulls.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (pc *PullsCreate) OnConflictColumns(columns ...string) *PullsUpsertOne {
+	pc.conflict = append(pc.conflict, sql.ConflictColumns(columns...))
+	return &PullsUpsertOne{
+		create: pc,
+	}
+}
+
+type (
+	// PullsUpsertOne is the builder for "upsert"-ing
+	//  one Pulls node.
+	PullsUpsertOne struct {
+		create *PullsCreate
+	}
+
+	// PullsUpsert is the "OnConflict" setter.
+	PullsUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetOwner sets the "owner" field.
+func (u *PullsUpsert) SetOwner(v string) *PullsUpsert {
+	u.Set(pulls.FieldOwner, v)
+	return u
+}
+
+// UpdateOwner sets the "owner" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateOwner() *PullsUpsert {
+	u.SetExcluded(pulls.FieldOwner)
+	return u
+}
+
+// SetRepo sets the "repo" field.
+func (u *PullsUpsert) SetRepo(v string) *PullsUpsert {
+	u.Set(pulls.FieldRepo, v)
+	return u
+}
+
+// UpdateRepo sets the "repo" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateRepo() *PullsUpsert {
+	u.SetExcluded(pulls.FieldRepo)
+	return u
+}
+
+// SetGithubID sets the "github_id" field.
+func (u *PullsUpsert) SetGithubID(v int64) *PullsUpsert {
+	u.Set(pulls.FieldGithubID, v)
+	return u
+}
+
+// UpdateGithubID sets the "github_id" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateGithubID() *PullsUpsert {
+	u.SetExcluded(pulls.FieldGithubID)
+	return u
+}
+
+// AddGithubID adds v to the "github_id" field.
+func (u *PullsUpsert) AddGithubID(v int64) *PullsUpsert {
+	u.Add(pulls.FieldGithubID, v)
+	return u
+}
+
+// SetComment sets the "comment" field.
+func (u *PullsUpsert) SetComment(v int64) *PullsUpsert {
+	u.Set(pulls.FieldComment, v)
+	return u
+}
+
+// UpdateComment sets the "comment" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateComment() *PullsUpsert {
+	u.SetExcluded(pulls.FieldComment)
+	return u
+}
+
+// AddComment adds v to the "comment" field.
+func (u *PullsUpsert) AddComment(v int64) *PullsUpsert {
+	u.Add(pulls.FieldComment, v)
+	return u
+}
+
+// ClearComment clears the value of the "comment" field.
+func (u *PullsUpsert) ClearComment() *PullsUpsert {
+	u.SetNull(pulls.FieldComment)
+	return u
+}
+
+// SetCreatedAt sets the "createdAt" field.
+func (u *PullsUpsert) SetCreatedAt(v time.Time) *PullsUpsert {
+	u.Set(pulls.FieldCreatedAt, v)
+	return u
+}
+
+// UpdateCreatedAt sets the "createdAt" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateCreatedAt() *PullsUpsert {
+	u.SetExcluded(pulls.FieldCreatedAt)
+	return u
+}
+
+// SetMergedAt sets the "mergedAt" field.
+func (u *PullsUpsert) SetMergedAt(v time.Time) *PullsUpsert {
+	u.Set(pulls.FieldMergedAt, v)
+	return u
+}
+
+// UpdateMergedAt sets the "mergedAt" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateMergedAt() *PullsUpsert {
+	u.SetExcluded(pulls.FieldMergedAt)
+	return u
+}
+
+// ClearMergedAt clears the value of the "mergedAt" field.
+func (u *PullsUpsert) ClearMergedAt() *PullsUpsert {
+	u.SetNull(pulls.FieldMergedAt)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.Pulls.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *PullsUpsertOne) UpdateNewValues() *PullsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Pulls.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *PullsUpsertOne) Ignore() *PullsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *PullsUpsertOne) DoNothing() *PullsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the PullsCreate.OnConflict
+// documentation for more info.
+func (u *PullsUpsertOne) Update(set func(*PullsUpsert)) *PullsUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&PullsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetOwner sets the "owner" field.
+func (u *PullsUpsertOne) SetOwner(v string) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetOwner(v)
+	})
+}
+
+// UpdateOwner sets the "owner" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateOwner() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateOwner()
+	})
+}
+
+// SetRepo sets the "repo" field.
+func (u *PullsUpsertOne) SetRepo(v string) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetRepo(v)
+	})
+}
+
+// UpdateRepo sets the "repo" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateRepo() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateRepo()
+	})
+}
+
+// SetGithubID sets the "github_id" field.
+func (u *PullsUpsertOne) SetGithubID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetGithubID(v)
+	})
+}
+
+// AddGithubID adds v to the "github_id" field.
+func (u *PullsUpsertOne) AddGithubID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddGithubID(v)
+	})
+}
+
+// UpdateGithubID sets the "github_id" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateGithubID() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateGithubID()
+	})
+}
+
+// SetComment sets the "comment" field.
+func (u *PullsUpsertOne) SetComment(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetComment(v)
+	})
+}
+
+// AddComment adds v to the "comment" field.
+func (u *PullsUpsertOne) AddComment(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddComment(v)
+	})
+}
+
+// UpdateComment sets the "comment" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateComment() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateComment()
+	})
+}
+
+// ClearComment clears the value of the "comment" field.
+func (u *PullsUpsertOne) ClearComment() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.ClearComment()
+	})
+}
+
+// SetCreatedAt sets the "createdAt" field.
+func (u *PullsUpsertOne) SetCreatedAt(v time.Time) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "createdAt" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateCreatedAt() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetMergedAt sets the "mergedAt" field.
+func (u *PullsUpsertOne) SetMergedAt(v time.Time) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetMergedAt(v)
+	})
+}
+
+// UpdateMergedAt sets the "mergedAt" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateMergedAt() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateMergedAt()
+	})
+}
+
+// ClearMergedAt clears the value of the "mergedAt" field.
+func (u *PullsUpsertOne) ClearMergedAt() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.ClearMergedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *PullsUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for PullsCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *PullsUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *PullsUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *PullsUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // PullsCreateBulk is the builder for creating many Pulls entities in bulk.
 type PullsCreateBulk struct {
 	config
 	builders []*PullsCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Pulls entities in the database.
@@ -241,6 +575,7 @@ func (pcb *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
 					_, err = mutators[i+1].Mutate(root, pcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = pcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, pcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -291,6 +626,219 @@ func (pcb *PullsCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (pcb *PullsCreateBulk) ExecX(ctx context.Context) {
 	if err := pcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Pulls.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.PullsUpsert) {
+//			SetOwner(v+v).
+//		}).
+//		Exec(ctx)
+func (pcb *PullsCreateBulk) OnConflict(opts ...sql.ConflictOption) *PullsUpsertBulk {
+	pcb.conflict = opts
+	return &PullsUpsertBulk{
+		create: pcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Pulls.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (pcb *PullsCreateBulk) OnConflictColumns(columns ...string) *PullsUpsertBulk {
+	pcb.conflict = append(pcb.conflict, sql.ConflictColumns(columns...))
+	return &PullsUpsertBulk{
+		create: pcb,
+	}
+}
+
+// PullsUpsertBulk is the builder for "upsert"-ing
+// a bulk of Pulls nodes.
+type PullsUpsertBulk struct {
+	create *PullsCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Pulls.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *PullsUpsertBulk) UpdateNewValues() *PullsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Pulls.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *PullsUpsertBulk) Ignore() *PullsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *PullsUpsertBulk) DoNothing() *PullsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the PullsCreateBulk.OnConflict
+// documentation for more info.
+func (u *PullsUpsertBulk) Update(set func(*PullsUpsert)) *PullsUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&PullsUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetOwner sets the "owner" field.
+func (u *PullsUpsertBulk) SetOwner(v string) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetOwner(v)
+	})
+}
+
+// UpdateOwner sets the "owner" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateOwner() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateOwner()
+	})
+}
+
+// SetRepo sets the "repo" field.
+func (u *PullsUpsertBulk) SetRepo(v string) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetRepo(v)
+	})
+}
+
+// UpdateRepo sets the "repo" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateRepo() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateRepo()
+	})
+}
+
+// SetGithubID sets the "github_id" field.
+func (u *PullsUpsertBulk) SetGithubID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetGithubID(v)
+	})
+}
+
+// AddGithubID adds v to the "github_id" field.
+func (u *PullsUpsertBulk) AddGithubID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddGithubID(v)
+	})
+}
+
+// UpdateGithubID sets the "github_id" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateGithubID() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateGithubID()
+	})
+}
+
+// SetComment sets the "comment" field.
+func (u *PullsUpsertBulk) SetComment(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetComment(v)
+	})
+}
+
+// AddComment adds v to the "comment" field.
+func (u *PullsUpsertBulk) AddComment(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddComment(v)
+	})
+}
+
+// UpdateComment sets the "comment" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateComment() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateComment()
+	})
+}
+
+// ClearComment clears the value of the "comment" field.
+func (u *PullsUpsertBulk) ClearComment() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.ClearComment()
+	})
+}
+
+// SetCreatedAt sets the "createdAt" field.
+func (u *PullsUpsertBulk) SetCreatedAt(v time.Time) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetCreatedAt(v)
+	})
+}
+
+// UpdateCreatedAt sets the "createdAt" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateCreatedAt() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateCreatedAt()
+	})
+}
+
+// SetMergedAt sets the "mergedAt" field.
+func (u *PullsUpsertBulk) SetMergedAt(v time.Time) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetMergedAt(v)
+	})
+}
+
+// UpdateMergedAt sets the "mergedAt" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateMergedAt() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateMergedAt()
+	})
+}
+
+// ClearMergedAt clears the value of the "mergedAt" field.
+func (u *PullsUpsertBulk) ClearMergedAt() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.ClearMergedAt()
+	})
+}
+
+// Exec executes the query.
+func (u *PullsUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the PullsCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for PullsCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *PullsUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
