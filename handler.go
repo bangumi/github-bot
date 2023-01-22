@@ -68,7 +68,7 @@ func (h PRHandle) Handle(c echo.Context) error {
 
 	h.logger.Info().
 		Str("action", payload.Action).
-		Str("repo", payload.PullRequest.Head.Repo.GetName()).
+		Str("repo", payload.PullRequest.Base.Repo.GetName()).
 		Msg("new pull webhook")
 
 	if payload.PullRequest.User.GetType() == "Bot" {
@@ -100,9 +100,9 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 
 		p, err = h.ent.Pulls.Create().
 			SetCreatedAt(*payload.CreatedAt).
-			SetOwner(*payload.Head.Repo.Owner.Login).
+			SetOwner(*payload.Base.Repo.Owner.Login).
 			SetNumber(payload.GetNumber()).
-			SetRepo(*payload.Head.Repo.Name).
+			SetRepo(*payload.Base.Repo.Name).
 			SetCreator(u).Save(ctx)
 		if err != nil {
 			return err
