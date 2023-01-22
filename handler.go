@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/go-github/v49/github"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
@@ -138,7 +139,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	}
 
 	err := h.ent.User.Create().SetGithubID(githubId).SetBangumiID(bangumiId).
-		OnConflict().UpdateBangumiID().Exec(ctx)
+		OnConflict(sql.ConflictColumns(user.FieldGithubID)).UpdateBangumiID().Exec(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to save authorized user to db")
 		return err
