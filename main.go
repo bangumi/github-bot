@@ -17,6 +17,8 @@ import (
 
 var logger zerolog.Logger
 
+var version = "development"
+
 func main() {
 	logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	zerolog.DefaultContextLogger = &logger
@@ -40,6 +42,12 @@ func main() {
 	// Echo instance
 	e := echo.New()
 
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set("x-version", version)
+			return next(c)
+		}
+	})
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
