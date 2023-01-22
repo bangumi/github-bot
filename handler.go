@@ -71,6 +71,10 @@ func (h PRHandle) Handle(c echo.Context) error {
 		Str("repo", payload.PullRequest.Head.Repo.GetName()).
 		Msg("new pull webhook")
 
+	if payload.PullRequest.User.GetType() == "Bot" {
+		return nil
+	}
+
 	h.logger.Debug().Interface("payload", payload).Msg("new event")
 
 	return h.handle(ctx, payload.PullRequest)
