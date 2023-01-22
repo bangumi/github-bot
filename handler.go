@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"net/http"
 
 	"github.com/google/go-github/v49/github"
 	"github.com/kataras/go-sessions/v3"
@@ -11,6 +13,7 @@ import (
 	"github.com/samber/lo"
 
 	"github-bot/ent"
+	"github-bot/ent/pulls"
 	"github-bot/ent/user"
 )
 
@@ -18,6 +21,38 @@ type PRHandle struct {
 	logger zerolog.Logger
 	ent    *ent.Client
 	github *github.Client
+}
+
+func (h PRHandle) Index(c echo.Context) error {
+	s := session.Start(c.Response(), c.Request())
+
+	if c.QueryParams().Has("debug") {
+		return c.JSON(http.StatusOK, s.GetAll())
+	}
+
+	githubId := int(s.GetFloat64Default("github_id", 0))
+
+	var html string
+	if githubId == 0 {
+		return c.HTML(http.StatusOK, `<p> github 未链接，请认证 <a href="/oauth/github">github oauth</a> </p>`)
+	}
+
+	html += fmt.Sprintf(`<p> github id %d </p>`, githubId)
+
+	bangumiId := int(s.GetFloat64Default("bangumi_id", 0))
+	if bangumiId == 0 {
+		return c.HTML(http.StatusOK, `<p> bangumi 未链接，请认证 <a href="/oauth/bangumi">bangumi oauth</a> </p>`)
+	}
+
+	html += fmt.Sprintf(`<p> bangumi id %d </p>`, bangumiId)
+
+	html += "<h1>已完成</h1>"
+
+	if err := h.afterOauth(c.Request().Context(), s); err != nil {
+		return err
+	}
+
+	return c.HTML(http.StatusOK, html)
 }
 
 func (h PRHandle) Handle(c echo.Context) error {
@@ -47,14 +82,22 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		}
 	}
 
-	p, err := h.ent.Pulls.Create().
-		SetCreatedAt(*payload.CreatedAt).
-		SetOwner(*payload.Head.Repo.Owner.Login).
-		SetGithubID(*payload.ID).
-		SetRepo(*payload.Head.Repo.Name).
-		SetCreator(u).Save(ctx)
+	p, err := h.ent.Pulls.Query().Where(pulls.GithubID(*payload.ID)).Only(ctx)
+
 	if err != nil {
-		return err
+		if !ent.IsNotFound(err) {
+			return err
+		}
+
+		p, err = h.ent.Pulls.Create().
+			SetCreatedAt(*payload.CreatedAt).
+			SetOwner(*payload.Head.Repo.Owner.Login).
+			SetGithubID(*payload.ID).
+			SetRepo(*payload.Head.Repo.Name).
+			SetCreator(u).Save(ctx)
+		if err != nil {
+			return err
+		}
 	}
 
 	if u.BangumiID == 0 && p.Comment == nil {

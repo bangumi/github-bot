@@ -13,38 +13,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h PRHandle) Index(c echo.Context) error {
-	s := session.Start(c.Response(), c.Request())
-
-	if c.QueryParams().Has("debug") {
-		return c.JSON(http.StatusOK, s.GetAll())
-	}
-
-	githubId := int(s.GetFloat64Default("github_id", 0))
-
-	var html string
-	if githubId == 0 {
-		return c.HTML(http.StatusOK, `<p> github 未链接，请认证 <a href="/oauth/github">github oauth</a> </p>`)
-	}
-
-	html += fmt.Sprintf(`<p> github id %d </p>`, githubId)
-
-	bangumiId := int(s.GetFloat64Default("bangumi_id", 0))
-	if bangumiId == 0 {
-		return c.HTML(http.StatusOK, `<p> bangumi 未链接，请认证 <a href="/oauth/bangumi">bangumi oauth</a> </p>`)
-	}
-
-	html += fmt.Sprintf(`<p> bangumi id %d </p>`, bangumiId)
-
-	html += "<h1>已完成</h1>"
-
-	if err := h.afterOauth(c.Request().Context(), s); err != nil {
-		return err
-	}
-
-	return c.HTML(http.StatusOK, html)
-}
-
 func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
 		ClientID:     os.Getenv("GITHUB_OAUTH_APP_ID"),
