@@ -57,6 +57,16 @@ func main() {
 	h.setupGithubOAuth(e)
 	h.setupBangumiOAuth(e)
 
+	port := os.Getenv("HTTP_PORT")
+	if port == "" {
+		port = "8090"
+	}
+
+	host := os.Getenv("HTTP_HOST")
+	if host == "" {
+		host = "127.0.0.1"
+	}
+
 	// Start server
-	e.Logger.Fatal(e.StartTLS("127.0.0.1:443", "server.crt", "server.key"))
+	e.Logger.Fatal(e.Start(host + ":" + port))
 }
