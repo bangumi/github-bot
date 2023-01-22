@@ -8,7 +8,7 @@ import (
 	"github.com/kataras/go-sessions/v3/sessiondb/boltdb"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 	"github.com/rs/zerolog"
 	"golang.org/x/oauth2"
 
@@ -23,9 +23,9 @@ func main() {
 	logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	zerolog.DefaultContextLogger = &logger
 
-	client, err := ent.Open("sqlite3", "file:./data/ent.sqlite?cache=shared&_fk=1")
+	client, err := ent.Open("postgres", os.Getenv("PG_OPTIONS"))
 	if err != nil {
-		logger.Fatal().Err(err).Msg("failed opening connection to sqlite")
+		logger.Fatal().Err(err).Msg("failed opening connection to pg")
 	}
 	defer client.Close()
 	// Run the auto migration tool.
