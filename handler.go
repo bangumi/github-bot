@@ -101,7 +101,7 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 	}
 
 	if u.BangumiID == 0 && p.Comment == nil {
-		c, _, err := h.github.PullRequests.CreateComment(ctx, p.Owner, p.Repo, int(p.GithubID), &github.PullRequestComment{
+		c, _, err := h.github.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
 			Body: lo.ToPtr("请关联您的 bangumi ID 以方便进行贡献者统计\n\nhttps://contributors.bgm38.com/"),
 		})
 
