@@ -91,7 +91,7 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		}
 	}
 
-	p, err := h.ent.Pulls.Query().Where(pulls.GithubID(*payload.ID)).Only(ctx)
+	p, err := h.ent.Pulls.Query().Where(pulls.NumberEQ(payload.GetNumber())).Only(ctx)
 
 	if err != nil {
 		if !ent.IsNotFound(err) {
@@ -101,7 +101,7 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		p, err = h.ent.Pulls.Create().
 			SetCreatedAt(*payload.CreatedAt).
 			SetOwner(*payload.Head.Repo.Owner.Login).
-			SetGithubID(*payload.ID).
+			SetNumber(payload.GetNumber()).
 			SetRepo(*payload.Head.Repo.Name).
 			SetCreator(u).Save(ctx)
 		if err != nil {

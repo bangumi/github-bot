@@ -37,8 +37,8 @@ type PullsMutation struct {
 	id              *int
 	owner           *string
 	repo            *string
-	github_id       *int64
-	addgithub_id    *int64
+	number          *int
+	addnumber       *int
 	comment         *int64
 	addcomment      *int64
 	createdAt       *time.Time
@@ -221,60 +221,60 @@ func (m *PullsMutation) ResetRepo() {
 	m.repo = nil
 }
 
-// SetGithubID sets the "github_id" field.
-func (m *PullsMutation) SetGithubID(i int64) {
-	m.github_id = &i
-	m.addgithub_id = nil
+// SetNumber sets the "number" field.
+func (m *PullsMutation) SetNumber(i int) {
+	m.number = &i
+	m.addnumber = nil
 }
 
-// GithubID returns the value of the "github_id" field in the mutation.
-func (m *PullsMutation) GithubID() (r int64, exists bool) {
-	v := m.github_id
+// Number returns the value of the "number" field in the mutation.
+func (m *PullsMutation) Number() (r int, exists bool) {
+	v := m.number
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldGithubID returns the old "github_id" field's value of the Pulls entity.
+// OldNumber returns the old "number" field's value of the Pulls entity.
 // If the Pulls object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PullsMutation) OldGithubID(ctx context.Context) (v int64, err error) {
+func (m *PullsMutation) OldNumber(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldGithubID is only allowed on UpdateOne operations")
+		return v, errors.New("OldNumber is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldGithubID requires an ID field in the mutation")
+		return v, errors.New("OldNumber requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldGithubID: %w", err)
+		return v, fmt.Errorf("querying old value for OldNumber: %w", err)
 	}
-	return oldValue.GithubID, nil
+	return oldValue.Number, nil
 }
 
-// AddGithubID adds i to the "github_id" field.
-func (m *PullsMutation) AddGithubID(i int64) {
-	if m.addgithub_id != nil {
-		*m.addgithub_id += i
+// AddNumber adds i to the "number" field.
+func (m *PullsMutation) AddNumber(i int) {
+	if m.addnumber != nil {
+		*m.addnumber += i
 	} else {
-		m.addgithub_id = &i
+		m.addnumber = &i
 	}
 }
 
-// AddedGithubID returns the value that was added to the "github_id" field in this mutation.
-func (m *PullsMutation) AddedGithubID() (r int64, exists bool) {
-	v := m.addgithub_id
+// AddedNumber returns the value that was added to the "number" field in this mutation.
+func (m *PullsMutation) AddedNumber() (r int, exists bool) {
+	v := m.addnumber
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetGithubID resets all changes to the "github_id" field.
-func (m *PullsMutation) ResetGithubID() {
-	m.github_id = nil
-	m.addgithub_id = nil
+// ResetNumber resets all changes to the "number" field.
+func (m *PullsMutation) ResetNumber() {
+	m.number = nil
+	m.addnumber = nil
 }
 
 // SetComment sets the "comment" field.
@@ -512,8 +512,8 @@ func (m *PullsMutation) Fields() []string {
 	if m.repo != nil {
 		fields = append(fields, pulls.FieldRepo)
 	}
-	if m.github_id != nil {
-		fields = append(fields, pulls.FieldGithubID)
+	if m.number != nil {
+		fields = append(fields, pulls.FieldNumber)
 	}
 	if m.comment != nil {
 		fields = append(fields, pulls.FieldComment)
@@ -536,8 +536,8 @@ func (m *PullsMutation) Field(name string) (ent.Value, bool) {
 		return m.Owner()
 	case pulls.FieldRepo:
 		return m.Repo()
-	case pulls.FieldGithubID:
-		return m.GithubID()
+	case pulls.FieldNumber:
+		return m.Number()
 	case pulls.FieldComment:
 		return m.Comment()
 	case pulls.FieldCreatedAt:
@@ -557,8 +557,8 @@ func (m *PullsMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldOwner(ctx)
 	case pulls.FieldRepo:
 		return m.OldRepo(ctx)
-	case pulls.FieldGithubID:
-		return m.OldGithubID(ctx)
+	case pulls.FieldNumber:
+		return m.OldNumber(ctx)
 	case pulls.FieldComment:
 		return m.OldComment(ctx)
 	case pulls.FieldCreatedAt:
@@ -588,12 +588,12 @@ func (m *PullsMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRepo(v)
 		return nil
-	case pulls.FieldGithubID:
-		v, ok := value.(int64)
+	case pulls.FieldNumber:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetGithubID(v)
+		m.SetNumber(v)
 		return nil
 	case pulls.FieldComment:
 		v, ok := value.(int64)
@@ -624,8 +624,8 @@ func (m *PullsMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *PullsMutation) AddedFields() []string {
 	var fields []string
-	if m.addgithub_id != nil {
-		fields = append(fields, pulls.FieldGithubID)
+	if m.addnumber != nil {
+		fields = append(fields, pulls.FieldNumber)
 	}
 	if m.addcomment != nil {
 		fields = append(fields, pulls.FieldComment)
@@ -638,8 +638,8 @@ func (m *PullsMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *PullsMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case pulls.FieldGithubID:
-		return m.AddedGithubID()
+	case pulls.FieldNumber:
+		return m.AddedNumber()
 	case pulls.FieldComment:
 		return m.AddedComment()
 	}
@@ -651,12 +651,12 @@ func (m *PullsMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *PullsMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case pulls.FieldGithubID:
-		v, ok := value.(int64)
+	case pulls.FieldNumber:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddGithubID(v)
+		m.AddNumber(v)
 		return nil
 	case pulls.FieldComment:
 		v, ok := value.(int64)
@@ -713,8 +713,8 @@ func (m *PullsMutation) ResetField(name string) error {
 	case pulls.FieldRepo:
 		m.ResetRepo()
 		return nil
-	case pulls.FieldGithubID:
-		m.ResetGithubID()
+	case pulls.FieldNumber:
+		m.ResetNumber()
 		return nil
 	case pulls.FieldComment:
 		m.ResetComment()

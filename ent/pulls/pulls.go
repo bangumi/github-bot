@@ -11,8 +11,8 @@ const (
 	FieldOwner = "owner"
 	// FieldRepo holds the string denoting the repo field in the database.
 	FieldRepo = "repo"
-	// FieldGithubID holds the string denoting the github_id field in the database.
-	FieldGithubID = "github_id"
+	// FieldNumber holds the string denoting the number field in the database.
+	FieldNumber = "number"
 	// FieldComment holds the string denoting the comment field in the database.
 	FieldComment = "comment"
 	// FieldCreatedAt holds the string denoting the createdat field in the database.
@@ -37,7 +37,7 @@ var Columns = []string{
 	FieldID,
 	FieldOwner,
 	FieldRepo,
-	FieldGithubID,
+	FieldNumber,
 	FieldComment,
 	FieldCreatedAt,
 	FieldMergedAt,

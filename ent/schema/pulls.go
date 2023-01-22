@@ -16,7 +16,7 @@ func (Pulls) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("owner"),
 		field.String("repo"),
-		field.Int64("github_id").Unique(),
+		field.Int("number").Unique().Comment("pr number"),
 		field.Int64("comment").Optional().Nillable().Comment("bot comment id, nil present un-comment Pulls"),
 		field.Time("createdAt"),
 		field.Time("mergedAt").Optional(),

@@ -65,9 +65,9 @@ func Repo(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldRepo, v))
 }
 
-// GithubID applies equality check predicate on the "github_id" field. It's identical to GithubIDEQ.
-func GithubID(v int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldEQ(FieldGithubID, v))
+// Number applies equality check predicate on the "number" field. It's identical to NumberEQ.
+func Number(v int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldNumber, v))
 }
 
 // Comment applies equality check predicate on the "comment" field. It's identical to CommentEQ.
@@ -215,44 +215,44 @@ func RepoContainsFold(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldContainsFold(FieldRepo, v))
 }
 
-// GithubIDEQ applies the EQ predicate on the "github_id" field.
-func GithubIDEQ(v int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldEQ(FieldGithubID, v))
+// NumberEQ applies the EQ predicate on the "number" field.
+func NumberEQ(v int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldNumber, v))
 }
 
-// GithubIDNEQ applies the NEQ predicate on the "github_id" field.
-func GithubIDNEQ(v int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldNEQ(FieldGithubID, v))
+// NumberNEQ applies the NEQ predicate on the "number" field.
+func NumberNEQ(v int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNEQ(FieldNumber, v))
 }
 
-// GithubIDIn applies the In predicate on the "github_id" field.
-func GithubIDIn(vs ...int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldIn(FieldGithubID, vs...))
+// NumberIn applies the In predicate on the "number" field.
+func NumberIn(vs ...int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldIn(FieldNumber, vs...))
 }
 
-// GithubIDNotIn applies the NotIn predicate on the "github_id" field.
-func GithubIDNotIn(vs ...int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldNotIn(FieldGithubID, vs...))
+// NumberNotIn applies the NotIn predicate on the "number" field.
+func NumberNotIn(vs ...int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNotIn(FieldNumber, vs...))
 }
 
-// GithubIDGT applies the GT predicate on the "github_id" field.
-func GithubIDGT(v int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldGT(FieldGithubID, v))
+// NumberGT applies the GT predicate on the "number" field.
+func NumberGT(v int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGT(FieldNumber, v))
 }
 
-// GithubIDGTE applies the GTE predicate on the "github_id" field.
-func GithubIDGTE(v int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldGTE(FieldGithubID, v))
+// NumberGTE applies the GTE predicate on the "number" field.
+func NumberGTE(v int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGTE(FieldNumber, v))
 }
 
-// GithubIDLT applies the LT predicate on the "github_id" field.
-func GithubIDLT(v int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldLT(FieldGithubID, v))
+// NumberLT applies the LT predicate on the "number" field.
+func NumberLT(v int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLT(FieldNumber, v))
 }
 
-// GithubIDLTE applies the LTE predicate on the "github_id" field.
-func GithubIDLTE(v int64) predicate.Pulls {
-	return predicate.Pulls(sql.FieldLTE(FieldGithubID, v))
+// NumberLTE applies the LTE predicate on the "number" field.
+func NumberLTE(v int) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLTE(FieldNumber, v))
 }
 
 // CommentEQ applies the EQ predicate on the "comment" field.

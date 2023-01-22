@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "owner", Type: field.TypeString},
 		{Name: "repo", Type: field.TypeString},
-		{Name: "github_id", Type: field.TypeInt64, Unique: true},
+		{Name: "number", Type: field.TypeInt, Unique: true},
 		{Name: "comment", Type: field.TypeInt64, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "merged_at", Type: field.TypeTime, Nullable: true},

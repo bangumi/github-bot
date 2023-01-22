@@ -35,9 +35,9 @@ func (pc *PullsCreate) SetRepo(s string) *PullsCreate {
 	return pc
 }
 
-// SetGithubID sets the "github_id" field.
-func (pc *PullsCreate) SetGithubID(i int64) *PullsCreate {
-	pc.mutation.SetGithubID(i)
+// SetNumber sets the "number" field.
+func (pc *PullsCreate) SetNumber(i int) *PullsCreate {
+	pc.mutation.SetNumber(i)
 	return pc
 }
 
@@ -126,8 +126,8 @@ func (pc *PullsCreate) check() error {
 	if _, ok := pc.mutation.Repo(); !ok {
 		return &ValidationError{Name: "repo", err: errors.New(`ent: missing required field "Pulls.repo"`)}
 	}
-	if _, ok := pc.mutation.GithubID(); !ok {
-		return &ValidationError{Name: "github_id", err: errors.New(`ent: missing required field "Pulls.github_id"`)}
+	if _, ok := pc.mutation.Number(); !ok {
+		return &ValidationError{Name: "number", err: errors.New(`ent: missing required field "Pulls.number"`)}
 	}
 	if _, ok := pc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "Pulls.createdAt"`)}
@@ -176,9 +176,9 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 		_node.Repo = value
 	}
-	if value, ok := pc.mutation.GithubID(); ok {
-		_spec.SetField(pulls.FieldGithubID, field.TypeInt64, value)
-		_node.GithubID = value
+	if value, ok := pc.mutation.Number(); ok {
+		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
+		_node.Number = value
 	}
 	if value, ok := pc.mutation.Comment(); ok {
 		_spec.SetField(pulls.FieldComment, field.TypeInt64, value)
@@ -288,21 +288,21 @@ func (u *PullsUpsert) UpdateRepo() *PullsUpsert {
 	return u
 }
 
-// SetGithubID sets the "github_id" field.
-func (u *PullsUpsert) SetGithubID(v int64) *PullsUpsert {
-	u.Set(pulls.FieldGithubID, v)
+// SetNumber sets the "number" field.
+func (u *PullsUpsert) SetNumber(v int) *PullsUpsert {
+	u.Set(pulls.FieldNumber, v)
 	return u
 }
 
-// UpdateGithubID sets the "github_id" field to the value that was provided on create.
-func (u *PullsUpsert) UpdateGithubID() *PullsUpsert {
-	u.SetExcluded(pulls.FieldGithubID)
+// UpdateNumber sets the "number" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateNumber() *PullsUpsert {
+	u.SetExcluded(pulls.FieldNumber)
 	return u
 }
 
-// AddGithubID adds v to the "github_id" field.
-func (u *PullsUpsert) AddGithubID(v int64) *PullsUpsert {
-	u.Add(pulls.FieldGithubID, v)
+// AddNumber adds v to the "number" field.
+func (u *PullsUpsert) AddNumber(v int) *PullsUpsert {
+	u.Add(pulls.FieldNumber, v)
 	return u
 }
 
@@ -428,24 +428,24 @@ func (u *PullsUpsertOne) UpdateRepo() *PullsUpsertOne {
 	})
 }
 
-// SetGithubID sets the "github_id" field.
-func (u *PullsUpsertOne) SetGithubID(v int64) *PullsUpsertOne {
+// SetNumber sets the "number" field.
+func (u *PullsUpsertOne) SetNumber(v int) *PullsUpsertOne {
 	return u.Update(func(s *PullsUpsert) {
-		s.SetGithubID(v)
+		s.SetNumber(v)
 	})
 }
 
-// AddGithubID adds v to the "github_id" field.
-func (u *PullsUpsertOne) AddGithubID(v int64) *PullsUpsertOne {
+// AddNumber adds v to the "number" field.
+func (u *PullsUpsertOne) AddNumber(v int) *PullsUpsertOne {
 	return u.Update(func(s *PullsUpsert) {
-		s.AddGithubID(v)
+		s.AddNumber(v)
 	})
 }
 
-// UpdateGithubID sets the "github_id" field to the value that was provided on create.
-func (u *PullsUpsertOne) UpdateGithubID() *PullsUpsertOne {
+// UpdateNumber sets the "number" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateNumber() *PullsUpsertOne {
 	return u.Update(func(s *PullsUpsert) {
-		s.UpdateGithubID()
+		s.UpdateNumber()
 	})
 }
 
@@ -739,24 +739,24 @@ func (u *PullsUpsertBulk) UpdateRepo() *PullsUpsertBulk {
 	})
 }
 
-// SetGithubID sets the "github_id" field.
-func (u *PullsUpsertBulk) SetGithubID(v int64) *PullsUpsertBulk {
+// SetNumber sets the "number" field.
+func (u *PullsUpsertBulk) SetNumber(v int) *PullsUpsertBulk {
 	return u.Update(func(s *PullsUpsert) {
-		s.SetGithubID(v)
+		s.SetNumber(v)
 	})
 }
 
-// AddGithubID adds v to the "github_id" field.
-func (u *PullsUpsertBulk) AddGithubID(v int64) *PullsUpsertBulk {
+// AddNumber adds v to the "number" field.
+func (u *PullsUpsertBulk) AddNumber(v int) *PullsUpsertBulk {
 	return u.Update(func(s *PullsUpsert) {
-		s.AddGithubID(v)
+		s.AddNumber(v)
 	})
 }
 
-// UpdateGithubID sets the "github_id" field to the value that was provided on create.
-func (u *PullsUpsertBulk) UpdateGithubID() *PullsUpsertBulk {
+// UpdateNumber sets the "number" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateNumber() *PullsUpsertBulk {
 	return u.Update(func(s *PullsUpsert) {
-		s.UpdateGithubID()
+		s.UpdateNumber()
 	})
 }
 

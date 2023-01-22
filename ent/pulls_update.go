@@ -41,16 +41,16 @@ func (pu *PullsUpdate) SetRepo(s string) *PullsUpdate {
 	return pu
 }
 
-// SetGithubID sets the "github_id" field.
-func (pu *PullsUpdate) SetGithubID(i int64) *PullsUpdate {
-	pu.mutation.ResetGithubID()
-	pu.mutation.SetGithubID(i)
+// SetNumber sets the "number" field.
+func (pu *PullsUpdate) SetNumber(i int) *PullsUpdate {
+	pu.mutation.ResetNumber()
+	pu.mutation.SetNumber(i)
 	return pu
 }
 
-// AddGithubID adds i to the "github_id" field.
-func (pu *PullsUpdate) AddGithubID(i int64) *PullsUpdate {
-	pu.mutation.AddGithubID(i)
+// AddNumber adds i to the "number" field.
+func (pu *PullsUpdate) AddNumber(i int) *PullsUpdate {
+	pu.mutation.AddNumber(i)
 	return pu
 }
 
@@ -191,11 +191,11 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 	}
-	if value, ok := pu.mutation.GithubID(); ok {
-		_spec.SetField(pulls.FieldGithubID, field.TypeInt64, value)
+	if value, ok := pu.mutation.Number(); ok {
+		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
 	}
-	if value, ok := pu.mutation.AddedGithubID(); ok {
-		_spec.AddField(pulls.FieldGithubID, field.TypeInt64, value)
+	if value, ok := pu.mutation.AddedNumber(); ok {
+		_spec.AddField(pulls.FieldNumber, field.TypeInt, value)
 	}
 	if value, ok := pu.mutation.Comment(); ok {
 		_spec.SetField(pulls.FieldComment, field.TypeInt64, value)
@@ -282,16 +282,16 @@ func (puo *PullsUpdateOne) SetRepo(s string) *PullsUpdateOne {
 	return puo
 }
 
-// SetGithubID sets the "github_id" field.
-func (puo *PullsUpdateOne) SetGithubID(i int64) *PullsUpdateOne {
-	puo.mutation.ResetGithubID()
-	puo.mutation.SetGithubID(i)
+// SetNumber sets the "number" field.
+func (puo *PullsUpdateOne) SetNumber(i int) *PullsUpdateOne {
+	puo.mutation.ResetNumber()
+	puo.mutation.SetNumber(i)
 	return puo
 }
 
-// AddGithubID adds i to the "github_id" field.
-func (puo *PullsUpdateOne) AddGithubID(i int64) *PullsUpdateOne {
-	puo.mutation.AddGithubID(i)
+// AddNumber adds i to the "number" field.
+func (puo *PullsUpdateOne) AddNumber(i int) *PullsUpdateOne {
+	puo.mutation.AddNumber(i)
 	return puo
 }
 
@@ -456,11 +456,11 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 	if value, ok := puo.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 	}
-	if value, ok := puo.mutation.GithubID(); ok {
-		_spec.SetField(pulls.FieldGithubID, field.TypeInt64, value)
+	if value, ok := puo.mutation.Number(); ok {
+		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
 	}
-	if value, ok := puo.mutation.AddedGithubID(); ok {
-		_spec.AddField(pulls.FieldGithubID, field.TypeInt64, value)
+	if value, ok := puo.mutation.AddedNumber(); ok {
+		_spec.AddField(pulls.FieldNumber, field.TypeInt, value)
 	}
 	if value, ok := puo.mutation.Comment(); ok {
 		_spec.SetField(pulls.FieldComment, field.TypeInt64, value)
