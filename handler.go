@@ -111,7 +111,7 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 
 	if u.BangumiID == 0 && p.Comment == nil {
 		c, res, err := h.github.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
-			Body: lo.ToPtr("请关联您的 bangumi ID 以方便进行贡献者统计\n\nhttps://contributors.bgm38.com/"),
+			Body: lo.ToPtr("请关联您的 bangumi ID 以方便进行贡献者统计，未关联的贡献者将不会被统计在年鉴中\n\nhttps://contributors.bgm38.com/"),
 		})
 
 		if err != nil {
