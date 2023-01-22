@@ -144,6 +144,16 @@ func BangumiIDLTE(v int64) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldBangumiID, v))
 }
 
+// BangumiIDIsNil applies the IsNil predicate on the "bangumi_id" field.
+func BangumiIDIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldBangumiID))
+}
+
+// BangumiIDNotNil applies the NotNil predicate on the "bangumi_id" field.
+func BangumiIDNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldBangumiID))
+}
+
 // HasPullRequests applies the HasEdge predicate on the "pull_requests" edge.
 func HasPullRequests() predicate.User {
 	return predicate.User(func(s *sql.Selector) {

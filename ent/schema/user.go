@@ -15,7 +15,7 @@ type User struct {
 func (User) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("github_id").Positive().Unique(),
-		field.Int64("bangumi_id").Positive().Unique(),
+		field.Int64("bangumi_id").Positive().Unique().Optional(),
 	}
 }
 

@@ -1026,10 +1026,24 @@ func (m *UserMutation) AddedBangumiID() (r int64, exists bool) {
 	return *v, true
 }
 
+// ClearBangumiID clears the value of the "bangumi_id" field.
+func (m *UserMutation) ClearBangumiID() {
+	m.bangumi_id = nil
+	m.addbangumi_id = nil
+	m.clearedFields[user.FieldBangumiID] = struct{}{}
+}
+
+// BangumiIDCleared returns if the "bangumi_id" field was cleared in this mutation.
+func (m *UserMutation) BangumiIDCleared() bool {
+	_, ok := m.clearedFields[user.FieldBangumiID]
+	return ok
+}
+
 // ResetBangumiID resets all changes to the "bangumi_id" field.
 func (m *UserMutation) ResetBangumiID() {
 	m.bangumi_id = nil
 	m.addbangumi_id = nil
+	delete(m.clearedFields, user.FieldBangumiID)
 }
 
 // AddPullRequestIDs adds the "pull_requests" edge to the Pulls entity by ids.
@@ -1231,7 +1245,11 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *UserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(user.FieldBangumiID) {
+		fields = append(fields, user.FieldBangumiID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1244,6 +1262,11 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
+	switch name {
+	case user.FieldBangumiID:
+		m.ClearBangumiID()
+		return nil
+	}
 	return fmt.Errorf("unknown User nullable field %s", name)
 }
 

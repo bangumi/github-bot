@@ -34,6 +34,14 @@ func (uc *UserCreate) SetBangumiID(i int64) *UserCreate {
 	return uc
 }
 
+// SetNillableBangumiID sets the "bangumi_id" field if the given value is not nil.
+func (uc *UserCreate) SetNillableBangumiID(i *int64) *UserCreate {
+	if i != nil {
+		uc.SetBangumiID(*i)
+	}
+	return uc
+}
+
 // AddPullRequestIDs adds the "pull_requests" edge to the Pulls entity by IDs.
 func (uc *UserCreate) AddPullRequestIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPullRequestIDs(ids...)
@@ -90,9 +98,6 @@ func (uc *UserCreate) check() error {
 		if err := user.GithubIDValidator(v); err != nil {
 			return &ValidationError{Name: "github_id", err: fmt.Errorf(`ent: validator failed for field "User.github_id": %w`, err)}
 		}
-	}
-	if _, ok := uc.mutation.BangumiID(); !ok {
-		return &ValidationError{Name: "bangumi_id", err: errors.New(`ent: missing required field "User.bangumi_id"`)}
 	}
 	if v, ok := uc.mutation.BangumiID(); ok {
 		if err := user.BangumiIDValidator(v); err != nil {
@@ -247,6 +252,12 @@ func (u *UserUpsert) AddBangumiID(v int64) *UserUpsert {
 	return u
 }
 
+// ClearBangumiID clears the value of the "bangumi_id" field.
+func (u *UserUpsert) ClearBangumiID() *UserUpsert {
+	u.SetNull(user.FieldBangumiID)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -326,6 +337,13 @@ func (u *UserUpsertOne) AddBangumiID(v int64) *UserUpsertOne {
 func (u *UserUpsertOne) UpdateBangumiID() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateBangumiID()
+	})
+}
+
+// ClearBangumiID clears the value of the "bangumi_id" field.
+func (u *UserUpsertOne) ClearBangumiID() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearBangumiID()
 	})
 }
 
@@ -567,6 +585,13 @@ func (u *UserUpsertBulk) AddBangumiID(v int64) *UserUpsertBulk {
 func (u *UserUpsertBulk) UpdateBangumiID() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdateBangumiID()
+	})
+}
+
+// ClearBangumiID clears the value of the "bangumi_id" field.
+func (u *UserUpsertBulk) ClearBangumiID() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.ClearBangumiID()
 	})
 }
 

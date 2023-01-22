@@ -48,9 +48,23 @@ func (uu *UserUpdate) SetBangumiID(i int64) *UserUpdate {
 	return uu
 }
 
+// SetNillableBangumiID sets the "bangumi_id" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableBangumiID(i *int64) *UserUpdate {
+	if i != nil {
+		uu.SetBangumiID(*i)
+	}
+	return uu
+}
+
 // AddBangumiID adds i to the "bangumi_id" field.
 func (uu *UserUpdate) AddBangumiID(i int64) *UserUpdate {
 	uu.mutation.AddBangumiID(i)
+	return uu
+}
+
+// ClearBangumiID clears the value of the "bangumi_id" field.
+func (uu *UserUpdate) ClearBangumiID() *UserUpdate {
+	uu.mutation.ClearBangumiID()
 	return uu
 }
 
@@ -170,6 +184,9 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.AddedBangumiID(); ok {
 		_spec.AddField(user.FieldBangumiID, field.TypeInt64, value)
 	}
+	if uu.mutation.BangumiIDCleared() {
+		_spec.ClearField(user.FieldBangumiID, field.TypeInt64)
+	}
 	if uu.mutation.PullRequestsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -264,9 +281,23 @@ func (uuo *UserUpdateOne) SetBangumiID(i int64) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableBangumiID sets the "bangumi_id" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableBangumiID(i *int64) *UserUpdateOne {
+	if i != nil {
+		uuo.SetBangumiID(*i)
+	}
+	return uuo
+}
+
 // AddBangumiID adds i to the "bangumi_id" field.
 func (uuo *UserUpdateOne) AddBangumiID(i int64) *UserUpdateOne {
 	uuo.mutation.AddBangumiID(i)
+	return uuo
+}
+
+// ClearBangumiID clears the value of the "bangumi_id" field.
+func (uuo *UserUpdateOne) ClearBangumiID() *UserUpdateOne {
+	uuo.mutation.ClearBangumiID()
 	return uuo
 }
 
@@ -409,6 +440,9 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.AddedBangumiID(); ok {
 		_spec.AddField(user.FieldBangumiID, field.TypeInt64, value)
+	}
+	if uuo.mutation.BangumiIDCleared() {
+		_spec.ClearField(user.FieldBangumiID, field.TypeInt64)
 	}
 	if uuo.mutation.PullRequestsCleared() {
 		edge := &sqlgraph.EdgeSpec{

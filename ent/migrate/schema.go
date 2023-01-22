@@ -37,7 +37,7 @@ var (
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "github_id", Type: field.TypeInt64, Unique: true},
-		{Name: "bangumi_id", Type: field.TypeInt64, Unique: true},
+		{Name: "bangumi_id", Type: field.TypeInt64, Unique: true, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
