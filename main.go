@@ -33,7 +33,7 @@ func main() {
 		logger.Fatal().Err(err).Msg("failed creating schema resources")
 	}
 
-	b, err := boltdb.New("./session.bolt", 0644)
+	b, err := boltdb.New("./data/session.bolt", 0644)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("failed to open bolt file to store session")
 	}
