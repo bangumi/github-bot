@@ -138,7 +138,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	}
 
 	err := h.ent.User.Create().SetGithubID(githubId).SetBangumiID(bangumiId).
-		OnConflict().UpdateNewValues().Exec(ctx)
+		OnConflict().UpdateBangumiID().Exec(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to save authorized user to db")
 		return err
