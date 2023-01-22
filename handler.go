@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -113,8 +114,11 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		})
 
 		if err != nil {
+			var buf = bytes.NewBuffer(nil)
+
+			_ = res.Request.Header.Clone().Write(buf)
 			b, _ := io.ReadAll(res.Body)
-			logger.Err(err).Bytes("body", b).Msg("failed to create issue")
+			logger.Err(err).Bytes("body", b).Str("request_headers", buf.String()).Msg("failed to create issue")
 			return err
 		}
 
