@@ -9,7 +9,7 @@ require (
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v4 v4.10.0
 	github.com/lib/pq v1.10.7
-	github.com/rs/zerolog v1.28.0
+	github.com/rs/zerolog v1.29.0
 	github.com/samber/lo v1.37.0
 	golang.org/x/oauth2 v0.4.0
 )
