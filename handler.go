@@ -74,7 +74,8 @@ func (h PRHandle) Handle(c echo.Context) error {
 		Str("repo", payload.PullRequest.Base.Repo.GetName()).
 		Msg("new pull webhook")
 
-	if payload.PullRequest.User.GetType() == "Bot" {
+	if payload.PullRequest.User.GetType() == "Bot" || payload.PullRequest.User.GetID() == 88366224 {
+		// https://api.github.com/users/Trim21-bot
 		h.logger.Info().Msg("ignore bot pr")
 		return nil
 	}
