@@ -76,6 +76,7 @@ func verifySign(body []byte, sign string) bool {
 
 	rawSign, err := hex.DecodeString(sign)
 	if err != nil {
+		logger.Info().Msg("failed to decode sign")
 		return false
 	}
 
@@ -88,7 +89,13 @@ func verifySign(body []byte, sign string) bool {
 	// Get result and encode as hexadecimal string
 	sha := h.Sum(nil)
 
-	return subtle.ConstantTimeCompare(sha, rawSign) == 0
+	var r = subtle.ConstantTimeCompare(sha, rawSign) == 0
+
+	if !r {
+		logger.Info().Msg("hash not equal")
+	}
+
+	return r
 }
 
 func (h PRHandle) Handle(c echo.Context) error {
