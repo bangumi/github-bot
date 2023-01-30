@@ -2,10 +2,16 @@ package main
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
+	"crypto/subtle"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"strings"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/go-github/v50/github"
@@ -59,13 +65,49 @@ func (h PRHandle) Index(c echo.Context) error {
 
 var repoToIgnore = []string{"dev-docs", "dev-env", "issue", "api", "scripts"}
 
+var webhookSecret = []byte(os.Getenv("GITHUB_WEBHOOK_SECRET"))
+
+func verifySign(body []byte, sign string) bool {
+	if strings.HasPrefix(sign, "sha256=") {
+		return false
+	}
+
+	sign = strings.TrimPrefix(sign, "sha256=")
+
+	rawSign, err := hex.DecodeString(sign)
+	if err != nil {
+		return false
+	}
+
+	// Create a new HMAC by defining the hash type and the key (as byte array)
+	h := hmac.New(sha256.New, webhookSecret)
+
+	// Write Data to it
+	h.Write(body)
+
+	// Get result and encode as hexadecimal string
+	sha := h.Sum(nil)
+
+	return subtle.ConstantTimeCompare(sha, rawSign) == 0
+}
+
 func (h PRHandle) Handle(c echo.Context) error {
 	ctx := c.Request().Context()
 	var payload struct {
 		Action      string             `json:"action"`
 		PullRequest github.PullRequest `json:"pull_request"`
 	}
-	if err := json.NewDecoder(c.Request().Body).Decode(&payload); err != nil {
+
+	body, err := io.ReadAll(c.Request().Body)
+	if err != nil {
+		return err
+	}
+
+	if !verifySign(body, c.Request().Header.Get("X-Hub-Signature-256")) {
+		return c.String(http.StatusBadRequest, "Signatures didn't match!")
+	}
+
+	if err := json.Unmarshal(body, &payload); err != nil {
 		return err
 	}
 
