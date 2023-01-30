@@ -68,7 +68,7 @@ var repoToIgnore = []string{"dev-docs", "dev-env", "issue", "api", "scripts"}
 var webhookSecret = []byte(os.Getenv("GITHUB_WEBHOOK_SECRET"))
 
 func verifySign(body []byte, sign string) bool {
-	if strings.HasPrefix(sign, "sha256=") {
+	if !strings.HasPrefix(sign, "sha256=") {
 		return false
 	}
 
