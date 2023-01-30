@@ -73,9 +73,7 @@ func verifySign(body []byte, header string) bool {
 	h.Write(body)
 
 	// Get result and encode as hexadecimal string
-	sha := hex.EncodeToString(h.Sum(nil))
-
-	logger.Info().Msgf("try to compare %s with %s", sha, header)
+	sha := "sha256=" + hex.EncodeToString(h.Sum(nil))
 
 	return hmac.Equal([]byte(sha), []byte(header))
 }
