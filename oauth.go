@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/google/go-github/v49/github"
+	"github.com/google/go-github/v50/github"
 	"golang.org/x/oauth2"
 
 	"github.com/labstack/echo/v4"

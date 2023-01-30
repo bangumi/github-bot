@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"github.com/google/go-github/v49/github"
+	"github.com/google/go-github/v50/github"
 	"github.com/kataras/go-sessions/v3/sessiondb/boltdb"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

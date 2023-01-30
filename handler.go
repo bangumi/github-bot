@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/go-github/v49/github"
+	"github.com/google/go-github/v50/github"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
@@ -95,7 +95,7 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 			return err
 		}
 
-		u, err = h.ent.User.Create().SetGithubID(*payload.User.ID).Save(ctx)
+		u, err = h.ent.User.Create().SetGithubID(payload.User.GetID()).Save(ctx)
 		if err != nil {
 			return err
 		}
@@ -108,12 +108,18 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 			return err
 		}
 
-		p, err = h.ent.Pulls.Create().
-			SetCreatedAt(*payload.CreatedAt).
-			SetOwner(*payload.Base.Repo.Owner.Login).
+		q := h.ent.Pulls.Create().
+			SetCreatedAt(payload.CreatedAt.Time).
+			SetOwner(payload.Base.Repo.Owner.GetLogin()).
 			SetNumber(payload.GetNumber()).
-			SetRepo(*payload.Base.Repo.Name).
-			SetCreator(u).Save(ctx)
+			SetRepo(payload.Base.Repo.GetName()).
+			SetCreator(u)
+
+		if payload.MergedAt != nil {
+			q = q.SetMergedAt(payload.MergedAt.Time)
+		}
+
+		p, err = q.Save(ctx)
 		if err != nil {
 			return err
 		}
@@ -132,6 +138,12 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 
 		err = h.ent.Pulls.UpdateOne(p).SetComment(*c.ID).Exec(ctx)
 		if err != nil {
+			return err
+		}
+	}
+
+	if payload.MergedAt != nil && !p.MergedAt.IsZero() {
+		if _, err := h.ent.Pulls.UpdateOne(p).SetMergedAt(payload.MergedAt.Time).Save(ctx); err != nil {
 			return err
 		}
 	}
