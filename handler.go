@@ -142,7 +142,7 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		}
 	}
 
-	if payload.MergedAt != nil && !p.MergedAt.IsZero() {
+	if payload.MergedAt != nil && p.MergedAt.IsZero() {
 		if _, err := h.ent.Pulls.UpdateOne(p).SetMergedAt(payload.MergedAt.Time).Save(ctx); err != nil {
 			return err
 		}
