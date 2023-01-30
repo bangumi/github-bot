@@ -41,6 +41,7 @@ func main() {
 
 	// Echo instance
 	e := echo.New()
+	e.HideBanner = true
 
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
