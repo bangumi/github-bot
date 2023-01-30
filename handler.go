@@ -4,14 +4,12 @@ import (
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"
-	"crypto/subtle"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"strings"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/go-github/v50/github"
@@ -67,19 +65,7 @@ var repoToIgnore = []string{"dev-docs", "dev-env", "issue", "api", "scripts"}
 
 var webhookSecret = []byte(os.Getenv("GITHUB_WEBHOOK_SECRET"))
 
-func verifySign(body []byte, sign string) bool {
-	if !strings.HasPrefix(sign, "sha256=") {
-		return false
-	}
-
-	sign = strings.TrimPrefix(sign, "sha256=")
-
-	rawSign, err := hex.DecodeString(sign)
-	if err != nil {
-		logger.Info().Msg("failed to decode sign")
-		return false
-	}
-
+func verifySign(body []byte, header string) bool {
 	// Create a new HMAC by defining the hash type and the key (as byte array)
 	h := hmac.New(sha256.New, webhookSecret)
 
@@ -87,15 +73,11 @@ func verifySign(body []byte, sign string) bool {
 	h.Write(body)
 
 	// Get result and encode as hexadecimal string
-	sha := h.Sum(nil)
+	sha := hex.EncodeToString(h.Sum(nil))
 
-	var r = subtle.ConstantTimeCompare(sha, rawSign) == 0
+	logger.Info().Msgf("try to compare %s with %s", sha, header)
 
-	if !r {
-		logger.Info().Msg("hash not equal")
-	}
-
-	return r
+	return hmac.Equal([]byte(sha), []byte(header))
 }
 
 func (h PRHandle) Handle(c echo.Context) error {
