@@ -47,6 +47,17 @@ func main() {
 
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
+			err := next(c)
+			if err != nil {
+				logger.Err(err).Msg("internal error")
+			}
+
+			return err
+		}
+	})
+
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
 			c.Response().Header().Set("x-version", version)
 			return next(c)
 		}
