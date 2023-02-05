@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"github-bot/ent/pulls"
 	"github-bot/ent/schema"
 	"github-bot/ent/user"
 )
@@ -11,6 +12,20 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	pullsFields := schema.Pulls{}.Fields()
+	_ = pullsFields
+	// pullsDescCheckRunID is the schema descriptor for checkRunID field.
+	pullsDescCheckRunID := pullsFields[6].Descriptor()
+	// pulls.DefaultCheckRunID holds the default value on creation for the checkRunID field.
+	pulls.DefaultCheckRunID = pullsDescCheckRunID.Default.(int64)
+	// pullsDescCheckRunResult is the schema descriptor for checkRunResult field.
+	pullsDescCheckRunResult := pullsFields[7].Descriptor()
+	// pulls.DefaultCheckRunResult holds the default value on creation for the checkRunResult field.
+	pulls.DefaultCheckRunResult = pullsDescCheckRunResult.Default.(string)
+	// pullsDescHeadSha is the schema descriptor for headSha field.
+	pullsDescHeadSha := pullsFields[8].Descriptor()
+	// pulls.DefaultHeadSha holds the default value on creation for the headSha field.
+	pulls.DefaultHeadSha = pullsDescHeadSha.Default.(string)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescGithubID is the schema descriptor for github_id field.

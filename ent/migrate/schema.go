@@ -17,6 +17,9 @@ var (
 		{Name: "comment", Type: field.TypeInt64, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "merged_at", Type: field.TypeTime, Nullable: true},
+		{Name: "check_run_id", Type: field.TypeInt64, Default: 0},
+		{Name: "check_run_result", Type: field.TypeString, Default: ""},
+		{Name: "head_sha", Type: field.TypeString, Default: ""},
 		{Name: "user_pull_requests", Type: field.TypeInt},
 	}
 	// PullsTable holds the schema information for the "pulls" table.
@@ -27,7 +30,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "pulls_users_pull_requests",
-				Columns:    []*schema.Column{PullsColumns[7]},
+				Columns:    []*schema.Column{PullsColumns[10]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

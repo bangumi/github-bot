@@ -107,6 +107,55 @@ func (pu *PullsUpdate) ClearMergedAt() *PullsUpdate {
 	return pu
 }
 
+// SetCheckRunID sets the "checkRunID" field.
+func (pu *PullsUpdate) SetCheckRunID(i int64) *PullsUpdate {
+	pu.mutation.ResetCheckRunID()
+	pu.mutation.SetCheckRunID(i)
+	return pu
+}
+
+// SetNillableCheckRunID sets the "checkRunID" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableCheckRunID(i *int64) *PullsUpdate {
+	if i != nil {
+		pu.SetCheckRunID(*i)
+	}
+	return pu
+}
+
+// AddCheckRunID adds i to the "checkRunID" field.
+func (pu *PullsUpdate) AddCheckRunID(i int64) *PullsUpdate {
+	pu.mutation.AddCheckRunID(i)
+	return pu
+}
+
+// SetCheckRunResult sets the "checkRunResult" field.
+func (pu *PullsUpdate) SetCheckRunResult(s string) *PullsUpdate {
+	pu.mutation.SetCheckRunResult(s)
+	return pu
+}
+
+// SetNillableCheckRunResult sets the "checkRunResult" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableCheckRunResult(s *string) *PullsUpdate {
+	if s != nil {
+		pu.SetCheckRunResult(*s)
+	}
+	return pu
+}
+
+// SetHeadSha sets the "headSha" field.
+func (pu *PullsUpdate) SetHeadSha(s string) *PullsUpdate {
+	pu.mutation.SetHeadSha(s)
+	return pu
+}
+
+// SetNillableHeadSha sets the "headSha" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableHeadSha(s *string) *PullsUpdate {
+	if s != nil {
+		pu.SetHeadSha(*s)
+	}
+	return pu
+}
+
 // SetCreatorID sets the "Creator" edge to the User entity by ID.
 func (pu *PullsUpdate) SetCreatorID(id int) *PullsUpdate {
 	pu.mutation.SetCreatorID(id)
@@ -214,6 +263,18 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if pu.mutation.MergedAtCleared() {
 		_spec.ClearField(pulls.FieldMergedAt, field.TypeTime)
+	}
+	if value, ok := pu.mutation.CheckRunID(); ok {
+		_spec.SetField(pulls.FieldCheckRunID, field.TypeInt64, value)
+	}
+	if value, ok := pu.mutation.AddedCheckRunID(); ok {
+		_spec.AddField(pulls.FieldCheckRunID, field.TypeInt64, value)
+	}
+	if value, ok := pu.mutation.CheckRunResult(); ok {
+		_spec.SetField(pulls.FieldCheckRunResult, field.TypeString, value)
+	}
+	if value, ok := pu.mutation.HeadSha(); ok {
+		_spec.SetField(pulls.FieldHeadSha, field.TypeString, value)
 	}
 	if pu.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -348,6 +409,55 @@ func (puo *PullsUpdateOne) ClearMergedAt() *PullsUpdateOne {
 	return puo
 }
 
+// SetCheckRunID sets the "checkRunID" field.
+func (puo *PullsUpdateOne) SetCheckRunID(i int64) *PullsUpdateOne {
+	puo.mutation.ResetCheckRunID()
+	puo.mutation.SetCheckRunID(i)
+	return puo
+}
+
+// SetNillableCheckRunID sets the "checkRunID" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableCheckRunID(i *int64) *PullsUpdateOne {
+	if i != nil {
+		puo.SetCheckRunID(*i)
+	}
+	return puo
+}
+
+// AddCheckRunID adds i to the "checkRunID" field.
+func (puo *PullsUpdateOne) AddCheckRunID(i int64) *PullsUpdateOne {
+	puo.mutation.AddCheckRunID(i)
+	return puo
+}
+
+// SetCheckRunResult sets the "checkRunResult" field.
+func (puo *PullsUpdateOne) SetCheckRunResult(s string) *PullsUpdateOne {
+	puo.mutation.SetCheckRunResult(s)
+	return puo
+}
+
+// SetNillableCheckRunResult sets the "checkRunResult" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableCheckRunResult(s *string) *PullsUpdateOne {
+	if s != nil {
+		puo.SetCheckRunResult(*s)
+	}
+	return puo
+}
+
+// SetHeadSha sets the "headSha" field.
+func (puo *PullsUpdateOne) SetHeadSha(s string) *PullsUpdateOne {
+	puo.mutation.SetHeadSha(s)
+	return puo
+}
+
+// SetNillableHeadSha sets the "headSha" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableHeadSha(s *string) *PullsUpdateOne {
+	if s != nil {
+		puo.SetHeadSha(*s)
+	}
+	return puo
+}
+
 // SetCreatorID sets the "Creator" edge to the User entity by ID.
 func (puo *PullsUpdateOne) SetCreatorID(id int) *PullsUpdateOne {
 	puo.mutation.SetCreatorID(id)
@@ -479,6 +589,18 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 	}
 	if puo.mutation.MergedAtCleared() {
 		_spec.ClearField(pulls.FieldMergedAt, field.TypeTime)
+	}
+	if value, ok := puo.mutation.CheckRunID(); ok {
+		_spec.SetField(pulls.FieldCheckRunID, field.TypeInt64, value)
+	}
+	if value, ok := puo.mutation.AddedCheckRunID(); ok {
+		_spec.AddField(pulls.FieldCheckRunID, field.TypeInt64, value)
+	}
+	if value, ok := puo.mutation.CheckRunResult(); ok {
+		_spec.SetField(pulls.FieldCheckRunResult, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.HeadSha(); ok {
+		_spec.SetField(pulls.FieldHeadSha, field.TypeString, value)
 	}
 	if puo.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -19,6 +19,12 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldMergedAt holds the string denoting the mergedat field in the database.
 	FieldMergedAt = "merged_at"
+	// FieldCheckRunID holds the string denoting the checkrunid field in the database.
+	FieldCheckRunID = "check_run_id"
+	// FieldCheckRunResult holds the string denoting the checkrunresult field in the database.
+	FieldCheckRunResult = "check_run_result"
+	// FieldHeadSha holds the string denoting the headsha field in the database.
+	FieldHeadSha = "head_sha"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "Creator"
 	// Table holds the table name of the pulls in the database.
@@ -41,6 +47,9 @@ var Columns = []string{
 	FieldComment,
 	FieldCreatedAt,
 	FieldMergedAt,
+	FieldCheckRunID,
+	FieldCheckRunResult,
+	FieldHeadSha,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "pulls"
@@ -63,3 +72,12 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultCheckRunID holds the default value on creation for the "checkRunID" field.
+	DefaultCheckRunID int64
+	// DefaultCheckRunResult holds the default value on creation for the "checkRunResult" field.
+	DefaultCheckRunResult string
+	// DefaultHeadSha holds the default value on creation for the "headSha" field.
+	DefaultHeadSha string
+)

@@ -75,6 +75,48 @@ func (pc *PullsCreate) SetNillableMergedAt(t *time.Time) *PullsCreate {
 	return pc
 }
 
+// SetCheckRunID sets the "checkRunID" field.
+func (pc *PullsCreate) SetCheckRunID(i int64) *PullsCreate {
+	pc.mutation.SetCheckRunID(i)
+	return pc
+}
+
+// SetNillableCheckRunID sets the "checkRunID" field if the given value is not nil.
+func (pc *PullsCreate) SetNillableCheckRunID(i *int64) *PullsCreate {
+	if i != nil {
+		pc.SetCheckRunID(*i)
+	}
+	return pc
+}
+
+// SetCheckRunResult sets the "checkRunResult" field.
+func (pc *PullsCreate) SetCheckRunResult(s string) *PullsCreate {
+	pc.mutation.SetCheckRunResult(s)
+	return pc
+}
+
+// SetNillableCheckRunResult sets the "checkRunResult" field if the given value is not nil.
+func (pc *PullsCreate) SetNillableCheckRunResult(s *string) *PullsCreate {
+	if s != nil {
+		pc.SetCheckRunResult(*s)
+	}
+	return pc
+}
+
+// SetHeadSha sets the "headSha" field.
+func (pc *PullsCreate) SetHeadSha(s string) *PullsCreate {
+	pc.mutation.SetHeadSha(s)
+	return pc
+}
+
+// SetNillableHeadSha sets the "headSha" field if the given value is not nil.
+func (pc *PullsCreate) SetNillableHeadSha(s *string) *PullsCreate {
+	if s != nil {
+		pc.SetHeadSha(*s)
+	}
+	return pc
+}
+
 // SetCreatorID sets the "Creator" edge to the User entity by ID.
 func (pc *PullsCreate) SetCreatorID(id int) *PullsCreate {
 	pc.mutation.SetCreatorID(id)
@@ -93,6 +135,7 @@ func (pc *PullsCreate) Mutation() *PullsMutation {
 
 // Save creates the Pulls in the database.
 func (pc *PullsCreate) Save(ctx context.Context) (*Pulls, error) {
+	pc.defaults()
 	return withHooks[*Pulls, PullsMutation](ctx, pc.sqlSave, pc.mutation, pc.hooks)
 }
 
@@ -118,6 +161,22 @@ func (pc *PullsCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (pc *PullsCreate) defaults() {
+	if _, ok := pc.mutation.CheckRunID(); !ok {
+		v := pulls.DefaultCheckRunID
+		pc.mutation.SetCheckRunID(v)
+	}
+	if _, ok := pc.mutation.CheckRunResult(); !ok {
+		v := pulls.DefaultCheckRunResult
+		pc.mutation.SetCheckRunResult(v)
+	}
+	if _, ok := pc.mutation.HeadSha(); !ok {
+		v := pulls.DefaultHeadSha
+		pc.mutation.SetHeadSha(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (pc *PullsCreate) check() error {
 	if _, ok := pc.mutation.Owner(); !ok {
@@ -131,6 +190,15 @@ func (pc *PullsCreate) check() error {
 	}
 	if _, ok := pc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "Pulls.createdAt"`)}
+	}
+	if _, ok := pc.mutation.CheckRunID(); !ok {
+		return &ValidationError{Name: "checkRunID", err: errors.New(`ent: missing required field "Pulls.checkRunID"`)}
+	}
+	if _, ok := pc.mutation.CheckRunResult(); !ok {
+		return &ValidationError{Name: "checkRunResult", err: errors.New(`ent: missing required field "Pulls.checkRunResult"`)}
+	}
+	if _, ok := pc.mutation.HeadSha(); !ok {
+		return &ValidationError{Name: "headSha", err: errors.New(`ent: missing required field "Pulls.headSha"`)}
 	}
 	if _, ok := pc.mutation.CreatorID(); !ok {
 		return &ValidationError{Name: "Creator", err: errors.New(`ent: missing required edge "Pulls.Creator"`)}
@@ -191,6 +259,18 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.MergedAt(); ok {
 		_spec.SetField(pulls.FieldMergedAt, field.TypeTime, value)
 		_node.MergedAt = value
+	}
+	if value, ok := pc.mutation.CheckRunID(); ok {
+		_spec.SetField(pulls.FieldCheckRunID, field.TypeInt64, value)
+		_node.CheckRunID = value
+	}
+	if value, ok := pc.mutation.CheckRunResult(); ok {
+		_spec.SetField(pulls.FieldCheckRunResult, field.TypeString, value)
+		_node.CheckRunResult = value
+	}
+	if value, ok := pc.mutation.HeadSha(); ok {
+		_spec.SetField(pulls.FieldHeadSha, field.TypeString, value)
+		_node.HeadSha = value
 	}
 	if nodes := pc.mutation.CreatorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -360,6 +440,48 @@ func (u *PullsUpsert) ClearMergedAt() *PullsUpsert {
 	return u
 }
 
+// SetCheckRunID sets the "checkRunID" field.
+func (u *PullsUpsert) SetCheckRunID(v int64) *PullsUpsert {
+	u.Set(pulls.FieldCheckRunID, v)
+	return u
+}
+
+// UpdateCheckRunID sets the "checkRunID" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateCheckRunID() *PullsUpsert {
+	u.SetExcluded(pulls.FieldCheckRunID)
+	return u
+}
+
+// AddCheckRunID adds v to the "checkRunID" field.
+func (u *PullsUpsert) AddCheckRunID(v int64) *PullsUpsert {
+	u.Add(pulls.FieldCheckRunID, v)
+	return u
+}
+
+// SetCheckRunResult sets the "checkRunResult" field.
+func (u *PullsUpsert) SetCheckRunResult(v string) *PullsUpsert {
+	u.Set(pulls.FieldCheckRunResult, v)
+	return u
+}
+
+// UpdateCheckRunResult sets the "checkRunResult" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateCheckRunResult() *PullsUpsert {
+	u.SetExcluded(pulls.FieldCheckRunResult)
+	return u
+}
+
+// SetHeadSha sets the "headSha" field.
+func (u *PullsUpsert) SetHeadSha(v string) *PullsUpsert {
+	u.Set(pulls.FieldHeadSha, v)
+	return u
+}
+
+// UpdateHeadSha sets the "headSha" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateHeadSha() *PullsUpsert {
+	u.SetExcluded(pulls.FieldHeadSha)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -512,6 +634,55 @@ func (u *PullsUpsertOne) ClearMergedAt() *PullsUpsertOne {
 	})
 }
 
+// SetCheckRunID sets the "checkRunID" field.
+func (u *PullsUpsertOne) SetCheckRunID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetCheckRunID(v)
+	})
+}
+
+// AddCheckRunID adds v to the "checkRunID" field.
+func (u *PullsUpsertOne) AddCheckRunID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddCheckRunID(v)
+	})
+}
+
+// UpdateCheckRunID sets the "checkRunID" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateCheckRunID() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateCheckRunID()
+	})
+}
+
+// SetCheckRunResult sets the "checkRunResult" field.
+func (u *PullsUpsertOne) SetCheckRunResult(v string) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetCheckRunResult(v)
+	})
+}
+
+// UpdateCheckRunResult sets the "checkRunResult" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateCheckRunResult() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateCheckRunResult()
+	})
+}
+
+// SetHeadSha sets the "headSha" field.
+func (u *PullsUpsertOne) SetHeadSha(v string) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetHeadSha(v)
+	})
+}
+
+// UpdateHeadSha sets the "headSha" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateHeadSha() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateHeadSha()
+	})
+}
+
 // Exec executes the query.
 func (u *PullsUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
@@ -560,6 +731,7 @@ func (pcb *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
 	for i := range pcb.builders {
 		func(i int, root context.Context) {
 			builder := pcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*PullsMutation)
 				if !ok {
@@ -820,6 +992,55 @@ func (u *PullsUpsertBulk) UpdateMergedAt() *PullsUpsertBulk {
 func (u *PullsUpsertBulk) ClearMergedAt() *PullsUpsertBulk {
 	return u.Update(func(s *PullsUpsert) {
 		s.ClearMergedAt()
+	})
+}
+
+// SetCheckRunID sets the "checkRunID" field.
+func (u *PullsUpsertBulk) SetCheckRunID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetCheckRunID(v)
+	})
+}
+
+// AddCheckRunID adds v to the "checkRunID" field.
+func (u *PullsUpsertBulk) AddCheckRunID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddCheckRunID(v)
+	})
+}
+
+// UpdateCheckRunID sets the "checkRunID" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateCheckRunID() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateCheckRunID()
+	})
+}
+
+// SetCheckRunResult sets the "checkRunResult" field.
+func (u *PullsUpsertBulk) SetCheckRunResult(v string) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetCheckRunResult(v)
+	})
+}
+
+// UpdateCheckRunResult sets the "checkRunResult" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateCheckRunResult() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateCheckRunResult()
+	})
+}
+
+// SetHeadSha sets the "headSha" field.
+func (u *PullsUpsertBulk) SetHeadSha(v string) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetHeadSha(v)
+	})
+}
+
+// UpdateHeadSha sets the "headSha" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateHeadSha() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateHeadSha()
 	})
 }
 

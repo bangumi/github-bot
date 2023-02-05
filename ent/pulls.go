@@ -29,6 +29,12 @@ type Pulls struct {
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// MergedAt holds the value of the "mergedAt" field.
 	MergedAt time.Time `json:"mergedAt,omitempty"`
+	// CheckRunID holds the value of the "checkRunID" field.
+	CheckRunID int64 `json:"checkRunID,omitempty"`
+	// CheckRunResult holds the value of the "checkRunResult" field.
+	CheckRunResult string `json:"checkRunResult,omitempty"`
+	// HeadSha holds the value of the "headSha" field.
+	HeadSha string `json:"headSha,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PullsQuery when eager-loading is set.
 	Edges              PullsEdges `json:"edges"`
@@ -62,9 +68,9 @@ func (*Pulls) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case pulls.FieldID, pulls.FieldNumber, pulls.FieldComment:
+		case pulls.FieldID, pulls.FieldNumber, pulls.FieldComment, pulls.FieldCheckRunID:
 			values[i] = new(sql.NullInt64)
-		case pulls.FieldOwner, pulls.FieldRepo:
+		case pulls.FieldOwner, pulls.FieldRepo, pulls.FieldCheckRunResult, pulls.FieldHeadSha:
 			values[i] = new(sql.NullString)
 		case pulls.FieldCreatedAt, pulls.FieldMergedAt:
 			values[i] = new(sql.NullTime)
@@ -128,6 +134,24 @@ func (pu *Pulls) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pu.MergedAt = value.Time
 			}
+		case pulls.FieldCheckRunID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field checkRunID", values[i])
+			} else if value.Valid {
+				pu.CheckRunID = value.Int64
+			}
+		case pulls.FieldCheckRunResult:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field checkRunResult", values[i])
+			} else if value.Valid {
+				pu.CheckRunResult = value.String
+			}
+		case pulls.FieldHeadSha:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field headSha", values[i])
+			} else if value.Valid {
+				pu.HeadSha = value.String
+			}
 		case pulls.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field user_pull_requests", value)
@@ -187,6 +211,15 @@ func (pu *Pulls) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("mergedAt=")
 	builder.WriteString(pu.MergedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("checkRunID=")
+	builder.WriteString(fmt.Sprintf("%v", pu.CheckRunID))
+	builder.WriteString(", ")
+	builder.WriteString("checkRunResult=")
+	builder.WriteString(pu.CheckRunResult)
+	builder.WriteString(", ")
+	builder.WriteString("headSha=")
+	builder.WriteString(pu.HeadSha)
 	builder.WriteByte(')')
 	return builder.String()
 }

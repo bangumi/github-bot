@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"os"
 
 	"github.com/google/go-github/v50/github"
@@ -9,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
+	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
 	"golang.org/x/oauth2"
 
@@ -57,7 +59,12 @@ func main() {
 		&oauth2.Token{AccessToken: os.Getenv("GITHUB_COMMITTER_ACCESS_TOKEN")},
 	)
 
-	h := PRHandle{logger: logger, ent: client, github: github.NewClient(oauth2.NewClient(ctx, ts))}
+	h := PRHandle{
+		logger: logger,
+		ent:    client,
+		github: github.NewClient(oauth2.NewClient(ctx, ts)),
+		app:    getGithubAppClient(),
+	}
 
 	// Routes
 	e.POST("/event-pr", h.Handle)
@@ -77,4 +84,28 @@ func main() {
 
 	// Start server
 	e.Logger.Fatal(e.Start(host + ":" + port))
+}
+
+func getGithubAppClient() githubapp.ClientCreator {
+	pemRaw, err := base64.StdEncoding.DecodeString(os.Getenv("GITHUB_APP_CERT_PRIVATE"))
+	if err != nil {
+		panic(err)
+	}
+
+	cc, err := githubapp.NewDefaultCachingClientCreator(githubapp.Config{
+		V3APIURL: "https://api.github.com/",
+		App: struct {
+			IntegrationID int64  `yaml:"integration_id" json:"integrationId"`
+			WebhookSecret string `yaml:"webhook_secret" json:"webhookSecret"`
+			PrivateKey    string `yaml:"private_key" json:"privateKey"`
+		}{
+			IntegrationID: 289933,
+			PrivateKey:    string(pemRaw),
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	return cc
 }

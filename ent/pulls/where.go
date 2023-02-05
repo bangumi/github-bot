@@ -85,6 +85,21 @@ func MergedAt(v time.Time) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldMergedAt, v))
 }
 
+// CheckRunID applies equality check predicate on the "checkRunID" field. It's identical to CheckRunIDEQ.
+func CheckRunID(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldCheckRunID, v))
+}
+
+// CheckRunResult applies equality check predicate on the "checkRunResult" field. It's identical to CheckRunResultEQ.
+func CheckRunResult(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldCheckRunResult, v))
+}
+
+// HeadSha applies equality check predicate on the "headSha" field. It's identical to HeadShaEQ.
+func HeadSha(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldHeadSha, v))
+}
+
 // OwnerEQ applies the EQ predicate on the "owner" field.
 func OwnerEQ(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldOwner, v))
@@ -393,6 +408,176 @@ func MergedAtIsNil() predicate.Pulls {
 // MergedAtNotNil applies the NotNil predicate on the "mergedAt" field.
 func MergedAtNotNil() predicate.Pulls {
 	return predicate.Pulls(sql.FieldNotNull(FieldMergedAt))
+}
+
+// CheckRunIDEQ applies the EQ predicate on the "checkRunID" field.
+func CheckRunIDEQ(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldCheckRunID, v))
+}
+
+// CheckRunIDNEQ applies the NEQ predicate on the "checkRunID" field.
+func CheckRunIDNEQ(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNEQ(FieldCheckRunID, v))
+}
+
+// CheckRunIDIn applies the In predicate on the "checkRunID" field.
+func CheckRunIDIn(vs ...int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldIn(FieldCheckRunID, vs...))
+}
+
+// CheckRunIDNotIn applies the NotIn predicate on the "checkRunID" field.
+func CheckRunIDNotIn(vs ...int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNotIn(FieldCheckRunID, vs...))
+}
+
+// CheckRunIDGT applies the GT predicate on the "checkRunID" field.
+func CheckRunIDGT(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGT(FieldCheckRunID, v))
+}
+
+// CheckRunIDGTE applies the GTE predicate on the "checkRunID" field.
+func CheckRunIDGTE(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGTE(FieldCheckRunID, v))
+}
+
+// CheckRunIDLT applies the LT predicate on the "checkRunID" field.
+func CheckRunIDLT(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLT(FieldCheckRunID, v))
+}
+
+// CheckRunIDLTE applies the LTE predicate on the "checkRunID" field.
+func CheckRunIDLTE(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLTE(FieldCheckRunID, v))
+}
+
+// CheckRunResultEQ applies the EQ predicate on the "checkRunResult" field.
+func CheckRunResultEQ(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldCheckRunResult, v))
+}
+
+// CheckRunResultNEQ applies the NEQ predicate on the "checkRunResult" field.
+func CheckRunResultNEQ(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNEQ(FieldCheckRunResult, v))
+}
+
+// CheckRunResultIn applies the In predicate on the "checkRunResult" field.
+func CheckRunResultIn(vs ...string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldIn(FieldCheckRunResult, vs...))
+}
+
+// CheckRunResultNotIn applies the NotIn predicate on the "checkRunResult" field.
+func CheckRunResultNotIn(vs ...string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNotIn(FieldCheckRunResult, vs...))
+}
+
+// CheckRunResultGT applies the GT predicate on the "checkRunResult" field.
+func CheckRunResultGT(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGT(FieldCheckRunResult, v))
+}
+
+// CheckRunResultGTE applies the GTE predicate on the "checkRunResult" field.
+func CheckRunResultGTE(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGTE(FieldCheckRunResult, v))
+}
+
+// CheckRunResultLT applies the LT predicate on the "checkRunResult" field.
+func CheckRunResultLT(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLT(FieldCheckRunResult, v))
+}
+
+// CheckRunResultLTE applies the LTE predicate on the "checkRunResult" field.
+func CheckRunResultLTE(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLTE(FieldCheckRunResult, v))
+}
+
+// CheckRunResultContains applies the Contains predicate on the "checkRunResult" field.
+func CheckRunResultContains(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldContains(FieldCheckRunResult, v))
+}
+
+// CheckRunResultHasPrefix applies the HasPrefix predicate on the "checkRunResult" field.
+func CheckRunResultHasPrefix(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldHasPrefix(FieldCheckRunResult, v))
+}
+
+// CheckRunResultHasSuffix applies the HasSuffix predicate on the "checkRunResult" field.
+func CheckRunResultHasSuffix(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldHasSuffix(FieldCheckRunResult, v))
+}
+
+// CheckRunResultEqualFold applies the EqualFold predicate on the "checkRunResult" field.
+func CheckRunResultEqualFold(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEqualFold(FieldCheckRunResult, v))
+}
+
+// CheckRunResultContainsFold applies the ContainsFold predicate on the "checkRunResult" field.
+func CheckRunResultContainsFold(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldContainsFold(FieldCheckRunResult, v))
+}
+
+// HeadShaEQ applies the EQ predicate on the "headSha" field.
+func HeadShaEQ(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldHeadSha, v))
+}
+
+// HeadShaNEQ applies the NEQ predicate on the "headSha" field.
+func HeadShaNEQ(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNEQ(FieldHeadSha, v))
+}
+
+// HeadShaIn applies the In predicate on the "headSha" field.
+func HeadShaIn(vs ...string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldIn(FieldHeadSha, vs...))
+}
+
+// HeadShaNotIn applies the NotIn predicate on the "headSha" field.
+func HeadShaNotIn(vs ...string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNotIn(FieldHeadSha, vs...))
+}
+
+// HeadShaGT applies the GT predicate on the "headSha" field.
+func HeadShaGT(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGT(FieldHeadSha, v))
+}
+
+// HeadShaGTE applies the GTE predicate on the "headSha" field.
+func HeadShaGTE(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGTE(FieldHeadSha, v))
+}
+
+// HeadShaLT applies the LT predicate on the "headSha" field.
+func HeadShaLT(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLT(FieldHeadSha, v))
+}
+
+// HeadShaLTE applies the LTE predicate on the "headSha" field.
+func HeadShaLTE(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLTE(FieldHeadSha, v))
+}
+
+// HeadShaContains applies the Contains predicate on the "headSha" field.
+func HeadShaContains(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldContains(FieldHeadSha, v))
+}
+
+// HeadShaHasPrefix applies the HasPrefix predicate on the "headSha" field.
+func HeadShaHasPrefix(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldHasPrefix(FieldHeadSha, v))
+}
+
+// HeadShaHasSuffix applies the HasSuffix predicate on the "headSha" field.
+func HeadShaHasSuffix(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldHasSuffix(FieldHeadSha, v))
+}
+
+// HeadShaEqualFold applies the EqualFold predicate on the "headSha" field.
+func HeadShaEqualFold(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEqualFold(FieldHeadSha, v))
+}
+
+// HeadShaContainsFold applies the ContainsFold predicate on the "headSha" field.
+func HeadShaContainsFold(v string) predicate.Pulls {
+	return predicate.Pulls(sql.FieldContainsFold(FieldHeadSha, v))
 }
 
 // HasCreator applies the HasEdge predicate on the "Creator" edge.

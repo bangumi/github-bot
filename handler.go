@@ -15,6 +15,7 @@ import (
 	"github.com/google/go-github/v50/github"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
+	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
 	"github.com/samber/lo"
 
@@ -27,7 +28,12 @@ type PRHandle struct {
 	logger zerolog.Logger
 	ent    *ent.Client
 	github *github.Client
+
+	// client for github app
+	app githubapp.ClientCreator
 }
+
+const githubCheckRunName = "bangumi contributors"
 
 func (h PRHandle) Index(c echo.Context) error {
 	s := session.Start(c.Response(), c.Request())
@@ -63,7 +69,7 @@ func (h PRHandle) Index(c echo.Context) error {
 
 var repoToIgnore = []string{"dev-docs", "dev-env", "issue", "api", "scripts"}
 
-var webhookSecret = []byte(os.Getenv("GITHUB_WEBHOOK_SECRET"))
+var webhookSecret = []byte(os.Getenv("GITHUB_APP_WEBHOOK_SECRET"))
 
 func verifySign(body []byte, header string) bool {
 	// Create a new HMAC by defining the hash type and the key (as byte array)
@@ -80,10 +86,7 @@ func verifySign(body []byte, header string) bool {
 
 func (h PRHandle) Handle(c echo.Context) error {
 	ctx := c.Request().Context()
-	var payload struct {
-		Action      string             `json:"action"`
-		PullRequest github.PullRequest `json:"pull_request"`
-	}
+	var payload github.PullRequestEvent
 
 	body, err := io.ReadAll(c.Request().Body)
 	if err != nil {
@@ -99,7 +102,7 @@ func (h PRHandle) Handle(c echo.Context) error {
 	}
 
 	h.logger.Info().
-		Str("action", payload.Action).
+		Str("action", payload.GetAction()).
 		Str("repo", payload.PullRequest.Base.Repo.GetName()).
 		Msg("new pull webhook")
 
@@ -114,7 +117,90 @@ func (h PRHandle) Handle(c echo.Context) error {
 		h.logger.Info().Str("repo", repo).Msg("skip non-code repo")
 	}
 
-	return h.handle(ctx, payload.PullRequest)
+	if err := h.handle(ctx, *payload.PullRequest); err != nil {
+		return err
+	}
+
+	if err := h.checkSuite(ctx, payload); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) error {
+	if p.GetAction() == "close" {
+		return nil
+	}
+
+	pr := p.GetPullRequest()
+	repo := pr.Base.Repo
+
+	u, err := h.ent.User.Query().Where(user.GithubID(pr.User.GetID())).Only(ctx)
+	if err != nil {
+		return err
+	}
+
+	pull, err := h.ent.Pulls.Query().Where(
+		pulls.Repo(repo.GetName()),
+		pulls.Owner(repo.GetOwner().GetLogin()),
+		pulls.NumberEQ(p.PullRequest.GetNumber()),
+	).Only(ctx)
+	if err != nil {
+		return err
+	}
+
+	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&p))
+	if err != nil {
+		return err
+	}
+
+	var result = checkRunActionRequired
+	if u.BangumiID != 0 {
+		result = checkRunSuccess
+	}
+
+	if pull.HeadSha == p.PullRequest.GetHead().GetSHA() {
+		if pull.CheckRunID != 0 {
+			_, _, err := g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID, github.UpdateCheckRunOptions{
+				Name:       githubCheckRunName,
+				Conclusion: &result,
+			})
+			if err != nil {
+				return err
+			}
+
+			err = h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
+			if err != nil {
+				return err
+			}
+
+		}
+		return nil
+	}
+
+	cr, _, err := g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
+		Name:       githubCheckRunName,
+		HeadSHA:    pr.Head.GetSHA(),
+		Status:     lo.ToPtr("status"),
+		Conclusion: &result,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	err = h.ent.Pulls.UpdateOne(pull).
+		SetCheckRunID(cr.GetID()).
+		SetHeadSha(cr.GetHeadSHA()).
+		SetCheckRunResult(result).
+		Exec(ctx)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error {

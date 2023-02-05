@@ -43,6 +43,10 @@ type PullsMutation struct {
 	addcomment      *int64
 	createdAt       *time.Time
 	mergedAt        *time.Time
+	checkRunID      *int64
+	addcheckRunID   *int64
+	checkRunResult  *string
+	headSha         *string
 	clearedFields   map[string]struct{}
 	_Creator        *int
 	cleared_Creator bool
@@ -432,6 +436,134 @@ func (m *PullsMutation) ResetMergedAt() {
 	delete(m.clearedFields, pulls.FieldMergedAt)
 }
 
+// SetCheckRunID sets the "checkRunID" field.
+func (m *PullsMutation) SetCheckRunID(i int64) {
+	m.checkRunID = &i
+	m.addcheckRunID = nil
+}
+
+// CheckRunID returns the value of the "checkRunID" field in the mutation.
+func (m *PullsMutation) CheckRunID() (r int64, exists bool) {
+	v := m.checkRunID
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCheckRunID returns the old "checkRunID" field's value of the Pulls entity.
+// If the Pulls object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PullsMutation) OldCheckRunID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCheckRunID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCheckRunID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCheckRunID: %w", err)
+	}
+	return oldValue.CheckRunID, nil
+}
+
+// AddCheckRunID adds i to the "checkRunID" field.
+func (m *PullsMutation) AddCheckRunID(i int64) {
+	if m.addcheckRunID != nil {
+		*m.addcheckRunID += i
+	} else {
+		m.addcheckRunID = &i
+	}
+}
+
+// AddedCheckRunID returns the value that was added to the "checkRunID" field in this mutation.
+func (m *PullsMutation) AddedCheckRunID() (r int64, exists bool) {
+	v := m.addcheckRunID
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetCheckRunID resets all changes to the "checkRunID" field.
+func (m *PullsMutation) ResetCheckRunID() {
+	m.checkRunID = nil
+	m.addcheckRunID = nil
+}
+
+// SetCheckRunResult sets the "checkRunResult" field.
+func (m *PullsMutation) SetCheckRunResult(s string) {
+	m.checkRunResult = &s
+}
+
+// CheckRunResult returns the value of the "checkRunResult" field in the mutation.
+func (m *PullsMutation) CheckRunResult() (r string, exists bool) {
+	v := m.checkRunResult
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCheckRunResult returns the old "checkRunResult" field's value of the Pulls entity.
+// If the Pulls object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PullsMutation) OldCheckRunResult(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCheckRunResult is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCheckRunResult requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCheckRunResult: %w", err)
+	}
+	return oldValue.CheckRunResult, nil
+}
+
+// ResetCheckRunResult resets all changes to the "checkRunResult" field.
+func (m *PullsMutation) ResetCheckRunResult() {
+	m.checkRunResult = nil
+}
+
+// SetHeadSha sets the "headSha" field.
+func (m *PullsMutation) SetHeadSha(s string) {
+	m.headSha = &s
+}
+
+// HeadSha returns the value of the "headSha" field in the mutation.
+func (m *PullsMutation) HeadSha() (r string, exists bool) {
+	v := m.headSha
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHeadSha returns the old "headSha" field's value of the Pulls entity.
+// If the Pulls object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PullsMutation) OldHeadSha(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHeadSha is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHeadSha requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHeadSha: %w", err)
+	}
+	return oldValue.HeadSha, nil
+}
+
+// ResetHeadSha resets all changes to the "headSha" field.
+func (m *PullsMutation) ResetHeadSha() {
+	m.headSha = nil
+}
+
 // SetCreatorID sets the "Creator" edge to the User entity by id.
 func (m *PullsMutation) SetCreatorID(id int) {
 	m._Creator = &id
@@ -505,7 +637,7 @@ func (m *PullsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PullsMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 9)
 	if m.owner != nil {
 		fields = append(fields, pulls.FieldOwner)
 	}
@@ -523,6 +655,15 @@ func (m *PullsMutation) Fields() []string {
 	}
 	if m.mergedAt != nil {
 		fields = append(fields, pulls.FieldMergedAt)
+	}
+	if m.checkRunID != nil {
+		fields = append(fields, pulls.FieldCheckRunID)
+	}
+	if m.checkRunResult != nil {
+		fields = append(fields, pulls.FieldCheckRunResult)
+	}
+	if m.headSha != nil {
+		fields = append(fields, pulls.FieldHeadSha)
 	}
 	return fields
 }
@@ -544,6 +685,12 @@ func (m *PullsMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedAt()
 	case pulls.FieldMergedAt:
 		return m.MergedAt()
+	case pulls.FieldCheckRunID:
+		return m.CheckRunID()
+	case pulls.FieldCheckRunResult:
+		return m.CheckRunResult()
+	case pulls.FieldHeadSha:
+		return m.HeadSha()
 	}
 	return nil, false
 }
@@ -565,6 +712,12 @@ func (m *PullsMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldCreatedAt(ctx)
 	case pulls.FieldMergedAt:
 		return m.OldMergedAt(ctx)
+	case pulls.FieldCheckRunID:
+		return m.OldCheckRunID(ctx)
+	case pulls.FieldCheckRunResult:
+		return m.OldCheckRunResult(ctx)
+	case pulls.FieldHeadSha:
+		return m.OldHeadSha(ctx)
 	}
 	return nil, fmt.Errorf("unknown Pulls field %s", name)
 }
@@ -616,6 +769,27 @@ func (m *PullsMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetMergedAt(v)
 		return nil
+	case pulls.FieldCheckRunID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCheckRunID(v)
+		return nil
+	case pulls.FieldCheckRunResult:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCheckRunResult(v)
+		return nil
+	case pulls.FieldHeadSha:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHeadSha(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Pulls field %s", name)
 }
@@ -630,6 +804,9 @@ func (m *PullsMutation) AddedFields() []string {
 	if m.addcomment != nil {
 		fields = append(fields, pulls.FieldComment)
 	}
+	if m.addcheckRunID != nil {
+		fields = append(fields, pulls.FieldCheckRunID)
+	}
 	return fields
 }
 
@@ -642,6 +819,8 @@ func (m *PullsMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedNumber()
 	case pulls.FieldComment:
 		return m.AddedComment()
+	case pulls.FieldCheckRunID:
+		return m.AddedCheckRunID()
 	}
 	return nil, false
 }
@@ -664,6 +843,13 @@ func (m *PullsMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddComment(v)
+		return nil
+	case pulls.FieldCheckRunID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddCheckRunID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Pulls numeric field %s", name)
@@ -724,6 +910,15 @@ func (m *PullsMutation) ResetField(name string) error {
 		return nil
 	case pulls.FieldMergedAt:
 		m.ResetMergedAt()
+		return nil
+	case pulls.FieldCheckRunID:
+		m.ResetCheckRunID()
+		return nil
+	case pulls.FieldCheckRunResult:
+		m.ResetCheckRunResult()
+		return nil
+	case pulls.FieldHeadSha:
+		m.ResetHeadSha()
 		return nil
 	}
 	return fmt.Errorf("unknown Pulls field %s", name)

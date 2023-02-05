@@ -20,6 +20,9 @@ func (Pulls) Fields() []ent.Field {
 		field.Int64("comment").Optional().Nillable().Comment("bot comment id, nil present un-comment Pulls"),
 		field.Time("createdAt"),
 		field.Time("mergedAt").Optional(),
+		field.Int64("checkRunID").Default(0),
+		field.String("checkRunResult").Default(""),
+		field.String("headSha").Default(""),
 	}
 }
 
