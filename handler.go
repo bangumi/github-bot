@@ -85,7 +85,7 @@ func verifySign(body []byte, header string) bool {
 }
 
 func (h PRHandle) HandlePullRequest(c echo.Context, payload github.PullRequestEvent) error {
-
+	return nil
 }
 
 func (h PRHandle) Handle(c echo.Context) error {
