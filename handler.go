@@ -109,7 +109,7 @@ func (h PRHandle) Handle(c echo.Context) error {
 		Msg("new pull webhook")
 
 	if pr.GetBase().GetRepo().GetFullName() == "" {
-		h.logger.Info().Any("payload", payload).Msg("debug payload")
+		h.logger.Info().Any("payload", payload).Str("raw", string(body)).Msg("debug payload")
 	}
 
 	if pr.User.GetType() == "Bot" || pr.User.GetID() == 88366224 {
