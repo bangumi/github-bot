@@ -84,7 +84,15 @@ func verifySign(body []byte, header string) bool {
 	return hmac.Equal([]byte(sha), []byte(header))
 }
 
+func (h PRHandle) HandlePullRequest(c echo.Context, payload github.PullRequestEvent) error {
+
+}
+
 func (h PRHandle) Handle(c echo.Context) error {
+	if c.Request().Header.Get("X-GitHub-Event") != "pull_request" {
+		return nil
+	}
+
 	ctx := c.Request().Context()
 	var payload github.PullRequestEvent
 
