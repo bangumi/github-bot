@@ -27,7 +27,6 @@ import (
 type PRHandle struct {
 	logger zerolog.Logger
 	ent    *ent.Client
-	github *github.Client
 
 	// client for github app
 	app githubapp.ClientCreator
@@ -119,7 +118,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 		h.logger.Info().Str("repo", repo).Msg("skip non-code repo")
 	}
 
-	if err := h.handle(ctx, *pr); err != nil {
+	if err := h.handle(ctx, payload); err != nil {
 		return err
 	}
 
@@ -212,7 +211,8 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 	return nil
 }
 
-func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error {
+func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) error {
+	payload := event.GetPullRequest()
 	u, err := h.ent.User.Query().Where(user.GithubID(*payload.User.ID)).Only(ctx)
 	if err != nil {
 		if !ent.IsNotFound(err) {
@@ -249,8 +249,13 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		}
 	}
 
+	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
+	if err != nil {
+		return err
+	}
+
 	if u.BangumiID == 0 && p.Comment == nil {
-		c, res, err := h.github.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
+		c, res, err := g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
 			Body: lo.ToPtr("请关联您的 bangumi ID 以方便进行贡献者统计，未关联的贡献者将不会被统计在年鉴中\n\nhttps://contributors.bgm38.com/"),
 		})
 
