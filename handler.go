@@ -321,6 +321,16 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 				return err
 			}
 
+			if pr.Comment != nil {
+				_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
+					Body: lo.ToPtr("成功关联 bangumi ID，感谢你为 bangumi 做出的贡献"),
+				})
+				if err != nil {
+					return err
+				}
+
+			}
+
 			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
 				return err
 			}
