@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"os"
+	"strconv"
 
 	"github.com/google/go-github/v50/github"
 	"github.com/kataras/go-sessions/v3/sessiondb/boltdb"
@@ -20,6 +21,17 @@ import (
 var logger zerolog.Logger
 
 var version = "development"
+
+var installationID = func() int64 {
+	raw := os.Getenv("GITHUB_BANGUMI_INSTALLATION_ID")
+
+	v, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+
+	return v
+}()
 
 func main() {
 	logger = zerolog.New(os.Stdout).With().Timestamp().Logger()

@@ -290,5 +290,37 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		return err
 	}
 
+	prs, err := h.ent.Pulls.Query().Where(
+		pulls.HasCreatorWith(user.GithubID(githubId)),
+		pulls.CheckRunResult(checkRunActionRequired),
+		pulls.MergedAtIsNil(),
+	).All(ctx)
+	if err != nil {
+		logger.Err(err).Msg("failed to get pulls")
+		return err
+	}
+
+	c, err := h.app.NewInstallationClient(installationID)
+	if err != nil {
+		return err
+	}
+
+	for _, pr := range prs {
+		if pr.CheckRunID != 0 {
+			_, _, err := c.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
+				Name:       githubCheckRunName,
+				Conclusion: lo.ToPtr(checkRunSuccess),
+			})
+
+			if err != nil {
+				return err
+			}
+
+			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
