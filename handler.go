@@ -105,8 +105,12 @@ func (h PRHandle) Handle(c echo.Context) error {
 
 	h.logger.Info().
 		Str("action", payload.GetAction()).
-		Str("repo", pr.Base.Repo.GetFullName()).
+		Str("repo", pr.GetBase().GetRepo().GetFullName()).
 		Msg("new pull webhook")
+
+	if pr.GetBase().GetRepo().GetFullName() == "" {
+		h.logger.Info().Any("payload", payload).Msg("debug payload")
+	}
 
 	if pr.User.GetType() == "Bot" || pr.User.GetID() == 88366224 {
 		// https://api.github.com/users/Trim21-bot
