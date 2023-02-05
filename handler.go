@@ -192,7 +192,6 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 	cr, _, err := g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
 		Name:       githubCheckRunName,
 		HeadSHA:    pr.Head.GetSHA(),
-		Status:     lo.ToPtr("status"),
 		Conclusion: &result,
 	})
 
