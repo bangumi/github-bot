@@ -101,23 +101,25 @@ func (h PRHandle) Handle(c echo.Context) error {
 		return err
 	}
 
+	pr := payload.PullRequest
+
 	h.logger.Info().
 		Str("action", payload.GetAction()).
-		Str("repo", payload.PullRequest.Base.Repo.GetName()).
+		Str("repo", pr.Base.Repo.GetFullName()).
 		Msg("new pull webhook")
 
-	if payload.PullRequest.User.GetType() == "Bot" || payload.PullRequest.User.GetID() == 88366224 {
+	if pr.User.GetType() == "Bot" || pr.User.GetID() == 88366224 {
 		// https://api.github.com/users/Trim21-bot
 		h.logger.Info().Msg("ignore bot pr")
 		return nil
 	}
 
-	repo := payload.PullRequest.Base.Repo.GetName()
+	repo := pr.Base.Repo.GetName()
 	if lo.Contains(repoToIgnore, repo) || repo == "" {
 		h.logger.Info().Str("repo", repo).Msg("skip non-code repo")
 	}
 
-	if err := h.handle(ctx, *payload.PullRequest); err != nil {
+	if err := h.handle(ctx, *pr); err != nil {
 		return err
 	}
 
