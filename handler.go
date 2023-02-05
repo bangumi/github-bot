@@ -93,7 +93,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 		return err
 	}
 
-	if !verifySign(body, c.Request().Header.Get("X-Hub-Signature-256")) {
+	if !verifySign(body, c.Request().Header.Get(github.SHA256SignatureHeader)) {
 		return c.String(http.StatusBadRequest, "Signatures didn't match!")
 	}
 
@@ -131,7 +131,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 }
 
 func (h PRHandle) Handle(c echo.Context) error {
-	if c.Request().Header.Get("X-GitHub-Event") == "pull_request" {
+	if c.Request().Header.Get(github.EventTypeHeader) == "pull_request" {
 		return h.handlePullRequest(c)
 	}
 
