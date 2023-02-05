@@ -321,19 +321,28 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 				return err
 			}
 
-			if pr.Comment != nil {
-				_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
-					Body: lo.ToPtr("成功关联 bangumi ID，感谢你为 bangumi 做出的贡献"),
-				})
-				if err != nil {
-					return err
-				}
-
-			}
-
 			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
 				return err
 			}
+		}
+	}
+
+	prs, err = h.ent.Pulls.Query().Where(
+		pulls.HasCreatorWith(user.GithubID(githubId)),
+		pulls.CommentNEQ(0),
+		pulls.MergedAtIsNil(),
+	).All(ctx)
+	if err != nil {
+		logger.Err(err).Msg("failed to get pulls")
+		return err
+	}
+
+	for _, pr := range prs {
+		_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
+			Body: lo.ToPtr("成功关联 bangumi ID，感谢你为 bangumi 做出的贡献"),
+		})
+		if err != nil {
+			return err
 		}
 	}
 
