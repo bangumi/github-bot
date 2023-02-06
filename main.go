@@ -52,8 +52,7 @@ func main() {
 	}
 	defer b.Close()
 
-	var t sessions.Transcoder = gobTranscoder{}
-	sessions.DefaultTranscoder = t
+	sessions.DefaultTranscoder = gobTranscoder{}
 	session.UseDatabase(b)
 
 	// Echo instance
