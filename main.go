@@ -6,6 +6,8 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/kataras/go-sessions/v3"
+	"github.com/kataras/go-sessions/v3/sessiondb/boltdb"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
@@ -43,6 +45,16 @@ func main() {
 	if err := client.Schema.Create(context.Background()); err != nil {
 		logger.Fatal().Err(err).Msg("failed creating schema resources")
 	}
+
+	b, err := boltdb.New("./data/session.bolt", 0644)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("failed to open bolt file to store session")
+	}
+	defer b.Close()
+
+	var t sessions.Transcoder = gobTranscoder{}
+	sessions.DefaultTranscoder = t
+	session.UseDatabase(b)
 
 	// Echo instance
 	e := echo.New()
