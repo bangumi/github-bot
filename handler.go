@@ -164,9 +164,14 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		return err
 	}
 
-	var result = checkRunActionRequired
-	if u.BangumiID != 0 {
-		result = checkRunSuccess
+	var output *github.CheckRunOutput
+	var result string
+	result = checkRunSuccess
+	if u.BangumiID == 0 {
+		result = checkRunActionRequired
+		*output = github.CheckRunOutput{
+			Summary: lo.ToPtr(checkRunDetailsMessage),
+		}
 	}
 
 	if pull.HeadSha == p.PullRequest.GetHead().GetSHA() {
@@ -174,6 +179,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 			_, _, err := g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID, github.UpdateCheckRunOptions{
 				Name:       githubCheckRunName,
 				Conclusion: &result,
+				Output:     output,
 			})
 			if err != nil {
 				return err
@@ -256,7 +262,7 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 	if u.BangumiID == 0 && p.Comment == nil {
 		c, res, err := g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
-			Body: lo.ToPtr("请关联您的 bangumi ID 以方便进行贡献者统计，未关联的贡献者将不会被统计在年鉴中\n\nhttps://contributors.bgm38.com/"),
+			Body: lo.ToPtr(checkRunDetailsMessage),
 		})
 
 		if err != nil {
