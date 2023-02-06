@@ -170,7 +170,8 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 	if u.BangumiID == 0 {
 		result = checkRunActionRequired
 		output = &github.CheckRunOutput{
-			Summary: lo.ToPtr(checkRunDetailsMessage),
+			Summary: &checkRunDetailsMessage,
+			Text:    &checkRunDetailsMessage,
 		}
 	}
 
