@@ -6,14 +6,11 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/google/go-github/v50/github"
-	"github.com/kataras/go-sessions/v3/sessiondb/boltdb"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
-	"golang.org/x/oauth2"
 
 	"github-bot/ent"
 )
@@ -47,12 +44,6 @@ func main() {
 		logger.Fatal().Err(err).Msg("failed creating schema resources")
 	}
 
-	b, err := boltdb.New("./data/session.bolt", 0644)
-	if err != nil {
-		logger.Fatal().Err(err).Msg("failed to open bolt file to store session")
-	}
-	session.UseDatabase(b)
-
 	// Echo instance
 	e := echo.New()
 	e.HideBanner = true
@@ -77,15 +68,9 @@ func main() {
 	// Middleware
 	e.Use(middleware.Recover())
 
-	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: os.Getenv("GITHUB_COMMITTER_ACCESS_TOKEN")},
-	)
-
 	h := PRHandle{
 		logger: logger,
 		ent:    client,
-		github: github.NewClient(oauth2.NewClient(ctx, ts)),
 		app:    getGithubAppClient(),
 	}
 

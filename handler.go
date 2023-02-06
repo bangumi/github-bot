@@ -27,7 +27,6 @@ import (
 type PRHandle struct {
 	logger zerolog.Logger
 	ent    *ent.Client
-	github *github.Client
 
 	// client for github app
 	app githubapp.ClientCreator
@@ -42,7 +41,7 @@ func (h PRHandle) Index(c echo.Context) error {
 		return c.JSON(http.StatusOK, s.GetAll())
 	}
 
-	githubId := int(s.GetFloat64Default("github_id", 0))
+	githubId := s.GetIntDefault("github_id", 0)
 
 	var html string
 	if githubId == 0 {
@@ -51,7 +50,7 @@ func (h PRHandle) Index(c echo.Context) error {
 
 	html += fmt.Sprintf(`<p> github id %d </p>`, githubId)
 
-	bangumiId := int(s.GetFloat64Default("bangumi_id", 0))
+	bangumiId := s.GetIntDefault("bangumi_id", 0)
 	if bangumiId == 0 {
 		return c.HTML(http.StatusOK, `<p> bangumi 未链接，请认证 <a href="/oauth/bangumi">bangumi oauth</a> </p>`)
 	}
@@ -119,7 +118,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 		h.logger.Info().Str("repo", repo).Msg("skip non-code repo")
 	}
 
-	if err := h.handle(ctx, *pr); err != nil {
+	if err := h.handle(ctx, payload); err != nil {
 		return err
 	}
 
@@ -165,9 +164,15 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		return err
 	}
 
-	var result = checkRunActionRequired
-	if u.BangumiID != 0 {
-		result = checkRunSuccess
+	var output *github.CheckRunOutput
+	var result string
+	result = checkRunSuccess
+	if u.BangumiID == 0 {
+		result = checkRunActionRequired
+		output = &github.CheckRunOutput{
+			Summary: &checkRunDetailsMessage,
+			Text:    &checkRunDetailsMessage,
+		}
 	}
 
 	if pull.HeadSha == p.PullRequest.GetHead().GetSHA() {
@@ -175,6 +180,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 			_, _, err := g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID, github.UpdateCheckRunOptions{
 				Name:       githubCheckRunName,
 				Conclusion: &result,
+				Output:     output,
 			})
 			if err != nil {
 				return err
@@ -212,7 +218,8 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 	return nil
 }
 
-func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error {
+func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) error {
+	payload := event.GetPullRequest()
 	u, err := h.ent.User.Query().Where(user.GithubID(*payload.User.ID)).Only(ctx)
 	if err != nil {
 		if !ent.IsNotFound(err) {
@@ -249,9 +256,14 @@ func (h PRHandle) handle(ctx context.Context, payload github.PullRequest) error 
 		}
 	}
 
+	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
+	if err != nil {
+		return err
+	}
+
 	if u.BangumiID == 0 && p.Comment == nil {
-		c, res, err := h.github.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
-			Body: lo.ToPtr("请关联您的 bangumi ID 以方便进行贡献者统计，未关联的贡献者将不会被统计在年鉴中\n\nhttps://contributors.bgm38.com/"),
+		c, res, err := g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
+			Body: lo.ToPtr(checkRunDetailsMessage),
 		})
 
 		if err != nil {
@@ -310,6 +322,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			_, _, err := c.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
 				Name:       githubCheckRunName,
 				Conclusion: lo.ToPtr(checkRunSuccess),
+				Output:     &github.CheckRunOutput{Summary: lo.ToPtr("")},
 			})
 
 			if err != nil {
@@ -319,6 +332,25 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
 				return err
 			}
+		}
+	}
+
+	prs, err = h.ent.Pulls.Query().Where(
+		pulls.HasCreatorWith(user.GithubID(githubId)),
+		pulls.CommentNEQ(0),
+		pulls.MergedAtIsNil(),
+	).All(ctx)
+	if err != nil {
+		logger.Err(err).Msg("failed to get pulls")
+		return err
+	}
+
+	for _, pr := range prs {
+		_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
+			Body: lo.ToPtr("成功关联 bangumi ID，感谢你为 bangumi 做出的贡献"),
+		})
+		if err != nil {
+			return err
 		}
 	}
 
