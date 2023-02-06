@@ -172,7 +172,6 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		output = &github.CheckRunOutput{
 			Title:   lo.ToPtr("请关联你的 Bangumi 账号"),
 			Summary: &checkRunDetailsMessage,
-			Text:    &checkRunDetailsMessage,
 		}
 	}
 
