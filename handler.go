@@ -41,7 +41,7 @@ func (h PRHandle) Index(c echo.Context) error {
 		return c.JSON(http.StatusOK, s.GetAll())
 	}
 
-	githubId := int(s.GetFloat64Default("github_id", 0))
+	githubId := s.GetIntDefault("github_id", 0)
 
 	var html string
 	if githubId == 0 {
@@ -50,7 +50,7 @@ func (h PRHandle) Index(c echo.Context) error {
 
 	html += fmt.Sprintf(`<p> github id %d </p>`, githubId)
 
-	bangumiId := int(s.GetFloat64Default("bangumi_id", 0))
+	bangumiId := s.GetIntDefault("bangumi_id", 0)
 	if bangumiId == 0 {
 		return c.HTML(http.StatusOK, `<p> bangumi 未链接，请认证 <a href="/oauth/bangumi">bangumi oauth</a> </p>`)
 	}
