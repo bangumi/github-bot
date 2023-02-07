@@ -12,7 +12,7 @@ require (
 	github.com/palantir/go-githubapp v0.15.0
 	github.com/rs/zerolog v1.29.0
 	github.com/samber/lo v1.37.0
-	github.com/trim21/errgo v0.0.0-20230207123840-9e8a25326726
+	github.com/trim21/errgo v0.0.2
 	golang.org/x/oauth2 v0.4.0
 )
 
