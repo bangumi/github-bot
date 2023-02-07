@@ -326,7 +326,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 				Conclusion: lo.ToPtr(checkRunSuccess),
 				Output: &github.CheckRunOutput{
 					Title:   lo.ToPtr(""),
-					Summary: lo.ToPtr(""),
+					Summary: &successMessage,
 				},
 			})
 
@@ -352,7 +352,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 
 	for _, pr := range prs {
 		_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
-			Body: lo.ToPtr("成功关联 bangumi ID，感谢你为 bangumi 做出的贡献"),
+			Body: &successMessage,
 		})
 		if err != nil {
 			return errgo.Trace(err)
