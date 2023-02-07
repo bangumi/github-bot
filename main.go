@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
+	"github.com/samber/lo"
 
 	"github-bot/ent"
 )
@@ -19,16 +20,7 @@ var logger zerolog.Logger
 
 var version = "development"
 
-var installationID = func() int64 {
-	raw := os.Getenv("GITHUB_BANGUMI_INSTALLATION_ID")
-
-	v, err := strconv.ParseInt(raw, 10, 64)
-	if err != nil {
-		panic(err)
-	}
-
-	return v
-}()
+var installationID = lo.Must(strconv.ParseInt(os.Getenv("GITHUB_BANGUMI_INSTALLATION_ID"), 10, 64))
 
 func main() {
 	logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
@@ -95,12 +87,9 @@ func main() {
 }
 
 func getGithubAppClient() githubapp.ClientCreator {
-	pemRaw, err := base64.StdEncoding.DecodeString(os.Getenv("GITHUB_APP_CERT_PRIVATE"))
-	if err != nil {
-		panic(err)
-	}
+	pemRaw := lo.Must(base64.StdEncoding.DecodeString(os.Getenv("GITHUB_APP_CERT_PRIVATE")))
 
-	cc, err := githubapp.NewDefaultCachingClientCreator(githubapp.Config{
+	return lo.Must(githubapp.NewDefaultCachingClientCreator(githubapp.Config{
 		V3APIURL: "https://api.github.com/",
 		App: struct {
 			IntegrationID int64  `yaml:"integration_id" json:"integrationId"`
@@ -110,10 +99,5 @@ func getGithubAppClient() githubapp.ClientCreator {
 			IntegrationID: 289933,
 			PrivateKey:    string(pemRaw),
 		},
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	return cc
+	}))
 }
