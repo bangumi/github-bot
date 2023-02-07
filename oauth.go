@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"net/http"
-	"os"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/google/go-github/v50/github"
@@ -11,12 +10,14 @@ import (
 	"golang.org/x/oauth2"
 
 	"github.com/labstack/echo/v4"
+
+	"github-bot/config"
 )
 
 func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
-		ClientID:     os.Getenv("GITHUB_OAUTH_APP_ID"),
-		ClientSecret: os.Getenv("GITHUB_OAUTH_APP_SECRET"),
+		ClientID:     config.GitHubOAuthAppID,
+		ClientSecret: config.GitHubOAuthSecret,
 		RedirectURL:  "https://contributors.bgm38.com/oauth/github/callback",
 		Endpoint: oauth2.Endpoint{
 			TokenURL: "https://github.com/login/oauth/access_token",
@@ -62,8 +63,8 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 
 func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
-		ClientID:     os.Getenv("BANGUMI_OAUTH_APP_ID"),
-		ClientSecret: os.Getenv("BANGUMI_OAUTH_APP_SECRET"),
+		ClientID:     config.BangumiClientID,
+		ClientSecret: config.BangumiClientSecret,
 		RedirectURL:  "https://contributors.bgm38.com/oauth/bangumi/callback",
 		Endpoint: oauth2.Endpoint{
 			TokenURL: "https://bgm.tv/oauth/access_token",

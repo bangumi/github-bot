@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/go-github/v50/github"
@@ -19,6 +18,7 @@ import (
 	"github.com/samber/lo"
 	"github.com/trim21/errgo"
 
+	"github-bot/config"
 	"github-bot/ent"
 	"github-bot/ent/pulls"
 	"github-bot/ent/user"
@@ -67,11 +67,9 @@ func (h PRHandle) Index(c echo.Context) error {
 
 var repoToIgnore = []string{"dev-docs", "dev-env", "issue", "api", "scripts"}
 
-var webhookSecret = []byte(os.Getenv("GITHUB_APP_WEBHOOK_SECRET"))
-
 func verifySign(body []byte, header string) bool {
 	// Create a new HMAC by defining the hash type and the key (as byte array)
-	h := hmac.New(sha256.New, webhookSecret)
+	h := hmac.New(sha256.New, config.WebhookSecret)
 
 	// Write Data to it
 	h.Write(body)
@@ -312,7 +310,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		return errgo.Trace(err)
 	}
 
-	c, err := h.app.NewInstallationClient(installationID)
+	c, err := h.app.NewInstallationClient(config.InstallationID)
 	if err != nil {
 		return errgo.Trace(err)
 	}

@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"os"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -13,6 +11,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/samber/lo"
 
+	"github-bot/config"
 	"github-bot/ent"
 )
 
@@ -20,10 +19,8 @@ var logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 var version = "development"
 
-var installationID = lo.Must(strconv.ParseInt(os.Getenv("GITHUB_BANGUMI_INSTALLATION_ID"), 10, 64))
-
 func main() {
-	client, err := ent.Open("postgres", os.Getenv("PG_OPTIONS"))
+	client, err := ent.Open("postgres", config.PgOption)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("failed opening connection to pg")
 	}
@@ -68,12 +65,12 @@ func main() {
 	h.setupGithubOAuth(e)
 	h.setupBangumiOAuth(e)
 
-	port := os.Getenv("HTTP_PORT")
+	port := config.HTTPPost
 	if port == "" {
 		port = "8090"
 	}
 
-	host := os.Getenv("HTTP_HOST")
+	host := config.HTTPHost
 	if host == "" {
 		host = "127.0.0.1"
 	}
@@ -83,8 +80,6 @@ func main() {
 }
 
 func getGithubAppClient() githubapp.ClientCreator {
-	pemRaw := lo.Must(base64.StdEncoding.DecodeString(os.Getenv("GITHUB_APP_CERT_PRIVATE")))
-
 	return lo.Must(githubapp.NewDefaultCachingClientCreator(githubapp.Config{
 		V3APIURL: "https://api.github.com/",
 		App: struct {
@@ -93,7 +88,7 @@ func getGithubAppClient() githubapp.ClientCreator {
 			PrivateKey    string `yaml:"private_key" json:"privateKey"`
 		}{
 			IntegrationID: 289933,
-			PrivateKey:    string(pemRaw),
+			PrivateKey:    config.GitHubAppPrivateKey,
 		},
 	}))
 }
