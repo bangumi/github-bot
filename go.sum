@@ -113,6 +113,8 @@ github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/trim21/errgo v0.0.0-20230207123840-9e8a25326726 h1:Uikh4ofwdmYvm/NEHxoiJHY4EO2iaa7i9+4kWacOh5M=
 github.com/trim21/errgo v0.0.0-20230207123840-9e8a25326726/go.mod h1:k1/IfwZ3ZmnExgiCPR0bdREsXctj54uXNlPf+HeC+pc=
+github.com/trim21/errgo v0.0.2 h1:OlaTR0PaSzBGFgBMEhwwTtnpN2q03WNNr3YossUCHCY=
+github.com/trim21/errgo v0.0.2/go.mod h1:T9MN4yD51VA68yqmod0e6z4ZjTBd8buD0aCFjfQ+hUM=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasthttp v1.44.0 h1:R+gLUhldIsfg1HokMuQjdQ5bh9nuXHPIfvkYUu9eR5Q=
