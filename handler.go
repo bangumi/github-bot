@@ -324,7 +324,10 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			_, _, err := c.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
 				Name:       githubCheckRunName,
 				Conclusion: lo.ToPtr(checkRunSuccess),
-				Output:     &github.CheckRunOutput{Summary: lo.ToPtr("")},
+				Output: &github.CheckRunOutput{
+					Title:   lo.ToPtr(""),
+					Summary: lo.ToPtr(""),
+				},
 			})
 
 			if err != nil {
