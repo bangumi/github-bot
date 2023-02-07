@@ -16,7 +16,6 @@ import (
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
 	"github.com/palantir/go-githubapp/githubapp"
-	"github.com/rs/zerolog"
 	"github.com/samber/lo"
 	"github.com/trim21/errgo"
 
@@ -26,10 +25,9 @@ import (
 )
 
 type PRHandle struct {
-	logger zerolog.Logger
-	ent    *ent.Client
+	ent *ent.Client
 
-	// client for github app
+	// client for GitHub app
 	app githubapp.ClientCreator
 }
 
@@ -103,20 +101,20 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 
 	pr := payload.PullRequest
 
-	h.logger.Info().
+	logger.Info().
 		Str("action", payload.GetAction()).
 		Str("repo", payload.GetRepo().GetFullName()).
 		Msg("new pull webhook")
 
 	if pr.User.GetType() == "Bot" || pr.User.GetID() == 88366224 {
 		// https://api.github.com/users/Trim21-bot
-		h.logger.Info().Msg("ignore bot pr")
+		logger.Info().Msg("ignore bot pr")
 		return nil
 	}
 
 	repo := pr.Base.Repo.GetName()
 	if lo.Contains(repoToIgnore, repo) || repo == "" {
-		h.logger.Info().Str("repo", repo).Msg("skip non-code repo")
+		logger.Info().Str("repo", repo).Msg("skip non-code repo")
 	}
 
 	if err := h.handle(ctx, payload); err != nil {

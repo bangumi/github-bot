@@ -16,16 +16,13 @@ import (
 	"github-bot/ent"
 )
 
-var logger zerolog.Logger
+var logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 var version = "development"
 
 var installationID = lo.Must(strconv.ParseInt(os.Getenv("GITHUB_BANGUMI_INSTALLATION_ID"), 10, 64))
 
 func main() {
-	logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
-	zerolog.DefaultContextLogger = &logger
-
 	client, err := ent.Open("postgres", os.Getenv("PG_OPTIONS"))
 	if err != nil {
 		logger.Fatal().Err(err).Msg("failed opening connection to pg")
@@ -61,9 +58,8 @@ func main() {
 	e.Use(middleware.Recover())
 
 	h := PRHandle{
-		logger: logger,
-		ent:    client,
-		app:    getGithubAppClient(),
+		ent: client,
+		app: getGithubAppClient(),
 	}
 
 	// Routes
