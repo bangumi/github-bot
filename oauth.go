@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-resty/resty/v2"
 	"github.com/google/go-github/v50/github"
+	"github.com/trim21/errgo"
 	"golang.org/x/oauth2"
 
 	"github.com/labstack/echo/v4"
@@ -41,7 +42,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		token, err := conf.Exchange(c.Request().Context(), code)
 		if err != nil {
 			logger.Err(err).Msg("failed to auth")
-			return err
+			return errgo.Trace(err)
 		}
 
 		gh := github.NewClient(oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(token)))
@@ -49,7 +50,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		u, _, err := gh.Users.Get(c.Request().Context(), "")
 		if err != nil {
 			logger.Err(err).Msg("failed to get github user info")
-			return err
+			return errgo.Trace(err)
 		}
 
 		s := session.Start(c.Response(), c.Request())
@@ -91,7 +92,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		token, err := conf.Exchange(c.Request().Context(), code)
 		if err != nil {
 			logger.Err(err).Msg("failed to auth")
-			return err
+			return errgo.Trace(err)
 		}
 
 		var data struct {
@@ -101,7 +102,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		res, err := client.R().SetHeader(echo.HeaderAuthorization, "Bearer "+token.AccessToken).SetResult(&data).Get("https://api.bgm.tv/v0/me")
 		if err != nil {
 			logger.Err(err).Msg("failed to fetch user info from API")
-			return err
+			return errgo.Trace(err)
 		}
 
 		if res.StatusCode() > 300 {

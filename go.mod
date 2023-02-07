@@ -12,6 +12,7 @@ require (
 	github.com/palantir/go-githubapp v0.15.0
 	github.com/rs/zerolog v1.29.0
 	github.com/samber/lo v1.37.0
+	github.com/trim21/errgo v0.0.0-20230207123840-9e8a25326726
 	golang.org/x/oauth2 v0.4.0
 )
 
@@ -45,7 +46,6 @@ require (
 	github.com/valyala/fasthttp v1.44.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
-	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/mod v0.7.0 // indirect

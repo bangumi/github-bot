@@ -18,6 +18,7 @@ import (
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
 	"github.com/samber/lo"
+	"github.com/trim21/errgo"
 
 	"github-bot/ent"
 	"github-bot/ent/pulls"
@@ -60,7 +61,7 @@ func (h PRHandle) Index(c echo.Context) error {
 	html += "<h1>已完成</h1>"
 
 	if err := h.afterOauth(c.Request().Context(), s); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	return c.HTML(http.StatusOK, html)
@@ -89,7 +90,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 
 	body, err := io.ReadAll(c.Request().Body)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	if !verifySign(body, c.Request().Header.Get(github.SHA256SignatureHeader)) {
@@ -97,7 +98,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 	}
 
 	if err := json.Unmarshal(body, &payload); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	pr := payload.PullRequest
@@ -119,11 +120,11 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 	}
 
 	if err := h.handle(ctx, payload); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	if err := h.checkSuite(ctx, payload); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	return nil
@@ -147,7 +148,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 
 	u, err := h.ent.User.Query().Where(user.GithubID(pr.User.GetID())).Only(ctx)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	pull, err := h.ent.Pulls.Query().Where(
@@ -156,12 +157,12 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		pulls.NumberEQ(p.PullRequest.GetNumber()),
 	).Only(ctx)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&p))
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	var output *github.CheckRunOutput
@@ -183,12 +184,12 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 				Output:     output,
 			})
 			if err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 
 			err = h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
 			if err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 
 		}
@@ -203,7 +204,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 	})
 
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	err = h.ent.Pulls.UpdateOne(pull).
@@ -213,7 +214,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		Exec(ctx)
 
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	return nil
@@ -224,12 +225,12 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 	u, err := h.ent.User.Query().Where(user.GithubID(*payload.User.ID)).Only(ctx)
 	if err != nil {
 		if !ent.IsNotFound(err) {
-			return err
+			return errgo.Trace(err)
 		}
 
 		u, err = h.ent.User.Create().SetGithubID(payload.User.GetID()).Save(ctx)
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
@@ -237,7 +238,7 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 	if err != nil {
 		if !ent.IsNotFound(err) {
-			return err
+			return errgo.Trace(err)
 		}
 
 		q := h.ent.Pulls.Create().
@@ -253,13 +254,13 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 		p, err = q.Save(ctx)
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
 	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	if u.BangumiID == 0 && p.Comment == nil {
@@ -270,18 +271,18 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 		if err != nil {
 			b, _ := io.ReadAll(res.Body)
 			logger.Err(err).Bytes("body", b).Msg("failed to create issue")
-			return err
+			return errgo.Trace(err)
 		}
 
 		err = h.ent.Pulls.UpdateOne(p).SetComment(*c.ID).Exec(ctx)
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
 	if payload.MergedAt != nil && p.MergedAt.IsZero() {
 		if _, err := h.ent.Pulls.UpdateOne(p).SetMergedAt(payload.MergedAt.Time).Save(ctx); err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
@@ -300,7 +301,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		OnConflict(sql.ConflictColumns(user.FieldGithubID)).UpdateBangumiID().Exec(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to save authorized user to db")
-		return err
+		return errgo.Trace(err)
 	}
 
 	prs, err := h.ent.Pulls.Query().Where(
@@ -310,12 +311,12 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	).All(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to get pulls")
-		return err
+		return errgo.Trace(err)
 	}
 
 	c, err := h.app.NewInstallationClient(installationID)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	for _, pr := range prs {
@@ -327,11 +328,11 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			})
 
 			if err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 
 			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 		}
 	}
@@ -343,7 +344,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	).All(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to get pulls")
-		return err
+		return errgo.Trace(err)
 	}
 
 	for _, pr := range prs {
@@ -351,7 +352,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			Body: lo.ToPtr("成功关联 bangumi ID，感谢你为 bangumi 做出的贡献"),
 		})
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
