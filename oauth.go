@@ -111,7 +111,10 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 				Int("response_code", res.StatusCode()).
 				Str("response_body", res.String()).
 				Msg("failed to fetch user info, wrong http code")
-			return c.NoContent(http.StatusInternalServerError)
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"code": res.StatusCode(),
+				"body": res.String(),
+			})
 		}
 
 		s := session.Start(c.Response(), c.Request())
