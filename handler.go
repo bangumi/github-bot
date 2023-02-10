@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/go-github/v50/github"
@@ -104,8 +105,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 		Str("repo", payload.GetRepo().GetFullName()).
 		Msg("new pull webhook")
 
-	if pr.User.GetType() == "Bot" || pr.User.GetID() == 88366224 {
-		// https://api.github.com/users/Trim21-bot
+	if pr.User.GetType() == "Bot" || strings.HasSuffix(strings.ToLower(pr.User.GetLogin()), "-bot") {
 		logger.Info().Msg("ignore bot pr")
 		return nil
 	}
