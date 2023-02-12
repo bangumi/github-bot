@@ -3,7 +3,7 @@ module github-bot
 go 1.20
 
 require (
-	entgo.io/ent v0.11.7
+	entgo.io/ent v0.11.8
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v50 v50.0.0
 	github.com/kataras/go-sessions/v3 v3.3.1
