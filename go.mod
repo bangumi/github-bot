@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.11.8
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v50 v50.0.0
-	github.com/kataras/go-sessions/v3 v3.3.1
+	github.com/kataras/go-sessions/v3 v3.3.2-0.20230209123616-ce7e40d5ce0f
 	github.com/labstack/echo/v4 v4.10.0
 	github.com/lib/pq v1.10.7
 	github.com/palantir/go-githubapp v0.15.0
@@ -33,7 +33,7 @@ require (
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
 	github.com/hashicorp/golang-lru v0.6.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
-	github.com/klauspost/compress v1.15.9 // indirect
+	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
@@ -46,6 +46,7 @@ require (
 	github.com/valyala/fasthttp v1.44.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
+	go.etcd.io/bbolt v1.3.7 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/mod v0.7.0 // indirect
