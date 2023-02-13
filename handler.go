@@ -9,26 +9,26 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
+	"strings"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/go-github/v50/github"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
 	"github.com/palantir/go-githubapp/githubapp"
-	"github.com/rs/zerolog"
 	"github.com/samber/lo"
+	"github.com/trim21/errgo"
 
+	"github-bot/config"
 	"github-bot/ent"
 	"github-bot/ent/pulls"
 	"github-bot/ent/user"
 )
 
 type PRHandle struct {
-	logger zerolog.Logger
-	ent    *ent.Client
+	ent *ent.Client
 
-	// client for github app
+	// client for GitHub app
 	app githubapp.ClientCreator
 }
 
@@ -60,7 +60,7 @@ func (h PRHandle) Index(c echo.Context) error {
 	html += "<h1>已完成</h1>"
 
 	if err := h.afterOauth(c.Request().Context(), s); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	return c.HTML(http.StatusOK, html)
@@ -68,11 +68,9 @@ func (h PRHandle) Index(c echo.Context) error {
 
 var repoToIgnore = []string{"dev-docs", "dev-env", "issue", "api", "scripts"}
 
-var webhookSecret = []byte(os.Getenv("GITHUB_APP_WEBHOOK_SECRET"))
-
 func verifySign(body []byte, header string) bool {
 	// Create a new HMAC by defining the hash type and the key (as byte array)
-	h := hmac.New(sha256.New, webhookSecret)
+	h := hmac.New(sha256.New, config.WebhookSecret)
 
 	// Write Data to it
 	h.Write(body)
@@ -89,7 +87,7 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 
 	body, err := io.ReadAll(c.Request().Body)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	if !verifySign(body, c.Request().Header.Get(github.SHA256SignatureHeader)) {
@@ -97,33 +95,32 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 	}
 
 	if err := json.Unmarshal(body, &payload); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	pr := payload.PullRequest
 
-	h.logger.Info().
+	logger.Info().
 		Str("action", payload.GetAction()).
 		Str("repo", payload.GetRepo().GetFullName()).
 		Msg("new pull webhook")
 
-	if pr.User.GetType() == "Bot" || pr.User.GetID() == 88366224 {
-		// https://api.github.com/users/Trim21-bot
-		h.logger.Info().Msg("ignore bot pr")
+	if pr.User.GetType() == "Bot" || strings.HasSuffix(strings.ToLower(pr.User.GetLogin()), "-bot") {
+		logger.Info().Msg("ignore bot pr")
 		return nil
 	}
 
 	repo := pr.Base.Repo.GetName()
 	if lo.Contains(repoToIgnore, repo) || repo == "" {
-		h.logger.Info().Str("repo", repo).Msg("skip non-code repo")
+		logger.Info().Str("repo", repo).Msg("skip non-code repo")
 	}
 
 	if err := h.handle(ctx, payload); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	if err := h.checkSuite(ctx, payload); err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	return nil
@@ -147,7 +144,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 
 	u, err := h.ent.User.Query().Where(user.GithubID(pr.User.GetID())).Only(ctx)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	pull, err := h.ent.Pulls.Query().Where(
@@ -156,12 +153,12 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		pulls.NumberEQ(p.PullRequest.GetNumber()),
 	).Only(ctx)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&p))
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	var output *github.CheckRunOutput
@@ -183,12 +180,12 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 				Output:     output,
 			})
 			if err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 
 			err = h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
 			if err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 
 		}
@@ -203,7 +200,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 	})
 
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	err = h.ent.Pulls.UpdateOne(pull).
@@ -213,7 +210,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		Exec(ctx)
 
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	return nil
@@ -224,12 +221,12 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 	u, err := h.ent.User.Query().Where(user.GithubID(*payload.User.ID)).Only(ctx)
 	if err != nil {
 		if !ent.IsNotFound(err) {
-			return err
+			return errgo.Trace(err)
 		}
 
 		u, err = h.ent.User.Create().SetGithubID(payload.User.GetID()).Save(ctx)
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
@@ -237,7 +234,7 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 	if err != nil {
 		if !ent.IsNotFound(err) {
-			return err
+			return errgo.Trace(err)
 		}
 
 		q := h.ent.Pulls.Create().
@@ -253,13 +250,13 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 		p, err = q.Save(ctx)
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
 	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	if u.BangumiID == 0 && p.Comment == nil {
@@ -270,18 +267,18 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 		if err != nil {
 			b, _ := io.ReadAll(res.Body)
 			logger.Err(err).Bytes("body", b).Msg("failed to create issue")
-			return err
+			return errgo.Trace(err)
 		}
 
 		err = h.ent.Pulls.UpdateOne(p).SetComment(*c.ID).Exec(ctx)
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
 	if payload.MergedAt != nil && p.MergedAt.IsZero() {
 		if _, err := h.ent.Pulls.UpdateOne(p).SetMergedAt(payload.MergedAt.Time).Save(ctx); err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 
@@ -300,7 +297,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		OnConflict(sql.ConflictColumns(user.FieldGithubID)).UpdateBangumiID().Exec(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to save authorized user to db")
-		return err
+		return errgo.Trace(err)
 	}
 
 	prs, err := h.ent.Pulls.Query().Where(
@@ -310,12 +307,12 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	).All(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to get pulls")
-		return err
+		return errgo.Trace(err)
 	}
 
-	c, err := h.app.NewInstallationClient(installationID)
+	c, err := h.app.NewInstallationClient(config.InstallationID)
 	if err != nil {
-		return err
+		return errgo.Trace(err)
 	}
 
 	for _, pr := range prs {
@@ -323,15 +320,18 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			_, _, err := c.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
 				Name:       githubCheckRunName,
 				Conclusion: lo.ToPtr(checkRunSuccess),
-				Output:     &github.CheckRunOutput{Summary: lo.ToPtr("")},
+				Output: &github.CheckRunOutput{
+					Title:   lo.ToPtr(""),
+					Summary: &successMessage,
+				},
 			})
 
 			if err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 
 			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
-				return err
+				return errgo.Trace(err)
 			}
 		}
 	}
@@ -343,15 +343,15 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	).All(ctx)
 	if err != nil {
 		logger.Err(err).Msg("failed to get pulls")
-		return err
+		return errgo.Trace(err)
 	}
 
 	for _, pr := range prs {
 		_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
-			Body: lo.ToPtr("成功关联 bangumi ID，感谢你为 bangumi 做出的贡献"),
+			Body: &successMessage,
 		})
 		if err != nil {
-			return err
+			return errgo.Trace(err)
 		}
 	}
 

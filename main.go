@@ -2,9 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"os"
-	"strconv"
 
 	"github.com/kataras/go-sessions/v3"
 	"github.com/kataras/go-sessions/v3/sessiondb/boltdb"
@@ -13,30 +11,18 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
+	"github.com/samber/lo"
 
+	"github-bot/config"
 	"github-bot/ent"
 )
 
-var logger zerolog.Logger
+var logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 var version = "development"
 
-var installationID = func() int64 {
-	raw := os.Getenv("GITHUB_BANGUMI_INSTALLATION_ID")
-
-	v, err := strconv.ParseInt(raw, 10, 64)
-	if err != nil {
-		panic(err)
-	}
-
-	return v
-}()
-
 func main() {
-	logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
-	zerolog.DefaultContextLogger = &logger
-
-	client, err := ent.Open("postgres", os.Getenv("PG_OPTIONS"))
+	client, err := ent.Open("postgres", config.PgOption)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("failed opening connection to pg")
 	}
@@ -80,9 +66,8 @@ func main() {
 	e.Use(middleware.Recover())
 
 	h := PRHandle{
-		logger: logger,
-		ent:    client,
-		app:    getGithubAppClient(),
+		ent: client,
+		app: getGithubAppClient(),
 	}
 
 	// Routes
@@ -91,12 +76,12 @@ func main() {
 	h.setupGithubOAuth(e)
 	h.setupBangumiOAuth(e)
 
-	port := os.Getenv("HTTP_PORT")
+	port := config.HTTPPost
 	if port == "" {
 		port = "8090"
 	}
 
-	host := os.Getenv("HTTP_HOST")
+	host := config.HTTPHost
 	if host == "" {
 		host = "127.0.0.1"
 	}
@@ -106,12 +91,7 @@ func main() {
 }
 
 func getGithubAppClient() githubapp.ClientCreator {
-	pemRaw, err := base64.StdEncoding.DecodeString(os.Getenv("GITHUB_APP_CERT_PRIVATE"))
-	if err != nil {
-		panic(err)
-	}
-
-	cc, err := githubapp.NewDefaultCachingClientCreator(githubapp.Config{
+	return lo.Must(githubapp.NewDefaultCachingClientCreator(githubapp.Config{
 		V3APIURL: "https://api.github.com/",
 		App: struct {
 			IntegrationID int64  `yaml:"integration_id" json:"integrationId"`
@@ -119,12 +99,7 @@ func getGithubAppClient() githubapp.ClientCreator {
 			PrivateKey    string `yaml:"private_key" json:"privateKey"`
 		}{
 			IntegrationID: 289933,
-			PrivateKey:    string(pemRaw),
+			PrivateKey:    config.GitHubAppPrivateKey,
 		},
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	return cc
+	}))
 }

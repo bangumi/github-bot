@@ -226,9 +226,3 @@ func (pu *Pulls) String() string {
 
 // PullsSlice is a parsable slice of Pulls.
 type PullsSlice []*Pulls
-
-func (pu PullsSlice) config(cfg config) {
-	for _i := range pu {
-		pu[_i].config = cfg
-	}
-}

@@ -227,13 +227,7 @@ func (pc *PullsCreate) sqlSave(ctx context.Context) (*Pulls, error) {
 func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Pulls{config: pc.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: pulls.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: pulls.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(pulls.Table, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = pc.conflict
 	if value, ok := pc.mutation.Owner(); ok {

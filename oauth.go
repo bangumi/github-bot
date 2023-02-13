@@ -3,19 +3,21 @@ package main
 import (
 	"context"
 	"net/http"
-	"os"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/google/go-github/v50/github"
+	"github.com/trim21/errgo"
 	"golang.org/x/oauth2"
 
 	"github.com/labstack/echo/v4"
+
+	"github-bot/config"
 )
 
 func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
-		ClientID:     os.Getenv("GITHUB_OAUTH_APP_ID"),
-		ClientSecret: os.Getenv("GITHUB_OAUTH_APP_SECRET"),
+		ClientID:     config.GitHubOAuthAppID,
+		ClientSecret: config.GitHubOAuthSecret,
 		RedirectURL:  "https://contributors.bgm38.com/oauth/github/callback",
 		Endpoint: oauth2.Endpoint{
 			TokenURL: "https://github.com/login/oauth/access_token",
@@ -41,7 +43,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		token, err := conf.Exchange(c.Request().Context(), code)
 		if err != nil {
 			logger.Err(err).Msg("failed to auth")
-			return err
+			return errgo.Trace(err)
 		}
 
 		gh := github.NewClient(oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(token)))
@@ -49,7 +51,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		u, _, err := gh.Users.Get(c.Request().Context(), "")
 		if err != nil {
 			logger.Err(err).Msg("failed to get github user info")
-			return err
+			return errgo.Trace(err)
 		}
 
 		s := session.Start(c.Response(), c.Request())
@@ -61,8 +63,8 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 
 func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
-		ClientID:     os.Getenv("BANGUMI_OAUTH_APP_ID"),
-		ClientSecret: os.Getenv("BANGUMI_OAUTH_APP_SECRET"),
+		ClientID:     config.BangumiClientID,
+		ClientSecret: config.BangumiClientSecret,
 		RedirectURL:  "https://contributors.bgm38.com/oauth/bangumi/callback",
 		Endpoint: oauth2.Endpoint{
 			TokenURL: "https://bgm.tv/oauth/access_token",
@@ -91,7 +93,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		token, err := conf.Exchange(c.Request().Context(), code)
 		if err != nil {
 			logger.Err(err).Msg("failed to auth")
-			return err
+			return errgo.Trace(err)
 		}
 
 		var data struct {
@@ -101,7 +103,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		res, err := client.R().SetHeader(echo.HeaderAuthorization, "Bearer "+token.AccessToken).SetResult(&data).Get("https://api.bgm.tv/v0/me")
 		if err != nil {
 			logger.Err(err).Msg("failed to fetch user info from API")
-			return err
+			return errgo.Trace(err)
 		}
 
 		if res.StatusCode() > 300 {
@@ -109,7 +111,10 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 				Int("response_code", res.StatusCode()).
 				Str("response_body", res.String()).
 				Msg("failed to fetch user info, wrong http code")
-			return c.NoContent(http.StatusInternalServerError)
+			return c.JSON(http.StatusInternalServerError, echo.Map{
+				"code": res.StatusCode(),
+				"body": res.String(),
+			})
 		}
 
 		s := session.Start(c.Response(), c.Request())

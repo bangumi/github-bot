@@ -1,9 +1,9 @@
 module github-bot
 
-go 1.19
+go 1.20
 
 require (
-	entgo.io/ent v0.11.7
+	entgo.io/ent v0.11.8
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v50 v50.0.0
 	github.com/kataras/go-sessions/v3 v3.3.1
@@ -12,7 +12,8 @@ require (
 	github.com/palantir/go-githubapp v0.15.0
 	github.com/rs/zerolog v1.29.0
 	github.com/samber/lo v1.37.0
-	golang.org/x/oauth2 v0.4.0
+	github.com/trim21/errgo v0.0.2
+	golang.org/x/oauth2 v0.5.0
 )
 
 require (
@@ -45,13 +46,12 @@ require (
 	github.com/valyala/fasthttp v1.44.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
-	go.etcd.io/bbolt v1.3.6 // indirect
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/net v0.5.0 // indirect
-	golang.org/x/sys v0.4.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
+	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/time v0.2.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
