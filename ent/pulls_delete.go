@@ -40,15 +40,7 @@ func (pd *PullsDelete) ExecX(ctx context.Context) int {
 }
 
 func (pd *PullsDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: pulls.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: pulls.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(pulls.Table, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
 	if ps := pd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

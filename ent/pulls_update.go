@@ -217,16 +217,7 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := pu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   pulls.Table,
-			Columns: pulls.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: pulls.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(pulls.Table, pulls.Columns, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -480,6 +471,12 @@ func (puo *PullsUpdateOne) ClearCreator() *PullsUpdateOne {
 	return puo
 }
 
+// Where appends a list predicates to the PullsUpdate builder.
+func (puo *PullsUpdateOne) Where(ps ...predicate.Pulls) *PullsUpdateOne {
+	puo.mutation.Where(ps...)
+	return puo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (puo *PullsUpdateOne) Select(field string, fields ...string) *PullsUpdateOne {
@@ -526,16 +523,7 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 	if err := puo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   pulls.Table,
-			Columns: pulls.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: pulls.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(pulls.Table, pulls.Columns, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Pulls.id" for update`)}
