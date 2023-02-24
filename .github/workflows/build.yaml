@@ -1,0 +1,29 @@
+name: build
+
+on:
+  push:
+    branches-ignore:
+      - renovate/**
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  docker:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: "go.mod"
+          cache: true
+
+      - run: go get ./...
+
+      - run: go build ./...
+        name: Build Binary
+        env:
+          CGO_ENABLED: '0'
