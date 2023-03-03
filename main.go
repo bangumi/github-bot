@@ -56,9 +56,11 @@ func main() {
 	// Middleware
 	e.Use(middleware.Recover())
 
+	appClient := getGithubAppClient()
 	h := PRHandle{
 		ent: client,
-		app: getGithubAppClient(),
+		app: appClient,
+		g:   lo.Must(appClient.NewInstallationClient(config.InstallationID)),
 	}
 
 	// Routes

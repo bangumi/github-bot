@@ -28,6 +28,9 @@ type PRHandle struct {
 
 	// client for GitHub app
 	app githubapp.ClientCreator
+
+	// client as App Installation
+	g *github.Client
 }
 
 const githubCheckRunName = "bangumi contributors"
@@ -145,13 +148,8 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
 
-	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
-	if err != nil {
-		return errgo.Trace(err)
-	}
-
 	if u.BangumiID == 0 && p.Comment == nil {
-		c, res, err := g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
+		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
 			Body: lo.ToPtr(checkRunDetailsMessage),
 		})
 
@@ -213,11 +211,6 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		return errgo.Trace(err)
 	}
 
-	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&p))
-	if err != nil {
-		return errgo.Trace(err)
-	}
-
 	var output *github.CheckRunOutput
 	var result string
 	result = checkRunSuccess
@@ -235,7 +228,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 				return nil
 			}
 
-			_, _, err := g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID, github.UpdateCheckRunOptions{
+			_, _, err := h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID, github.UpdateCheckRunOptions{
 				Name:       githubCheckRunName,
 				Conclusion: &result,
 				Output:     output,
@@ -252,7 +245,7 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		return nil
 	}
 
-	cr, _, err := g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
+	cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
 		Name:       githubCheckRunName,
 		HeadSHA:    pr.Head.GetSHA(),
 		Conclusion: &result,
@@ -268,7 +261,6 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		SetHeadSha(cr.GetHeadSHA()).
 		SetCheckRunResult(result).
 		Exec(ctx)
-
 	if err != nil {
 		return errgo.Trace(err)
 	}
