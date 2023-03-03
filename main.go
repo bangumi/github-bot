@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -38,7 +39,10 @@ func main() {
 		return func(c echo.Context) error {
 			err := next(c)
 			if err != nil {
-				logger.Err(err).Msg("internal error")
+				var echoError *echo.HTTPError
+				if !errors.As(err, &echoError) {
+					logger.Err(err).Msg("internal error")
+				}
 			}
 
 			return err
