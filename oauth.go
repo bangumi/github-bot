@@ -148,66 +148,8 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		return errgo.Trace(err)
 	}
 
-	prs, err := h.ent.Pulls.Query().Where(
-		pulls.HasCreatorWith(user.GithubID(githubId)),
-		pulls.CheckRunResult(checkRunActionRequired),
-		pulls.MergedAtIsNil(),
-	).All(ctx)
-	if err != nil {
-		logger.Err(err).Msg("failed to get pulls")
-		return errgo.Trace(err)
-	}
-
-	c, err := h.app.NewInstallationClient(config.InstallationID)
-	if err != nil {
-		return errgo.Trace(err)
-	}
-
-	for _, pr := range prs {
-		if pr.CheckRunID != 0 {
-			_, _, err := c.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
-				Name:       githubCheckRunName,
-				Conclusion: lo.ToPtr(checkRunSuccess),
-				Output: &github.CheckRunOutput{
-					Title:   lo.ToPtr(""),
-					Summary: &successMessage,
-				},
-			})
-
-			if err != nil {
-				return errgo.Trace(err)
-			}
-
-			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
-				return errgo.Trace(err)
-			}
-		}
-	}
-
 	{
-		prs, err = h.ent.Pulls.Query().Where(
-			pulls.HasCreatorWith(user.GithubID(githubId)),
-			pulls.CommentNEQ(0),
-			pulls.MergedAtIsNil(),
-		).All(ctx)
-		if err != nil {
-			logger.Err(err).Msg("failed to get pulls")
-			return errgo.Trace(err)
-		}
-
-		for _, pr := range prs {
-			if _, err := c.Issues.DeleteComment(ctx, pr.Owner, pr.Repo, pr.Comment); err != nil {
-				return errgo.Trace(err)
-			}
-
-			if err := h.ent.Pulls.UpdateOne(pr).SetComment(0).Exec(ctx); err != nil {
-				return errgo.Trace(err)
-			}
-		}
-	}
-
-	{
-		prs, err = h.ent.Pulls.Query().Where(
+		prs, err := h.ent.Pulls.Query().Where(
 			pulls.HasCreatorWith(user.GithubID(githubId)),
 			pulls.CheckRunResult(checkRunActionRequired),
 			pulls.MergedAtIsNil(),
@@ -218,15 +160,44 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		}
 
 		for _, pr := range prs {
-			cr, _, err := c.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
-				Name:       githubCheckRunName,
-				Conclusion: &checkRunActionRequired,
-			})
-			if err != nil {
+			if pr.CheckRunID != 0 {
+				_, _, err := h.g.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
+					Name:       githubCheckRunName,
+					Conclusion: lo.ToPtr(checkRunSuccess),
+					Output: &github.CheckRunOutput{
+						Title:   lo.ToPtr(""),
+						Summary: &successMessage,
+					},
+				})
+
+				if err != nil {
+					return errgo.Trace(err)
+				}
+
+				if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
+					return errgo.Trace(err)
+				}
+			}
+		}
+	}
+
+	{
+		prs, err := h.ent.Pulls.Query().Where(
+			pulls.HasCreatorWith(user.GithubID(githubId)),
+			pulls.CommentNEQ(0),
+			pulls.MergedAtIsNil(),
+		).All(ctx)
+		if err != nil {
+			logger.Err(err).Msg("failed to get pulls")
+			return errgo.Trace(err)
+		}
+
+		for _, pr := range prs {
+			if _, err := h.g.Issues.DeleteComment(ctx, pr.Owner, pr.Repo, pr.Comment); err != nil {
 				return errgo.Trace(err)
 			}
 
-			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(githubCheckRunName).SetCheckRunID(cr.GetID()).Exec(ctx); err != nil {
+			if err := h.ent.Pulls.UpdateOne(pr).SetComment(0).Exec(ctx); err != nil {
 				return errgo.Trace(err)
 			}
 		}

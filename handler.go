@@ -166,7 +166,7 @@ func (h PRHandle) handle(ctx context.Context, u *ent.User, p *ent.Pulls) error {
 
 func (h PRHandle) checkSuite(
 	ctx context.Context,
-	u *ent.User, pull *ent.Pulls,
+	u *ent.User, p *ent.Pulls,
 	pr *github.PullRequest,
 ) error {
 	if pr.GetState() == "closed" {
@@ -186,7 +186,7 @@ func (h PRHandle) checkSuite(
 		output = &github.CheckRunOutput{}
 	}
 
-	if pull.HeadSha != pr.GetHead().GetSHA() {
+	if p.HeadSha != pr.GetHead().GetSHA() {
 		cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
 			Name:       githubCheckRunName,
 			HeadSHA:    pr.Head.GetSHA(),
@@ -198,32 +198,29 @@ func (h PRHandle) checkSuite(
 			return errgo.Trace(err)
 		}
 
-		err = h.ent.Pulls.UpdateOne(pull).
+		err = h.ent.Pulls.UpdateOne(p).
 			SetCheckRunID(cr.GetID()).
 			SetHeadSha(cr.GetHeadSHA()).
 			SetCheckRunResult(result).
 			Exec(ctx)
-		if err != nil {
-			return errgo.Trace(err)
-		}
 
+		return errgo.Trace(err)
+	}
+
+	if p.CheckRunID == 0 {
 		return nil
 	}
 
-	if pull.CheckRunID == 0 {
-		return nil
-	}
-
-	if pull.CheckRunResult == result {
+	if p.CheckRunResult == result {
 		return nil
 	}
 
 	if result == checkRunSuccess {
-		err := h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
+		err := h.ent.Pulls.UpdateOne(p).SetCheckRunResult(result).Exec(ctx)
 		return errgo.Trace(err)
 	}
 
-	_, _, err := h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID,
+	_, _, err := h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), p.CheckRunID,
 		github.UpdateCheckRunOptions{
 			Name:       githubCheckRunName,
 			Conclusion: &result,
@@ -233,7 +230,7 @@ func (h PRHandle) checkSuite(
 		return errgo.Trace(err)
 	}
 
-	err = h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
+	err = h.ent.Pulls.UpdateOne(p).SetCheckRunResult(result).Exec(ctx)
 	if err != nil {
 		return errgo.Trace(err)
 	}
