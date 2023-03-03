@@ -135,23 +135,14 @@ func (h PRHandle) Handle(c echo.Context) error {
 }
 
 func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) error {
-	if p.GetAction() == "close" {
+	if p.PullRequest.GetState() == "closed" {
 		return nil
 	}
 
 	pr := p.GetPullRequest()
 	repo := pr.Base.Repo
 
-	u, err := h.ent.User.Query().Where(user.GithubID(pr.User.GetID())).Only(ctx)
-	if err != nil {
-		return errgo.Trace(err)
-	}
-
-	pull, err := h.ent.Pulls.Query().Where(
-		pulls.Repo(repo.GetName()),
-		pulls.Owner(repo.GetOwner().GetLogin()),
-		pulls.NumberEQ(p.PullRequest.GetNumber()),
-	).Only(ctx)
+	u, pull, err := h.objectFromEvent(ctx, p)
 	if err != nil {
 		return errgo.Trace(err)
 	}
@@ -174,6 +165,10 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 
 	if pull.HeadSha == p.PullRequest.GetHead().GetSHA() {
 		if pull.CheckRunID != 0 {
+			if pull.CheckRunResult == result {
+				return nil
+			}
+
 			_, _, err := g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID, github.UpdateCheckRunOptions{
 				Name:       githubCheckRunName,
 				Conclusion: &result,
@@ -187,7 +182,6 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 			if err != nil {
 				return errgo.Trace(err)
 			}
-
 		}
 		return nil
 	}
@@ -218,44 +212,9 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 
 func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) error {
 	payload := event.GetPullRequest()
-	u, err := h.ent.User.Query().Where(user.GithubID(*payload.User.ID)).Only(ctx)
+	u, p, err := h.objectFromEvent(ctx, event)
 	if err != nil {
-		if !ent.IsNotFound(err) {
-			return errgo.Trace(err)
-		}
-
-		u, err = h.ent.User.Create().SetGithubID(payload.User.GetID()).Save(ctx)
-		if err != nil {
-			return errgo.Trace(err)
-		}
-	}
-
-	p, err := h.ent.Pulls.Query().Where(
-		pulls.NumberEQ(payload.GetNumber()),
-		pulls.Repo(payload.Base.Repo.GetName()),
-	).Only(ctx)
-	if err != nil {
-		if !ent.IsNotFound(err) {
-			return errgo.Trace(err)
-		}
-
-		q := h.ent.Pulls.Create().
-			SetCreatedAt(payload.CreatedAt.Time).
-			SetOwner(payload.Base.Repo.Owner.GetLogin()).
-			SetNumber(payload.GetNumber()).
-			SetRepo(payload.Base.Repo.GetName()).
-			SetRepoID(payload.Base.Repo.GetID()).
-			SetPrID(payload.GetID()).
-			SetCreator(u)
-
-		if payload.MergedAt != nil {
-			q = q.SetMergedAt(payload.MergedAt.Time)
-		}
-
-		p, err = q.Save(ctx)
-		if err != nil {
-			return errgo.Trace(err)
-		}
+		return errgo.Trace(err)
 	}
 
 	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
@@ -313,6 +272,63 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 	}
 
 	return nil
+}
+
+func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestEvent) (*ent.User, *ent.Pulls, error) {
+	payload := event.GetPullRequest()
+
+	u, err := ent.WithTxR(ctx, h.ent, func(tx *ent.Tx) (*ent.User, error) {
+		u, err := h.ent.User.Query().Where(user.GithubID(payload.User.GetID())).Only(ctx)
+		if err != nil {
+			if !ent.IsNotFound(err) {
+				return nil, errgo.Trace(err)
+			}
+
+			u, err = h.ent.User.Create().SetGithubID(payload.User.GetID()).Save(ctx)
+			if err != nil {
+				return u, errgo.Trace(err)
+			}
+		}
+
+		return u, nil
+	})
+
+	if err != nil {
+		return nil, nil, errgo.Trace(err)
+	}
+
+	p, err := h.ent.Pulls.Query().Where(
+		pulls.NumberEQ(payload.GetNumber()),
+		pulls.OwnerEQ(payload.Base.Repo.GetOwner().GetLogin()),
+		pulls.RepoEQ(payload.Base.Repo.GetName()),
+	).Only(ctx)
+	if err == nil {
+		return u, p, nil
+	}
+
+	if !ent.IsNotFound(err) {
+		return nil, nil, errgo.Trace(err)
+	}
+
+	q := h.ent.Pulls.Create().
+		SetCreatedAt(payload.CreatedAt.Time).
+		SetOwner(payload.Base.Repo.Owner.GetLogin()).
+		SetNumber(payload.GetNumber()).
+		SetRepo(payload.Base.Repo.GetName()).
+		SetRepoID(payload.Base.Repo.GetID()).
+		SetPrID(payload.GetID()).
+		SetCreator(u)
+
+	if payload.MergedAt != nil {
+		q = q.SetMergedAt(payload.MergedAt.Time)
+	}
+
+	p, err = q.Save(ctx)
+	if err != nil {
+		return u, p, errgo.Trace(err)
+	}
+
+	return u, p, nil
 }
 
 func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
