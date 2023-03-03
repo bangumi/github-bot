@@ -254,7 +254,7 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 	if p.PrID == 0 {
 		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetRepoID(payload.GetID())
+			return u.SetPrID(payload.GetID())
 		})
 	}
 
