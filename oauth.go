@@ -195,10 +195,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	}
 
 	for _, pr := range prs {
-		_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
-			Body: &successMessage,
-		})
-		if err != nil {
+		if _, err := c.Issues.DeleteComment(ctx, pr.Owner, pr.Repo, *pr.Comment); err != nil {
 			return errgo.Trace(err)
 		}
 
