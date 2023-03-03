@@ -212,9 +212,8 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		return errgo.Trace(err)
 	}
 
+	var result = checkRunSuccess
 	var output *github.CheckRunOutput
-	var result string
-	result = checkRunSuccess
 	if u.BangumiID == 0 {
 		result = checkRunActionRequired
 		output = &github.CheckRunOutput{
@@ -223,46 +222,49 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		}
 	}
 
-	if pull.HeadSha == p.PullRequest.GetHead().GetSHA() {
-		if pull.CheckRunID != 0 {
-			if pull.CheckRunResult == result {
-				return nil
-			}
+	if pull.HeadSha != p.PullRequest.GetHead().GetSHA() {
+		cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
+			Name:       githubCheckRunName,
+			HeadSHA:    pr.Head.GetSHA(),
+			Conclusion: &result,
+			Output:     output,
+		})
 
-			_, _, err := h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID,
-				github.UpdateCheckRunOptions{
-					Name:       githubCheckRunName,
-					Conclusion: &result,
-					Output:     output,
-				})
-			if err != nil {
-				return errgo.Trace(err)
-			}
-
-			err = h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
-			if err != nil {
-				return errgo.Trace(err)
-			}
+		if err != nil {
+			return errgo.Trace(err)
 		}
+
+		err = h.ent.Pulls.UpdateOne(pull).
+			SetCheckRunID(cr.GetID()).
+			SetHeadSha(cr.GetHeadSHA()).
+			SetCheckRunResult(result).
+			Exec(ctx)
+		if err != nil {
+			return errgo.Trace(err)
+		}
+
 		return nil
 	}
 
-	cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
-		Name:       githubCheckRunName,
-		HeadSHA:    pr.Head.GetSHA(),
-		Conclusion: &result,
-		Output:     output,
-	})
+	if pull.CheckRunID == 0 {
+		return nil
+	}
 
+	if pull.CheckRunResult == result {
+		return nil
+	}
+
+	_, _, err = h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID,
+		github.UpdateCheckRunOptions{
+			Name:       githubCheckRunName,
+			Conclusion: &result,
+			Output:     output,
+		})
 	if err != nil {
 		return errgo.Trace(err)
 	}
 
-	err = h.ent.Pulls.UpdateOne(pull).
-		SetCheckRunID(cr.GetID()).
-		SetHeadSha(cr.GetHeadSHA()).
-		SetCheckRunResult(result).
-		Exec(ctx)
+	err = h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
 	if err != nil {
 		return errgo.Trace(err)
 	}
