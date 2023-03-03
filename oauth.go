@@ -152,6 +152,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		prs, err := h.ent.Pulls.Query().Where(
 			pulls.HasCreatorWith(user.GithubID(githubId)),
 			pulls.CheckRunResult(checkRunActionRequired),
+			pulls.CheckRunIDNEQ(0),
 			pulls.MergedAtIsNil(),
 		).All(ctx)
 		if err != nil {
@@ -160,23 +161,21 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		}
 
 		for _, pr := range prs {
-			if pr.CheckRunID != 0 {
-				_, _, err := h.g.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
-					Name:       githubCheckRunName,
-					Conclusion: lo.ToPtr(checkRunSuccess),
-					Output: &github.CheckRunOutput{
-						Title:   lo.ToPtr(""),
-						Summary: &successMessage,
-					},
-				})
+			_, _, err := h.g.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
+				Name:       githubCheckRunName,
+				Conclusion: lo.ToPtr(checkRunSuccess),
+				Output: &github.CheckRunOutput{
+					Title:   lo.ToPtr(""),
+					Summary: &successMessage,
+				},
+			})
 
-				if err != nil {
-					return errgo.Trace(err)
-				}
+			if err != nil {
+				return errgo.Trace(err)
+			}
 
-				if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
-					return errgo.Trace(err)
-				}
+			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
+				return errgo.Trace(err)
 			}
 		}
 	}

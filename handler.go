@@ -169,6 +169,10 @@ func (h PRHandle) checkSuite(
 	u *ent.User, p *ent.Pulls,
 	pr *github.PullRequest,
 ) error {
+	if u.BangumiID != 0 {
+		return nil
+	}
+
 	if pr.GetState() == "closed" {
 		return nil
 	}
@@ -181,61 +185,28 @@ func (h PRHandle) checkSuite(
 		Summary: &checkRunDetailsMessage,
 	}
 
-	if u.BangumiID != 0 {
-		result = checkRunSuccess
-		output = &github.CheckRunOutput{}
-	}
-
-	if p.HeadSha != pr.GetHead().GetSHA() {
-		cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
-			Name:       githubCheckRunName,
-			HeadSHA:    pr.Head.GetSHA(),
-			Conclusion: &result,
-			Output:     output,
-		})
-
-		if err != nil {
-			return errgo.Trace(err)
-		}
-
-		err = h.ent.Pulls.UpdateOne(p).
-			SetCheckRunID(cr.GetID()).
-			SetHeadSha(cr.GetHeadSHA()).
-			SetCheckRunResult(result).
-			Exec(ctx)
-
-		return errgo.Trace(err)
-	}
-
-	if p.CheckRunID == 0 {
+	if p.HeadSha == pr.GetHead().GetSHA() {
 		return nil
 	}
 
-	if p.CheckRunResult == result {
-		return nil
-	}
+	cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
+		Name:       githubCheckRunName,
+		HeadSHA:    pr.Head.GetSHA(),
+		Conclusion: &result,
+		Output:     output,
+	})
 
-	if result == checkRunSuccess {
-		err := h.ent.Pulls.UpdateOne(p).SetCheckRunResult(result).Exec(ctx)
-		return errgo.Trace(err)
-	}
-
-	_, _, err := h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), p.CheckRunID,
-		github.UpdateCheckRunOptions{
-			Name:       githubCheckRunName,
-			Conclusion: &result,
-			Output:     output,
-		})
 	if err != nil {
 		return errgo.Trace(err)
 	}
 
-	err = h.ent.Pulls.UpdateOne(p).SetCheckRunResult(result).Exec(ctx)
-	if err != nil {
-		return errgo.Trace(err)
-	}
+	err = h.ent.Pulls.UpdateOne(p).
+		SetCheckRunID(cr.GetID()).
+		SetHeadSha(cr.GetHeadSHA()).
+		SetCheckRunResult(result).
+		Exec(ctx)
 
-	return nil
+	return errgo.Trace(err)
 }
 
 func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestEvent) (*ent.User, *ent.Pulls, error) {
