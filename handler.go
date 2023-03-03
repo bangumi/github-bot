@@ -255,6 +255,8 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 		}
 	}
 
+	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
+
 	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
 	if err != nil {
 		return errgo.Trace(err)
@@ -271,20 +273,31 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 			return errgo.Trace(err)
 		}
 
-		err = h.ent.Pulls.UpdateOne(p).SetComment(*c.ID).Exec(ctx)
-		if err != nil {
-			return errgo.Trace(err)
-		}
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetComment(*c.ID)
+		})
 	}
 
 	if payload.MergedAt != nil && p.MergedAt.IsZero() {
-		if _, err := h.ent.Pulls.UpdateOne(p).SetMergedAt(payload.MergedAt.Time).Save(ctx); err != nil {
-			return errgo.Trace(err)
-		}
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetMergedAt(payload.MergedAt.Time)
+		})
 	}
 
 	if p.RepoID == 0 {
-		if _, err := h.ent.Pulls.UpdateOne(p).SetRepoID(payload.Base.Repo.GetID()).Save(ctx); err != nil {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetRepoID(payload.Base.Repo.GetID())
+		})
+	}
+
+	if len(mutation) != 0 {
+		u := h.ent.Pulls.UpdateOne(p)
+		for _, f := range mutation {
+			u = f(u)
+		}
+
+		err = u.Exec(ctx)
+		if err != nil {
 			return errgo.Trace(err)
 		}
 	}
