@@ -4,14 +4,18 @@ import (
 	"context"
 	"net/http"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/go-resty/resty/v2"
 	"github.com/google/go-github/v50/github"
+	"github.com/kataras/go-sessions/v3"
+	"github.com/labstack/echo/v4"
+	"github.com/samber/lo"
 	"github.com/trim21/errgo"
 	"golang.org/x/oauth2"
 
-	"github.com/labstack/echo/v4"
-
 	"github-bot/config"
+	"github-bot/ent/pulls"
+	"github-bot/ent/user"
 )
 
 func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
@@ -85,6 +89,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 	var client = resty.New().SetHeader("user-agent", "bangumi-github-bot")
 
 	e.GET("/oauth/bangumi/callback", func(c echo.Context) error {
+		ctx := c.Request().Context()
 		code := c.QueryParams().Get("code")
 		if code == "" {
 			return c.String(http.StatusBadRequest, "missing code")
@@ -120,6 +125,83 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		s := session.Start(c.Response(), c.Request())
 		s.Set("bangumi_id", data.ID)
 
+		if err := h.afterOauth(ctx, s); err != nil {
+			return err
+		}
+
 		return c.Redirect(http.StatusFound, "/")
 	})
+}
+
+func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
+	githubId := int64(s.GetFloat64Default("github_id", 0))
+	bangumiId := int64(s.GetFloat64Default("bangumi_id", 0))
+
+	if githubId == 0 || bangumiId == 0 {
+		return nil
+	}
+
+	err := h.ent.User.Create().SetGithubID(githubId).SetBangumiID(bangumiId).
+		OnConflict(sql.ConflictColumns(user.FieldGithubID)).UpdateBangumiID().Exec(ctx)
+	if err != nil {
+		logger.Err(err).Msg("failed to save authorized user to db")
+		return errgo.Trace(err)
+	}
+
+	prs, err := h.ent.Pulls.Query().Where(
+		pulls.HasCreatorWith(user.GithubID(githubId)),
+		pulls.CheckRunResult(checkRunActionRequired),
+		pulls.MergedAtIsNil(),
+	).All(ctx)
+	if err != nil {
+		logger.Err(err).Msg("failed to get pulls")
+		return errgo.Trace(err)
+	}
+
+	c, err := h.app.NewInstallationClient(config.InstallationID)
+	if err != nil {
+		return errgo.Trace(err)
+	}
+
+	for _, pr := range prs {
+		if pr.CheckRunID != 0 {
+			_, _, err := c.Checks.UpdateCheckRun(ctx, pr.Owner, pr.Repo, pr.CheckRunID, github.UpdateCheckRunOptions{
+				Name:       githubCheckRunName,
+				Conclusion: lo.ToPtr(checkRunSuccess),
+				Output: &github.CheckRunOutput{
+					Title:   lo.ToPtr(""),
+					Summary: &successMessage,
+				},
+			})
+
+			if err != nil {
+				return errgo.Trace(err)
+			}
+
+			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
+				return errgo.Trace(err)
+			}
+		}
+	}
+
+	prs, err = h.ent.Pulls.Query().Where(
+		pulls.HasCreatorWith(user.GithubID(githubId)),
+		pulls.CommentNEQ(0),
+		pulls.MergedAtIsNil(),
+	).All(ctx)
+	if err != nil {
+		logger.Err(err).Msg("failed to get pulls")
+		return errgo.Trace(err)
+	}
+
+	for _, pr := range prs {
+		_, _, err := c.Issues.EditComment(ctx, pr.Owner, pr.Repo, *pr.Comment, &github.IssueComment{
+			Body: &successMessage,
+		})
+		if err != nil {
+			return errgo.Trace(err)
+		}
+	}
+
+	return nil
 }
