@@ -35,6 +35,27 @@ func (pu *PullsUpdate) SetOwner(s string) *PullsUpdate {
 	return pu
 }
 
+// SetPrID sets the "prID" field.
+func (pu *PullsUpdate) SetPrID(i int64) *PullsUpdate {
+	pu.mutation.ResetPrID()
+	pu.mutation.SetPrID(i)
+	return pu
+}
+
+// SetNillablePrID sets the "prID" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillablePrID(i *int64) *PullsUpdate {
+	if i != nil {
+		pu.SetPrID(*i)
+	}
+	return pu
+}
+
+// AddPrID adds i to the "prID" field.
+func (pu *PullsUpdate) AddPrID(i int64) *PullsUpdate {
+	pu.mutation.AddPrID(i)
+	return pu
+}
+
 // SetRepo sets the "repo" field.
 func (pu *PullsUpdate) SetRepo(s string) *PullsUpdate {
 	pu.mutation.SetRepo(s)
@@ -249,6 +270,12 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.Owner(); ok {
 		_spec.SetField(pulls.FieldOwner, field.TypeString, value)
 	}
+	if value, ok := pu.mutation.PrID(); ok {
+		_spec.SetField(pulls.FieldPrID, field.TypeInt64, value)
+	}
+	if value, ok := pu.mutation.AddedPrID(); ok {
+		_spec.AddField(pulls.FieldPrID, field.TypeInt64, value)
+	}
 	if value, ok := pu.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 	}
@@ -352,6 +379,27 @@ type PullsUpdateOne struct {
 // SetOwner sets the "owner" field.
 func (puo *PullsUpdateOne) SetOwner(s string) *PullsUpdateOne {
 	puo.mutation.SetOwner(s)
+	return puo
+}
+
+// SetPrID sets the "prID" field.
+func (puo *PullsUpdateOne) SetPrID(i int64) *PullsUpdateOne {
+	puo.mutation.ResetPrID()
+	puo.mutation.SetPrID(i)
+	return puo
+}
+
+// SetNillablePrID sets the "prID" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillablePrID(i *int64) *PullsUpdateOne {
+	if i != nil {
+		puo.SetPrID(*i)
+	}
+	return puo
+}
+
+// AddPrID adds i to the "prID" field.
+func (puo *PullsUpdateOne) AddPrID(i int64) *PullsUpdateOne {
+	puo.mutation.AddPrID(i)
 	return puo
 }
 
@@ -598,6 +646,12 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 	}
 	if value, ok := puo.mutation.Owner(); ok {
 		_spec.SetField(pulls.FieldOwner, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.PrID(); ok {
+		_spec.SetField(pulls.FieldPrID, field.TypeInt64, value)
+	}
+	if value, ok := puo.mutation.AddedPrID(); ok {
+		_spec.AddField(pulls.FieldPrID, field.TypeInt64, value)
 	}
 	if value, ok := puo.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)

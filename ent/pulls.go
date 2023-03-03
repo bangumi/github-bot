@@ -19,6 +19,8 @@ type Pulls struct {
 	ID int `json:"id,omitempty"`
 	// Owner holds the value of the "owner" field.
 	Owner string `json:"owner,omitempty"`
+	// PrID holds the value of the "prID" field.
+	PrID int64 `json:"prID,omitempty"`
 	// Repo holds the value of the "repo" field.
 	Repo string `json:"repo,omitempty"`
 	// RepoID holds the value of the "repoID" field.
@@ -70,7 +72,7 @@ func (*Pulls) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case pulls.FieldID, pulls.FieldRepoID, pulls.FieldNumber, pulls.FieldComment, pulls.FieldCheckRunID:
+		case pulls.FieldID, pulls.FieldPrID, pulls.FieldRepoID, pulls.FieldNumber, pulls.FieldComment, pulls.FieldCheckRunID:
 			values[i] = new(sql.NullInt64)
 		case pulls.FieldOwner, pulls.FieldRepo, pulls.FieldCheckRunResult, pulls.FieldHeadSha:
 			values[i] = new(sql.NullString)
@@ -104,6 +106,12 @@ func (pu *Pulls) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field owner", values[i])
 			} else if value.Valid {
 				pu.Owner = value.String
+			}
+		case pulls.FieldPrID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field prID", values[i])
+			} else if value.Valid {
+				pu.PrID = value.Int64
 			}
 		case pulls.FieldRepo:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -202,6 +210,9 @@ func (pu *Pulls) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", pu.ID))
 	builder.WriteString("owner=")
 	builder.WriteString(pu.Owner)
+	builder.WriteString(", ")
+	builder.WriteString("prID=")
+	builder.WriteString(fmt.Sprintf("%v", pu.PrID))
 	builder.WriteString(", ")
 	builder.WriteString("repo=")
 	builder.WriteString(pu.Repo)

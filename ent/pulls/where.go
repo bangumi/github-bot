@@ -60,6 +60,11 @@ func Owner(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldOwner, v))
 }
 
+// PrID applies equality check predicate on the "prID" field. It's identical to PrIDEQ.
+func PrID(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldPrID, v))
+}
+
 // Repo applies equality check predicate on the "repo" field. It's identical to RepoEQ.
 func Repo(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldRepo, v))
@@ -168,6 +173,46 @@ func OwnerEqualFold(v string) predicate.Pulls {
 // OwnerContainsFold applies the ContainsFold predicate on the "owner" field.
 func OwnerContainsFold(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldContainsFold(FieldOwner, v))
+}
+
+// PrIDEQ applies the EQ predicate on the "prID" field.
+func PrIDEQ(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldPrID, v))
+}
+
+// PrIDNEQ applies the NEQ predicate on the "prID" field.
+func PrIDNEQ(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNEQ(FieldPrID, v))
+}
+
+// PrIDIn applies the In predicate on the "prID" field.
+func PrIDIn(vs ...int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldIn(FieldPrID, vs...))
+}
+
+// PrIDNotIn applies the NotIn predicate on the "prID" field.
+func PrIDNotIn(vs ...int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNotIn(FieldPrID, vs...))
+}
+
+// PrIDGT applies the GT predicate on the "prID" field.
+func PrIDGT(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGT(FieldPrID, v))
+}
+
+// PrIDGTE applies the GTE predicate on the "prID" field.
+func PrIDGTE(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGTE(FieldPrID, v))
+}
+
+// PrIDLT applies the LT predicate on the "prID" field.
+func PrIDLT(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLT(FieldPrID, v))
+}
+
+// PrIDLTE applies the LTE predicate on the "prID" field.
+func PrIDLTE(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLTE(FieldPrID, v))
 }
 
 // RepoEQ applies the EQ predicate on the "repo" field.

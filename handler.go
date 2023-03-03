@@ -243,6 +243,7 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 			SetNumber(payload.GetNumber()).
 			SetRepo(payload.Base.Repo.GetName()).
 			SetRepoID(payload.Base.Repo.GetID()).
+			SetPrID(payload.GetID()).
 			SetCreator(u)
 
 		if payload.MergedAt != nil {
@@ -287,6 +288,12 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 	if p.RepoID == 0 {
 		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
 			return u.SetRepoID(payload.Base.Repo.GetID())
+		})
+	}
+
+	if p.PrID == 0 {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetRepoID(payload.GetID())
 		})
 	}
 

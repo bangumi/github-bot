@@ -14,20 +14,24 @@ import (
 func init() {
 	pullsFields := schema.Pulls{}.Fields()
 	_ = pullsFields
+	// pullsDescPrID is the schema descriptor for prID field.
+	pullsDescPrID := pullsFields[1].Descriptor()
+	// pulls.DefaultPrID holds the default value on creation for the prID field.
+	pulls.DefaultPrID = pullsDescPrID.Default.(int64)
 	// pullsDescRepoID is the schema descriptor for repoID field.
-	pullsDescRepoID := pullsFields[2].Descriptor()
+	pullsDescRepoID := pullsFields[3].Descriptor()
 	// pulls.DefaultRepoID holds the default value on creation for the repoID field.
 	pulls.DefaultRepoID = pullsDescRepoID.Default.(int64)
 	// pullsDescCheckRunID is the schema descriptor for checkRunID field.
-	pullsDescCheckRunID := pullsFields[7].Descriptor()
+	pullsDescCheckRunID := pullsFields[8].Descriptor()
 	// pulls.DefaultCheckRunID holds the default value on creation for the checkRunID field.
 	pulls.DefaultCheckRunID = pullsDescCheckRunID.Default.(int64)
 	// pullsDescCheckRunResult is the schema descriptor for checkRunResult field.
-	pullsDescCheckRunResult := pullsFields[8].Descriptor()
+	pullsDescCheckRunResult := pullsFields[9].Descriptor()
 	// pulls.DefaultCheckRunResult holds the default value on creation for the checkRunResult field.
 	pulls.DefaultCheckRunResult = pullsDescCheckRunResult.Default.(string)
 	// pullsDescHeadSha is the schema descriptor for headSha field.
-	pullsDescHeadSha := pullsFields[9].Descriptor()
+	pullsDescHeadSha := pullsFields[10].Descriptor()
 	// pulls.DefaultHeadSha holds the default value on creation for the headSha field.
 	pulls.DefaultHeadSha = pullsDescHeadSha.Default.(string)
 	userFields := schema.User{}.Fields()

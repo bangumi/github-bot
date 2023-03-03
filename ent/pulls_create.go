@@ -29,6 +29,20 @@ func (pc *PullsCreate) SetOwner(s string) *PullsCreate {
 	return pc
 }
 
+// SetPrID sets the "prID" field.
+func (pc *PullsCreate) SetPrID(i int64) *PullsCreate {
+	pc.mutation.SetPrID(i)
+	return pc
+}
+
+// SetNillablePrID sets the "prID" field if the given value is not nil.
+func (pc *PullsCreate) SetNillablePrID(i *int64) *PullsCreate {
+	if i != nil {
+		pc.SetPrID(*i)
+	}
+	return pc
+}
+
 // SetRepo sets the "repo" field.
 func (pc *PullsCreate) SetRepo(s string) *PullsCreate {
 	pc.mutation.SetRepo(s)
@@ -177,6 +191,10 @@ func (pc *PullsCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (pc *PullsCreate) defaults() {
+	if _, ok := pc.mutation.PrID(); !ok {
+		v := pulls.DefaultPrID
+		pc.mutation.SetPrID(v)
+	}
 	if _, ok := pc.mutation.RepoID(); !ok {
 		v := pulls.DefaultRepoID
 		pc.mutation.SetRepoID(v)
@@ -199,6 +217,9 @@ func (pc *PullsCreate) defaults() {
 func (pc *PullsCreate) check() error {
 	if _, ok := pc.mutation.Owner(); !ok {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required field "Pulls.owner"`)}
+	}
+	if _, ok := pc.mutation.PrID(); !ok {
+		return &ValidationError{Name: "prID", err: errors.New(`ent: missing required field "Pulls.prID"`)}
 	}
 	if _, ok := pc.mutation.Repo(); !ok {
 		return &ValidationError{Name: "repo", err: errors.New(`ent: missing required field "Pulls.repo"`)}
@@ -254,6 +275,10 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.Owner(); ok {
 		_spec.SetField(pulls.FieldOwner, field.TypeString, value)
 		_node.Owner = value
+	}
+	if value, ok := pc.mutation.PrID(); ok {
+		_spec.SetField(pulls.FieldPrID, field.TypeInt64, value)
+		_node.PrID = value
 	}
 	if value, ok := pc.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
@@ -372,6 +397,24 @@ func (u *PullsUpsert) SetOwner(v string) *PullsUpsert {
 // UpdateOwner sets the "owner" field to the value that was provided on create.
 func (u *PullsUpsert) UpdateOwner() *PullsUpsert {
 	u.SetExcluded(pulls.FieldOwner)
+	return u
+}
+
+// SetPrID sets the "prID" field.
+func (u *PullsUpsert) SetPrID(v int64) *PullsUpsert {
+	u.Set(pulls.FieldPrID, v)
+	return u
+}
+
+// UpdatePrID sets the "prID" field to the value that was provided on create.
+func (u *PullsUpsert) UpdatePrID() *PullsUpsert {
+	u.SetExcluded(pulls.FieldPrID)
+	return u
+}
+
+// AddPrID adds v to the "prID" field.
+func (u *PullsUpsert) AddPrID(v int64) *PullsUpsert {
+	u.Add(pulls.FieldPrID, v)
 	return u
 }
 
@@ -570,6 +613,27 @@ func (u *PullsUpsertOne) SetOwner(v string) *PullsUpsertOne {
 func (u *PullsUpsertOne) UpdateOwner() *PullsUpsertOne {
 	return u.Update(func(s *PullsUpsert) {
 		s.UpdateOwner()
+	})
+}
+
+// SetPrID sets the "prID" field.
+func (u *PullsUpsertOne) SetPrID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetPrID(v)
+	})
+}
+
+// AddPrID adds v to the "prID" field.
+func (u *PullsUpsertOne) AddPrID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddPrID(v)
+	})
+}
+
+// UpdatePrID sets the "prID" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdatePrID() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdatePrID()
 	})
 }
 
@@ -952,6 +1016,27 @@ func (u *PullsUpsertBulk) SetOwner(v string) *PullsUpsertBulk {
 func (u *PullsUpsertBulk) UpdateOwner() *PullsUpsertBulk {
 	return u.Update(func(s *PullsUpsert) {
 		s.UpdateOwner()
+	})
+}
+
+// SetPrID sets the "prID" field.
+func (u *PullsUpsertBulk) SetPrID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetPrID(v)
+	})
+}
+
+// AddPrID adds v to the "prID" field.
+func (u *PullsUpsertBulk) AddPrID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddPrID(v)
+	})
+}
+
+// UpdatePrID sets the "prID" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdatePrID() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdatePrID()
 	})
 }
 

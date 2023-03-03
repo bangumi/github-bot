@@ -15,6 +15,7 @@ type Pulls struct {
 func (Pulls) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("owner"),
+		field.Int64("prID").Default(0),
 		field.String("repo"),
 		field.Int64("repoID").Default(0),
 		field.Int("number").Unique().Comment("pr number"),
