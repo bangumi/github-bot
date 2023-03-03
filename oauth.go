@@ -196,7 +196,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		}
 
 		for _, pr := range prs {
-			if _, err := c.Issues.DeleteComment(ctx, pr.Owner, pr.Repo, *pr.Comment); err != nil {
+			if _, err := c.Issues.DeleteComment(ctx, pr.Owner, pr.Repo, pr.Comment); err != nil {
 				return errgo.Trace(err)
 			}
 

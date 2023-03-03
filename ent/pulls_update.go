@@ -117,12 +117,6 @@ func (pu *PullsUpdate) AddComment(i int64) *PullsUpdate {
 	return pu
 }
 
-// ClearComment clears the value of the "comment" field.
-func (pu *PullsUpdate) ClearComment() *PullsUpdate {
-	pu.mutation.ClearComment()
-	return pu
-}
-
 // SetCreatedAt sets the "createdAt" field.
 func (pu *PullsUpdate) SetCreatedAt(t time.Time) *PullsUpdate {
 	pu.mutation.SetCreatedAt(t)
@@ -297,9 +291,6 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.AddedComment(); ok {
 		_spec.AddField(pulls.FieldComment, field.TypeInt64, value)
 	}
-	if pu.mutation.CommentCleared() {
-		_spec.ClearField(pulls.FieldComment, field.TypeInt64)
-	}
 	if value, ok := pu.mutation.CreatedAt(); ok {
 		_spec.SetField(pulls.FieldCreatedAt, field.TypeTime, value)
 	}
@@ -461,12 +452,6 @@ func (puo *PullsUpdateOne) SetNillableComment(i *int64) *PullsUpdateOne {
 // AddComment adds i to the "comment" field.
 func (puo *PullsUpdateOne) AddComment(i int64) *PullsUpdateOne {
 	puo.mutation.AddComment(i)
-	return puo
-}
-
-// ClearComment clears the value of the "comment" field.
-func (puo *PullsUpdateOne) ClearComment() *PullsUpdateOne {
-	puo.mutation.ClearComment()
 	return puo
 }
 
@@ -673,9 +658,6 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 	}
 	if value, ok := puo.mutation.AddedComment(); ok {
 		_spec.AddField(pulls.FieldComment, field.TypeInt64, value)
-	}
-	if puo.mutation.CommentCleared() {
-		_spec.ClearField(pulls.FieldComment, field.TypeInt64)
 	}
 	if value, ok := puo.mutation.CreatedAt(); ok {
 		_spec.SetField(pulls.FieldCreatedAt, field.TypeTime, value)

@@ -19,7 +19,7 @@ func (Pulls) Fields() []ent.Field {
 		field.String("repo"),
 		field.Int64("repoID").Default(0),
 		field.Int("number").Unique().Comment("pr number"),
-		field.Int64("comment").Optional().Nillable().Comment("bot comment id, nil present un-comment Pulls"),
+		field.Int64("comment").Default(0).Comment("bot comment id, nil present un-comment Pulls"),
 		field.Time("createdAt"),
 		field.Time("mergedAt").Optional(),
 		field.Int64("checkRunID").Default(0),

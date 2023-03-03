@@ -199,6 +199,10 @@ func (pc *PullsCreate) defaults() {
 		v := pulls.DefaultRepoID
 		pc.mutation.SetRepoID(v)
 	}
+	if _, ok := pc.mutation.Comment(); !ok {
+		v := pulls.DefaultComment
+		pc.mutation.SetComment(v)
+	}
 	if _, ok := pc.mutation.CheckRunID(); !ok {
 		v := pulls.DefaultCheckRunID
 		pc.mutation.SetCheckRunID(v)
@@ -229,6 +233,9 @@ func (pc *PullsCreate) check() error {
 	}
 	if _, ok := pc.mutation.Number(); !ok {
 		return &ValidationError{Name: "number", err: errors.New(`ent: missing required field "Pulls.number"`)}
+	}
+	if _, ok := pc.mutation.Comment(); !ok {
+		return &ValidationError{Name: "comment", err: errors.New(`ent: missing required field "Pulls.comment"`)}
 	}
 	if _, ok := pc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "Pulls.createdAt"`)}
@@ -294,7 +301,7 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := pc.mutation.Comment(); ok {
 		_spec.SetField(pulls.FieldComment, field.TypeInt64, value)
-		_node.Comment = &value
+		_node.Comment = value
 	}
 	if value, ok := pc.mutation.CreatedAt(); ok {
 		_spec.SetField(pulls.FieldCreatedAt, field.TypeTime, value)
@@ -481,12 +488,6 @@ func (u *PullsUpsert) UpdateComment() *PullsUpsert {
 // AddComment adds v to the "comment" field.
 func (u *PullsUpsert) AddComment(v int64) *PullsUpsert {
 	u.Add(pulls.FieldComment, v)
-	return u
-}
-
-// ClearComment clears the value of the "comment" field.
-func (u *PullsUpsert) ClearComment() *PullsUpsert {
-	u.SetNull(pulls.FieldComment)
 	return u
 }
 
@@ -711,13 +712,6 @@ func (u *PullsUpsertOne) AddComment(v int64) *PullsUpsertOne {
 func (u *PullsUpsertOne) UpdateComment() *PullsUpsertOne {
 	return u.Update(func(s *PullsUpsert) {
 		s.UpdateComment()
-	})
-}
-
-// ClearComment clears the value of the "comment" field.
-func (u *PullsUpsertOne) ClearComment() *PullsUpsertOne {
-	return u.Update(func(s *PullsUpsert) {
-		s.ClearComment()
 	})
 }
 
@@ -1114,13 +1108,6 @@ func (u *PullsUpsertBulk) AddComment(v int64) *PullsUpsertBulk {
 func (u *PullsUpsertBulk) UpdateComment() *PullsUpsertBulk {
 	return u.Update(func(s *PullsUpsert) {
 		s.UpdateComment()
-	})
-}
-
-// ClearComment clears the value of the "comment" field.
-func (u *PullsUpsertBulk) ClearComment() *PullsUpsertBulk {
-	return u.Update(func(s *PullsUpsert) {
-		s.ClearComment()
 	})
 }
 

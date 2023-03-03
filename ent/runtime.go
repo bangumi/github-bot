@@ -22,6 +22,10 @@ func init() {
 	pullsDescRepoID := pullsFields[3].Descriptor()
 	// pulls.DefaultRepoID holds the default value on creation for the repoID field.
 	pulls.DefaultRepoID = pullsDescRepoID.Default.(int64)
+	// pullsDescComment is the schema descriptor for comment field.
+	pullsDescComment := pullsFields[5].Descriptor()
+	// pulls.DefaultComment holds the default value on creation for the comment field.
+	pulls.DefaultComment = pullsDescComment.Default.(int64)
 	// pullsDescCheckRunID is the schema descriptor for checkRunID field.
 	pullsDescCheckRunID := pullsFields[8].Descriptor()
 	// pulls.DefaultCheckRunID holds the default value on creation for the checkRunID field.

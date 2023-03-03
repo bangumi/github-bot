@@ -28,7 +28,7 @@ type Pulls struct {
 	// pr number
 	Number int `json:"number,omitempty"`
 	// bot comment id, nil present un-comment Pulls
-	Comment *int64 `json:"comment,omitempty"`
+	Comment int64 `json:"comment,omitempty"`
 	// CreatedAt holds the value of the "createdAt" field.
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// MergedAt holds the value of the "mergedAt" field.
@@ -135,8 +135,7 @@ func (pu *Pulls) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field comment", values[i])
 			} else if value.Valid {
-				pu.Comment = new(int64)
-				*pu.Comment = value.Int64
+				pu.Comment = value.Int64
 			}
 		case pulls.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -223,10 +222,8 @@ func (pu *Pulls) String() string {
 	builder.WriteString("number=")
 	builder.WriteString(fmt.Sprintf("%v", pu.Number))
 	builder.WriteString(", ")
-	if v := pu.Comment; v != nil {
-		builder.WriteString("comment=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
+	builder.WriteString("comment=")
+	builder.WriteString(fmt.Sprintf("%v", pu.Comment))
 	builder.WriteString(", ")
 	builder.WriteString("createdAt=")
 	builder.WriteString(pu.CreatedAt.Format(time.ANSIC))

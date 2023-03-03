@@ -84,6 +84,8 @@ var (
 	DefaultPrID int64
 	// DefaultRepoID holds the default value on creation for the "repoID" field.
 	DefaultRepoID int64
+	// DefaultComment holds the default value on creation for the "comment" field.
+	DefaultComment int64
 	// DefaultCheckRunID holds the default value on creation for the "checkRunID" field.
 	DefaultCheckRunID int64
 	// DefaultCheckRunResult holds the default value on creation for the "checkRunResult" field.

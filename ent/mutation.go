@@ -415,7 +415,7 @@ func (m *PullsMutation) Comment() (r int64, exists bool) {
 // OldComment returns the old "comment" field's value of the Pulls entity.
 // If the Pulls object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PullsMutation) OldComment(ctx context.Context) (v *int64, err error) {
+func (m *PullsMutation) OldComment(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldComment is only allowed on UpdateOne operations")
 	}
@@ -447,24 +447,10 @@ func (m *PullsMutation) AddedComment() (r int64, exists bool) {
 	return *v, true
 }
 
-// ClearComment clears the value of the "comment" field.
-func (m *PullsMutation) ClearComment() {
-	m.comment = nil
-	m.addcomment = nil
-	m.clearedFields[pulls.FieldComment] = struct{}{}
-}
-
-// CommentCleared returns if the "comment" field was cleared in this mutation.
-func (m *PullsMutation) CommentCleared() bool {
-	_, ok := m.clearedFields[pulls.FieldComment]
-	return ok
-}
-
 // ResetComment resets all changes to the "comment" field.
 func (m *PullsMutation) ResetComment() {
 	m.comment = nil
 	m.addcomment = nil
-	delete(m.clearedFields, pulls.FieldComment)
 }
 
 // SetCreatedAt sets the "createdAt" field.
@@ -1027,9 +1013,6 @@ func (m *PullsMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *PullsMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(pulls.FieldComment) {
-		fields = append(fields, pulls.FieldComment)
-	}
 	if m.FieldCleared(pulls.FieldMergedAt) {
 		fields = append(fields, pulls.FieldMergedAt)
 	}
@@ -1047,9 +1030,6 @@ func (m *PullsMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *PullsMutation) ClearField(name string) error {
 	switch name {
-	case pulls.FieldComment:
-		m.ClearComment()
-		return nil
 	case pulls.FieldMergedAt:
 		m.ClearMergedAt()
 		return nil

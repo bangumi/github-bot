@@ -400,16 +400,6 @@ func CommentLTE(v int64) predicate.Pulls {
 	return predicate.Pulls(sql.FieldLTE(FieldComment, v))
 }
 
-// CommentIsNil applies the IsNil predicate on the "comment" field.
-func CommentIsNil() predicate.Pulls {
-	return predicate.Pulls(sql.FieldIsNull(FieldComment))
-}
-
-// CommentNotNil applies the NotNil predicate on the "comment" field.
-func CommentNotNil() predicate.Pulls {
-	return predicate.Pulls(sql.FieldNotNull(FieldComment))
-}
-
 // CreatedAtEQ applies the EQ predicate on the "createdAt" field.
 func CreatedAtEQ(v time.Time) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldCreatedAt, v))

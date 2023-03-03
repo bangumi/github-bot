@@ -16,7 +16,7 @@ var (
 		{Name: "repo", Type: field.TypeString},
 		{Name: "repo_id", Type: field.TypeInt64, Default: 0},
 		{Name: "number", Type: field.TypeInt, Unique: true},
-		{Name: "comment", Type: field.TypeInt64, Nullable: true},
+		{Name: "comment", Type: field.TypeInt64, Default: 0},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "merged_at", Type: field.TypeTime, Nullable: true},
 		{Name: "check_run_id", Type: field.TypeInt64, Default: 0},

@@ -134,26 +134,20 @@ func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEv
 		return errgo.Trace(err)
 	}
 
-	if err := h.handle(ctx, u, p, payload); err != nil {
+	if err := h.handle(ctx, u, p); err != nil {
 		return errgo.Trace(err)
 	}
 
-	if err := h.checkSuite(ctx, u, p, payload); err != nil {
+	if err := h.checkSuite(ctx, u, p, payload.PullRequest); err != nil {
 		return errgo.Trace(err)
 	}
 
 	return nil
 }
 
-func (h PRHandle) handle(
-	ctx context.Context,
-	u *ent.User, p *ent.Pulls,
-	event github.PullRequestEvent,
-) error {
-	pr := event.GetPullRequest()
-
-	if u.BangumiID == 0 && p.Comment == nil {
-		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, pr.GetNumber(), &github.IssueComment{
+func (h PRHandle) handle(ctx context.Context, u *ent.User, p *ent.Pulls) error {
+	if u.BangumiID == 0 && p.Comment == 0 {
+		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, p.Number, &github.IssueComment{
 			Body: lo.ToPtr(checkRunDetailsMessage),
 		})
 
@@ -170,15 +164,15 @@ func (h PRHandle) handle(
 	return nil
 }
 
-func (h PRHandle) checkSuite(ctx context.Context,
+func (h PRHandle) checkSuite(
+	ctx context.Context,
 	u *ent.User, pull *ent.Pulls,
-	p github.PullRequestEvent,
+	pr *github.PullRequest,
 ) error {
-	if p.PullRequest.GetState() == "closed" {
+	if pr.GetState() == "closed" {
 		return nil
 	}
 
-	pr := p.GetPullRequest()
 	repo := pr.Base.Repo
 
 	result := checkRunActionRequired
@@ -192,7 +186,7 @@ func (h PRHandle) checkSuite(ctx context.Context,
 		output = &github.CheckRunOutput{}
 	}
 
-	if pull.HeadSha != p.PullRequest.GetHead().GetSHA() {
+	if pull.HeadSha != pr.GetHead().GetSHA() {
 		cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
 			Name:       githubCheckRunName,
 			HeadSHA:    pr.Head.GetSHA(),
