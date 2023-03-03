@@ -230,8 +230,10 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 		}
 	}
 
-	p, err := h.ent.Pulls.Query().Where(pulls.NumberEQ(payload.GetNumber())).Only(ctx)
-
+	p, err := h.ent.Pulls.Query().Where(
+		pulls.NumberEQ(payload.GetNumber()),
+		pulls.Repo(payload.Base.Repo.GetName()),
+	).Only(ctx)
 	if err != nil {
 		if !ent.IsNotFound(err) {
 			return errgo.Trace(err)
