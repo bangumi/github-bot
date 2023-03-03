@@ -128,26 +128,29 @@ func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEv
 	}
 
 	ctx := c.Request().Context()
-	if err := h.handle(ctx, payload); err != nil {
+
+	u, p, err := h.objectFromEvent(ctx, payload)
+	if err != nil {
 		return errgo.Trace(err)
 	}
 
-	if err := h.checkSuite(ctx, payload); err != nil {
+	if err := h.handle(ctx, u, p, payload); err != nil {
+		return errgo.Trace(err)
+	}
+
+	if err := h.checkSuite(ctx, u, p, payload); err != nil {
 		return errgo.Trace(err)
 	}
 
 	return nil
 }
 
-func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) error {
+func (h PRHandle) handle(
+	ctx context.Context,
+	u *ent.User, p *ent.Pulls,
+	event github.PullRequestEvent,
+) error {
 	pr := event.GetPullRequest()
-
-	u, p, err := h.objectFromEvent(ctx, event)
-	if err != nil {
-		return errgo.Trace(err)
-	}
-
-	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
 
 	if u.BangumiID == 0 && p.Comment == nil {
 		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, pr.GetNumber(), &github.IssueComment{
@@ -160,46 +163,16 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 			return errgo.Trace(err)
 		}
 
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetComment(*c.ID)
-		})
-	}
-
-	if pr.MergedAt != nil && p.MergedAt.IsZero() {
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetMergedAt(pr.MergedAt.Time)
-		})
-	}
-
-	if p.RepoID == 0 {
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetRepoID(pr.Base.Repo.GetID())
-		})
-	}
-
-	if p.PrID == 0 {
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetPrID(pr.GetID())
-		})
-	}
-
-	if len(mutation) != 0 {
-		updateOne := h.ent.Pulls.UpdateOne(p)
-		for _, f := range mutation {
-			updateOne = f(updateOne)
-		}
-
-		err = updateOne.Exec(ctx)
-		if err != nil {
-			logger.Err(err).Msg("failed to update pulls")
-			return errgo.Trace(err)
-		}
+		err = h.ent.Pulls.UpdateOne(p).SetComment(c.GetID()).Exec(ctx)
+		return errgo.Trace(err)
 	}
 
 	return nil
 }
 
-func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) error {
+func (h PRHandle) checkSuite(ctx context.Context,
+	u *ent.User, pull *ent.Pulls,
+	p github.PullRequestEvent) error {
 	if p.PullRequest.GetState() == "closed" {
 		return nil
 	}
@@ -207,19 +180,15 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 	pr := p.GetPullRequest()
 	repo := pr.Base.Repo
 
-	u, pull, err := h.objectFromEvent(ctx, p)
-	if err != nil {
-		return errgo.Trace(err)
+	result := checkRunActionRequired
+	output := &github.CheckRunOutput{
+		Title:   lo.ToPtr("请关联你的 Bangumi 账号"),
+		Summary: &checkRunDetailsMessage,
 	}
 
-	var result = checkRunSuccess
-	var output *github.CheckRunOutput
-	if u.BangumiID == 0 {
-		result = checkRunActionRequired
-		output = &github.CheckRunOutput{
-			Title:   lo.ToPtr("请关联你的 Bangumi 账号"),
-			Summary: &checkRunDetailsMessage,
-		}
+	if u.BangumiID != 0 {
+		result = checkRunSuccess
+		output = &github.CheckRunOutput{}
 	}
 
 	if pull.HeadSha != p.PullRequest.GetHead().GetSHA() {
@@ -254,7 +223,16 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 		return nil
 	}
 
-	_, _, err = h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID,
+	if result == checkRunSuccess {
+		err := h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
+		if err != nil {
+			return errgo.Trace(err)
+		}
+
+		return nil
+	}
+
+	_, _, err := h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID,
 		github.UpdateCheckRunOptions{
 			Name:       githubCheckRunName,
 			Conclusion: &result,
@@ -331,6 +309,39 @@ func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestE
 	p, err = q.Save(ctx)
 	if err != nil {
 		return u, p, errgo.Trace(err)
+	}
+
+	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
+
+	if pr.MergedAt != nil && p.MergedAt.IsZero() {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetMergedAt(pr.MergedAt.Time)
+		})
+	}
+
+	if p.RepoID == 0 {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetRepoID(pr.Base.Repo.GetID())
+		})
+	}
+
+	if p.PrID == 0 {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetPrID(pr.GetID())
+		})
+	}
+
+	if len(mutation) != 0 {
+		updateOne := h.ent.Pulls.UpdateOne(p)
+		for _, f := range mutation {
+			updateOne = f(updateOne)
+		}
+
+		p, err = updateOne.Save(ctx)
+		if err != nil {
+			logger.Err(err).Msg("failed to update pulls")
+			return nil, nil, errgo.Trace(err)
+		}
 	}
 
 	return u, p, nil
