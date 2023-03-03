@@ -172,7 +172,8 @@ func (h PRHandle) handle(
 
 func (h PRHandle) checkSuite(ctx context.Context,
 	u *ent.User, pull *ent.Pulls,
-	p github.PullRequestEvent) error {
+	p github.PullRequestEvent,
+) error {
 	if p.PullRequest.GetState() == "closed" {
 		return nil
 	}
@@ -225,11 +226,7 @@ func (h PRHandle) checkSuite(ctx context.Context,
 
 	if result == checkRunSuccess {
 		err := h.ent.Pulls.UpdateOne(pull).SetCheckRunResult(result).Exec(ctx)
-		if err != nil {
-			return errgo.Trace(err)
-		}
-
-		return nil
+		return errgo.Trace(err)
 	}
 
 	_, _, err := h.g.Checks.UpdateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), pull.CheckRunID,
