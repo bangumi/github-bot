@@ -3,7 +3,7 @@ module github-bot
 go 1.20
 
 require (
-	entgo.io/ent v0.11.8
+	entgo.io/ent v0.11.9
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v50 v50.1.0
 	github.com/kataras/go-sessions/v3 v3.3.1
@@ -17,7 +17,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.9.1-0.20230119145809-92243f7c55cb // indirect
+	ariga.io/atlas v0.9.1 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
@@ -48,7 +48,7 @@ require (
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
-	golang.org/x/mod v0.7.0 // indirect
+	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
