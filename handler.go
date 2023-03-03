@@ -291,13 +291,14 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 	}
 
 	if len(mutation) != 0 {
-		u := h.ent.Pulls.UpdateOne(p)
+		updateOne := h.ent.Pulls.UpdateOne(p)
 		for _, f := range mutation {
-			u = f(u)
+			updateOne = f(updateOne)
 		}
 
-		err = u.Exec(ctx)
+		err = updateOne.Exec(ctx)
 		if err != nil {
+			logger.Err(err).Msg("failed to update pulls")
 			return errgo.Trace(err)
 		}
 	}
