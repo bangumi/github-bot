@@ -113,6 +113,13 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 	repo := pr.Base.Repo.GetName()
 	if lo.Contains(repoToIgnore, repo) || repo == "" {
 		logger.Info().Str("repo", repo).Msg("skip non-code repo")
+		return nil
+	}
+
+	owner := pr.Base.Repo.GetOwner().GetLogin()
+	if owner == "bangumi" {
+		logger.Info().Str("repo_owner", owner).Msg("skip non-bangumi repo")
+		return nil
 	}
 
 	if err := h.handle(ctx, payload); err != nil {
@@ -297,10 +304,12 @@ func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestE
 		return nil, nil, errgo.Trace(err)
 	}
 
+	repo := payload.GetBase().GetRepo()
+
 	p, err := h.ent.Pulls.Query().Where(
 		pulls.NumberEQ(payload.GetNumber()),
-		pulls.OwnerEQ(payload.Base.Repo.GetOwner().GetLogin()),
-		pulls.RepoEQ(payload.Base.Repo.GetName()),
+		pulls.OwnerEQ(repo.GetOwner().GetLogin()),
+		pulls.RepoEQ(repo.GetName()),
 	).Only(ctx)
 	if err == nil {
 		return u, p, nil
@@ -312,10 +321,10 @@ func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestE
 
 	q := h.ent.Pulls.Create().
 		SetCreatedAt(payload.CreatedAt.Time).
-		SetOwner(payload.Base.Repo.Owner.GetLogin()).
+		SetOwner(repo.Owner.GetLogin()).
 		SetNumber(payload.GetNumber()).
-		SetRepo(payload.Base.Repo.GetName()).
-		SetRepoID(payload.Base.Repo.GetID()).
+		SetRepo(repo.GetName()).
+		SetRepoID(repo.GetID()).
 		SetPrID(payload.GetID()).
 		SetCreator(u)
 
