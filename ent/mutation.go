@@ -37,6 +37,8 @@ type PullsMutation struct {
 	id              *int
 	owner           *string
 	repo            *string
+	repoID          *int64
+	addrepoID       *int64
 	number          *int
 	addnumber       *int
 	comment         *int64
@@ -223,6 +225,62 @@ func (m *PullsMutation) OldRepo(ctx context.Context) (v string, err error) {
 // ResetRepo resets all changes to the "repo" field.
 func (m *PullsMutation) ResetRepo() {
 	m.repo = nil
+}
+
+// SetRepoID sets the "repoID" field.
+func (m *PullsMutation) SetRepoID(i int64) {
+	m.repoID = &i
+	m.addrepoID = nil
+}
+
+// RepoID returns the value of the "repoID" field in the mutation.
+func (m *PullsMutation) RepoID() (r int64, exists bool) {
+	v := m.repoID
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRepoID returns the old "repoID" field's value of the Pulls entity.
+// If the Pulls object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PullsMutation) OldRepoID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRepoID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRepoID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRepoID: %w", err)
+	}
+	return oldValue.RepoID, nil
+}
+
+// AddRepoID adds i to the "repoID" field.
+func (m *PullsMutation) AddRepoID(i int64) {
+	if m.addrepoID != nil {
+		*m.addrepoID += i
+	} else {
+		m.addrepoID = &i
+	}
+}
+
+// AddedRepoID returns the value that was added to the "repoID" field in this mutation.
+func (m *PullsMutation) AddedRepoID() (r int64, exists bool) {
+	v := m.addrepoID
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRepoID resets all changes to the "repoID" field.
+func (m *PullsMutation) ResetRepoID() {
+	m.repoID = nil
+	m.addrepoID = nil
 }
 
 // SetNumber sets the "number" field.
@@ -637,12 +695,15 @@ func (m *PullsMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PullsMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.owner != nil {
 		fields = append(fields, pulls.FieldOwner)
 	}
 	if m.repo != nil {
 		fields = append(fields, pulls.FieldRepo)
+	}
+	if m.repoID != nil {
+		fields = append(fields, pulls.FieldRepoID)
 	}
 	if m.number != nil {
 		fields = append(fields, pulls.FieldNumber)
@@ -677,6 +738,8 @@ func (m *PullsMutation) Field(name string) (ent.Value, bool) {
 		return m.Owner()
 	case pulls.FieldRepo:
 		return m.Repo()
+	case pulls.FieldRepoID:
+		return m.RepoID()
 	case pulls.FieldNumber:
 		return m.Number()
 	case pulls.FieldComment:
@@ -704,6 +767,8 @@ func (m *PullsMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldOwner(ctx)
 	case pulls.FieldRepo:
 		return m.OldRepo(ctx)
+	case pulls.FieldRepoID:
+		return m.OldRepoID(ctx)
 	case pulls.FieldNumber:
 		return m.OldNumber(ctx)
 	case pulls.FieldComment:
@@ -740,6 +805,13 @@ func (m *PullsMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRepo(v)
+		return nil
+	case pulls.FieldRepoID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRepoID(v)
 		return nil
 	case pulls.FieldNumber:
 		v, ok := value.(int)
@@ -798,6 +870,9 @@ func (m *PullsMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *PullsMutation) AddedFields() []string {
 	var fields []string
+	if m.addrepoID != nil {
+		fields = append(fields, pulls.FieldRepoID)
+	}
 	if m.addnumber != nil {
 		fields = append(fields, pulls.FieldNumber)
 	}
@@ -815,6 +890,8 @@ func (m *PullsMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *PullsMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case pulls.FieldRepoID:
+		return m.AddedRepoID()
 	case pulls.FieldNumber:
 		return m.AddedNumber()
 	case pulls.FieldComment:
@@ -830,6 +907,13 @@ func (m *PullsMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *PullsMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case pulls.FieldRepoID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRepoID(v)
+		return nil
 	case pulls.FieldNumber:
 		v, ok := value.(int)
 		if !ok {
@@ -898,6 +982,9 @@ func (m *PullsMutation) ResetField(name string) error {
 		return nil
 	case pulls.FieldRepo:
 		m.ResetRepo()
+		return nil
+	case pulls.FieldRepoID:
+		m.ResetRepoID()
 		return nil
 	case pulls.FieldNumber:
 		m.ResetNumber()

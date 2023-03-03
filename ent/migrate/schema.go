@@ -13,6 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "owner", Type: field.TypeString},
 		{Name: "repo", Type: field.TypeString},
+		{Name: "repo_id", Type: field.TypeInt64, Default: 0},
 		{Name: "number", Type: field.TypeInt, Unique: true},
 		{Name: "comment", Type: field.TypeInt64, Nullable: true},
 		{Name: "created_at", Type: field.TypeTime},
@@ -30,7 +31,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "pulls_users_pull_requests",
-				Columns:    []*schema.Column{PullsColumns[10]},
+				Columns:    []*schema.Column{PullsColumns[11]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

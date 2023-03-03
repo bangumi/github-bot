@@ -41,6 +41,27 @@ func (pu *PullsUpdate) SetRepo(s string) *PullsUpdate {
 	return pu
 }
 
+// SetRepoID sets the "repoID" field.
+func (pu *PullsUpdate) SetRepoID(i int64) *PullsUpdate {
+	pu.mutation.ResetRepoID()
+	pu.mutation.SetRepoID(i)
+	return pu
+}
+
+// SetNillableRepoID sets the "repoID" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableRepoID(i *int64) *PullsUpdate {
+	if i != nil {
+		pu.SetRepoID(*i)
+	}
+	return pu
+}
+
+// AddRepoID adds i to the "repoID" field.
+func (pu *PullsUpdate) AddRepoID(i int64) *PullsUpdate {
+	pu.mutation.AddRepoID(i)
+	return pu
+}
+
 // SetNumber sets the "number" field.
 func (pu *PullsUpdate) SetNumber(i int) *PullsUpdate {
 	pu.mutation.ResetNumber()
@@ -231,6 +252,12 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 	}
+	if value, ok := pu.mutation.RepoID(); ok {
+		_spec.SetField(pulls.FieldRepoID, field.TypeInt64, value)
+	}
+	if value, ok := pu.mutation.AddedRepoID(); ok {
+		_spec.AddField(pulls.FieldRepoID, field.TypeInt64, value)
+	}
 	if value, ok := pu.mutation.Number(); ok {
 		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
 	}
@@ -331,6 +358,27 @@ func (puo *PullsUpdateOne) SetOwner(s string) *PullsUpdateOne {
 // SetRepo sets the "repo" field.
 func (puo *PullsUpdateOne) SetRepo(s string) *PullsUpdateOne {
 	puo.mutation.SetRepo(s)
+	return puo
+}
+
+// SetRepoID sets the "repoID" field.
+func (puo *PullsUpdateOne) SetRepoID(i int64) *PullsUpdateOne {
+	puo.mutation.ResetRepoID()
+	puo.mutation.SetRepoID(i)
+	return puo
+}
+
+// SetNillableRepoID sets the "repoID" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableRepoID(i *int64) *PullsUpdateOne {
+	if i != nil {
+		puo.SetRepoID(*i)
+	}
+	return puo
+}
+
+// AddRepoID adds i to the "repoID" field.
+func (puo *PullsUpdateOne) AddRepoID(i int64) *PullsUpdateOne {
+	puo.mutation.AddRepoID(i)
 	return puo
 }
 
@@ -553,6 +601,12 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 	}
 	if value, ok := puo.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.RepoID(); ok {
+		_spec.SetField(pulls.FieldRepoID, field.TypeInt64, value)
+	}
+	if value, ok := puo.mutation.AddedRepoID(); ok {
+		_spec.AddField(pulls.FieldRepoID, field.TypeInt64, value)
 	}
 	if value, ok := puo.mutation.Number(); ok {
 		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)

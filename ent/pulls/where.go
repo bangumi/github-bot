@@ -65,6 +65,11 @@ func Repo(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldRepo, v))
 }
 
+// RepoID applies equality check predicate on the "repoID" field. It's identical to RepoIDEQ.
+func RepoID(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldRepoID, v))
+}
+
 // Number applies equality check predicate on the "number" field. It's identical to NumberEQ.
 func Number(v int) predicate.Pulls {
 	return predicate.Pulls(sql.FieldEQ(FieldNumber, v))
@@ -228,6 +233,46 @@ func RepoEqualFold(v string) predicate.Pulls {
 // RepoContainsFold applies the ContainsFold predicate on the "repo" field.
 func RepoContainsFold(v string) predicate.Pulls {
 	return predicate.Pulls(sql.FieldContainsFold(FieldRepo, v))
+}
+
+// RepoIDEQ applies the EQ predicate on the "repoID" field.
+func RepoIDEQ(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldEQ(FieldRepoID, v))
+}
+
+// RepoIDNEQ applies the NEQ predicate on the "repoID" field.
+func RepoIDNEQ(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNEQ(FieldRepoID, v))
+}
+
+// RepoIDIn applies the In predicate on the "repoID" field.
+func RepoIDIn(vs ...int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldIn(FieldRepoID, vs...))
+}
+
+// RepoIDNotIn applies the NotIn predicate on the "repoID" field.
+func RepoIDNotIn(vs ...int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldNotIn(FieldRepoID, vs...))
+}
+
+// RepoIDGT applies the GT predicate on the "repoID" field.
+func RepoIDGT(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGT(FieldRepoID, v))
+}
+
+// RepoIDGTE applies the GTE predicate on the "repoID" field.
+func RepoIDGTE(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldGTE(FieldRepoID, v))
+}
+
+// RepoIDLT applies the LT predicate on the "repoID" field.
+func RepoIDLT(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLT(FieldRepoID, v))
+}
+
+// RepoIDLTE applies the LTE predicate on the "repoID" field.
+func RepoIDLTE(v int64) predicate.Pulls {
+	return predicate.Pulls(sql.FieldLTE(FieldRepoID, v))
 }
 
 // NumberEQ applies the EQ predicate on the "number" field.

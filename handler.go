@@ -242,6 +242,7 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 			SetOwner(payload.Base.Repo.Owner.GetLogin()).
 			SetNumber(payload.GetNumber()).
 			SetRepo(payload.Base.Repo.GetName()).
+			SetRepoID(payload.Base.Repo.GetID()).
 			SetCreator(u)
 
 		if payload.MergedAt != nil {
@@ -278,6 +279,12 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 
 	if payload.MergedAt != nil && p.MergedAt.IsZero() {
 		if _, err := h.ent.Pulls.UpdateOne(p).SetMergedAt(payload.MergedAt.Time).Save(ctx); err != nil {
+			return errgo.Trace(err)
+		}
+	}
+
+	if p.RepoID == 0 {
+		if _, err := h.ent.Pulls.UpdateOne(p).SetRepoID(payload.Base.Repo.GetID()).Save(ctx); err != nil {
 			return errgo.Trace(err)
 		}
 	}

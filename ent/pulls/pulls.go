@@ -11,6 +11,8 @@ const (
 	FieldOwner = "owner"
 	// FieldRepo holds the string denoting the repo field in the database.
 	FieldRepo = "repo"
+	// FieldRepoID holds the string denoting the repoid field in the database.
+	FieldRepoID = "repo_id"
 	// FieldNumber holds the string denoting the number field in the database.
 	FieldNumber = "number"
 	// FieldComment holds the string denoting the comment field in the database.
@@ -43,6 +45,7 @@ var Columns = []string{
 	FieldID,
 	FieldOwner,
 	FieldRepo,
+	FieldRepoID,
 	FieldNumber,
 	FieldComment,
 	FieldCreatedAt,
@@ -74,6 +77,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultRepoID holds the default value on creation for the "repoID" field.
+	DefaultRepoID int64
 	// DefaultCheckRunID holds the default value on creation for the "checkRunID" field.
 	DefaultCheckRunID int64
 	// DefaultCheckRunResult holds the default value on creation for the "checkRunResult" field.

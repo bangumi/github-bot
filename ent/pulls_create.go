@@ -35,6 +35,20 @@ func (pc *PullsCreate) SetRepo(s string) *PullsCreate {
 	return pc
 }
 
+// SetRepoID sets the "repoID" field.
+func (pc *PullsCreate) SetRepoID(i int64) *PullsCreate {
+	pc.mutation.SetRepoID(i)
+	return pc
+}
+
+// SetNillableRepoID sets the "repoID" field if the given value is not nil.
+func (pc *PullsCreate) SetNillableRepoID(i *int64) *PullsCreate {
+	if i != nil {
+		pc.SetRepoID(*i)
+	}
+	return pc
+}
+
 // SetNumber sets the "number" field.
 func (pc *PullsCreate) SetNumber(i int) *PullsCreate {
 	pc.mutation.SetNumber(i)
@@ -163,6 +177,10 @@ func (pc *PullsCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (pc *PullsCreate) defaults() {
+	if _, ok := pc.mutation.RepoID(); !ok {
+		v := pulls.DefaultRepoID
+		pc.mutation.SetRepoID(v)
+	}
 	if _, ok := pc.mutation.CheckRunID(); !ok {
 		v := pulls.DefaultCheckRunID
 		pc.mutation.SetCheckRunID(v)
@@ -184,6 +202,9 @@ func (pc *PullsCreate) check() error {
 	}
 	if _, ok := pc.mutation.Repo(); !ok {
 		return &ValidationError{Name: "repo", err: errors.New(`ent: missing required field "Pulls.repo"`)}
+	}
+	if _, ok := pc.mutation.RepoID(); !ok {
+		return &ValidationError{Name: "repoID", err: errors.New(`ent: missing required field "Pulls.repoID"`)}
 	}
 	if _, ok := pc.mutation.Number(); !ok {
 		return &ValidationError{Name: "number", err: errors.New(`ent: missing required field "Pulls.number"`)}
@@ -237,6 +258,10 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 		_node.Repo = value
+	}
+	if value, ok := pc.mutation.RepoID(); ok {
+		_spec.SetField(pulls.FieldRepoID, field.TypeInt64, value)
+		_node.RepoID = value
 	}
 	if value, ok := pc.mutation.Number(); ok {
 		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
@@ -359,6 +384,24 @@ func (u *PullsUpsert) SetRepo(v string) *PullsUpsert {
 // UpdateRepo sets the "repo" field to the value that was provided on create.
 func (u *PullsUpsert) UpdateRepo() *PullsUpsert {
 	u.SetExcluded(pulls.FieldRepo)
+	return u
+}
+
+// SetRepoID sets the "repoID" field.
+func (u *PullsUpsert) SetRepoID(v int64) *PullsUpsert {
+	u.Set(pulls.FieldRepoID, v)
+	return u
+}
+
+// UpdateRepoID sets the "repoID" field to the value that was provided on create.
+func (u *PullsUpsert) UpdateRepoID() *PullsUpsert {
+	u.SetExcluded(pulls.FieldRepoID)
+	return u
+}
+
+// AddRepoID adds v to the "repoID" field.
+func (u *PullsUpsert) AddRepoID(v int64) *PullsUpsert {
+	u.Add(pulls.FieldRepoID, v)
 	return u
 }
 
@@ -541,6 +584,27 @@ func (u *PullsUpsertOne) SetRepo(v string) *PullsUpsertOne {
 func (u *PullsUpsertOne) UpdateRepo() *PullsUpsertOne {
 	return u.Update(func(s *PullsUpsert) {
 		s.UpdateRepo()
+	})
+}
+
+// SetRepoID sets the "repoID" field.
+func (u *PullsUpsertOne) SetRepoID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetRepoID(v)
+	})
+}
+
+// AddRepoID adds v to the "repoID" field.
+func (u *PullsUpsertOne) AddRepoID(v int64) *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddRepoID(v)
+	})
+}
+
+// UpdateRepoID sets the "repoID" field to the value that was provided on create.
+func (u *PullsUpsertOne) UpdateRepoID() *PullsUpsertOne {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateRepoID()
 	})
 }
 
@@ -902,6 +966,27 @@ func (u *PullsUpsertBulk) SetRepo(v string) *PullsUpsertBulk {
 func (u *PullsUpsertBulk) UpdateRepo() *PullsUpsertBulk {
 	return u.Update(func(s *PullsUpsert) {
 		s.UpdateRepo()
+	})
+}
+
+// SetRepoID sets the "repoID" field.
+func (u *PullsUpsertBulk) SetRepoID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.SetRepoID(v)
+	})
+}
+
+// AddRepoID adds v to the "repoID" field.
+func (u *PullsUpsertBulk) AddRepoID(v int64) *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.AddRepoID(v)
+	})
+}
+
+// UpdateRepoID sets the "repoID" field to the value that was provided on create.
+func (u *PullsUpsertBulk) UpdateRepoID() *PullsUpsertBulk {
+	return u.Update(func(s *PullsUpsert) {
+		s.UpdateRepoID()
 	})
 }
 
