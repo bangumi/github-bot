@@ -81,9 +81,10 @@ func verifySign(body []byte, header string) bool {
 	return hmac.Equal([]byte(sha), []byte(header))
 }
 
-func (h PRHandle) handlePullRequest(c echo.Context) error {
-	ctx := c.Request().Context()
-	var payload github.PullRequestEvent
+func (h PRHandle) Handle(c echo.Context) error {
+	if c.Request().Header.Get(github.EventTypeHeader) != "pull_request" {
+		return nil
+	}
 
 	body, err := io.ReadAll(c.Request().Body)
 	if err != nil {
@@ -94,10 +95,15 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Signatures didn't match!")
 	}
 
+	var payload github.PullRequestEvent
 	if err := json.Unmarshal(body, &payload); err != nil {
 		return errgo.Trace(err)
 	}
 
+	return h.handlePullRequest(c, payload)
+}
+
+func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEvent) error {
 	pr := payload.PullRequest
 
 	logger.Info().
@@ -110,18 +116,17 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 		return nil
 	}
 
-	repo := pr.Base.Repo.GetName()
-	if lo.Contains(repoToIgnore, repo) || repo == "" {
+	if repo := pr.Base.Repo.GetName(); lo.Contains(repoToIgnore, repo) || repo == "" {
 		logger.Info().Str("repo", repo).Msg("skip non-code repo")
 		return nil
 	}
 
-	owner := pr.Base.Repo.GetOwner().GetLogin()
-	if owner == "bangumi" {
+	if owner := pr.Base.Repo.GetOwner().GetLogin(); owner == "bangumi" {
 		logger.Info().Str("repo_owner", owner).Msg("skip non-bangumi repo")
 		return nil
 	}
 
+	ctx := c.Request().Context()
 	if err := h.handle(ctx, payload); err != nil {
 		return errgo.Trace(err)
 	}
@@ -133,9 +138,65 @@ func (h PRHandle) handlePullRequest(c echo.Context) error {
 	return nil
 }
 
-func (h PRHandle) Handle(c echo.Context) error {
-	if c.Request().Header.Get(github.EventTypeHeader) == "pull_request" {
-		return h.handlePullRequest(c)
+func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) error {
+	payload := event.GetPullRequest()
+	u, p, err := h.objectFromEvent(ctx, event)
+	if err != nil {
+		return errgo.Trace(err)
+	}
+
+	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
+
+	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
+	if err != nil {
+		return errgo.Trace(err)
+	}
+
+	if u.BangumiID == 0 && p.Comment == nil {
+		c, res, err := g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
+			Body: lo.ToPtr(checkRunDetailsMessage),
+		})
+
+		if err != nil {
+			b, _ := io.ReadAll(res.Body)
+			logger.Err(err).Bytes("body", b).Msg("failed to create issue")
+			return errgo.Trace(err)
+		}
+
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetComment(*c.ID)
+		})
+	}
+
+	if payload.MergedAt != nil && p.MergedAt.IsZero() {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetMergedAt(payload.MergedAt.Time)
+		})
+	}
+
+	if p.RepoID == 0 {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetRepoID(payload.Base.Repo.GetID())
+		})
+	}
+
+	if p.PrID == 0 {
+		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
+			return u.SetPrID(payload.GetID())
+		})
+	}
+
+	if len(mutation) != 0 {
+		updateOne := h.ent.Pulls.UpdateOne(p)
+		for _, f := range mutation {
+			updateOne = f(updateOne)
+		}
+
+		err = updateOne.Exec(ctx)
+		if err != nil {
+			logger.Err(err).Msg("failed to update pulls")
+			return errgo.Trace(err)
+		}
 	}
 
 	return nil
@@ -212,70 +273,6 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 
 	if err != nil {
 		return errgo.Trace(err)
-	}
-
-	return nil
-}
-
-func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) error {
-	payload := event.GetPullRequest()
-	u, p, err := h.objectFromEvent(ctx, event)
-	if err != nil {
-		return errgo.Trace(err)
-	}
-
-	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
-
-	g, err := h.app.NewInstallationClient(githubapp.GetInstallationIDFromEvent(&event))
-	if err != nil {
-		return errgo.Trace(err)
-	}
-
-	if u.BangumiID == 0 && p.Comment == nil {
-		c, res, err := g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
-			Body: lo.ToPtr(checkRunDetailsMessage),
-		})
-
-		if err != nil {
-			b, _ := io.ReadAll(res.Body)
-			logger.Err(err).Bytes("body", b).Msg("failed to create issue")
-			return errgo.Trace(err)
-		}
-
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetComment(*c.ID)
-		})
-	}
-
-	if payload.MergedAt != nil && p.MergedAt.IsZero() {
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetMergedAt(payload.MergedAt.Time)
-		})
-	}
-
-	if p.RepoID == 0 {
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetRepoID(payload.Base.Repo.GetID())
-		})
-	}
-
-	if p.PrID == 0 {
-		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetPrID(payload.GetID())
-		})
-	}
-
-	if len(mutation) != 0 {
-		updateOne := h.ent.Pulls.UpdateOne(p)
-		for _, f := range mutation {
-			updateOne = f(updateOne)
-		}
-
-		err = updateOne.Exec(ctx)
-		if err != nil {
-			logger.Err(err).Msg("failed to update pulls")
-			return errgo.Trace(err)
-		}
 	}
 
 	return nil
