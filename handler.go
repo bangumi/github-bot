@@ -200,7 +200,7 @@ func (h PRHandle) checkSuite(
 	err = h.ent.Pulls.UpdateOne(p).
 		SetCheckRunID(cr.GetID()).
 		SetHeadSha(pr.GetHead().GetSHA()).
-		SetCheckRunResult(githubCheckRunName).
+		SetCheckRunResult(checkRunActionRequired).
 		Exec(ctx)
 
 	return errgo.Trace(err)
