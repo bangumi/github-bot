@@ -140,7 +140,8 @@ func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEv
 }
 
 func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) error {
-	payload := event.GetPullRequest()
+	pr := event.GetPullRequest()
+
 	u, p, err := h.objectFromEvent(ctx, event)
 	if err != nil {
 		return errgo.Trace(err)
@@ -149,7 +150,7 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 	var mutation []func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne
 
 	if u.BangumiID == 0 && p.Comment == nil {
-		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, payload.GetNumber(), &github.IssueComment{
+		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, pr.GetNumber(), &github.IssueComment{
 			Body: lo.ToPtr(checkRunDetailsMessage),
 		})
 
@@ -164,21 +165,21 @@ func (h PRHandle) handle(ctx context.Context, event github.PullRequestEvent) err
 		})
 	}
 
-	if payload.MergedAt != nil && p.MergedAt.IsZero() {
+	if pr.MergedAt != nil && p.MergedAt.IsZero() {
 		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetMergedAt(payload.MergedAt.Time)
+			return u.SetMergedAt(pr.MergedAt.Time)
 		})
 	}
 
 	if p.RepoID == 0 {
 		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetRepoID(payload.Base.Repo.GetID())
+			return u.SetRepoID(pr.Base.Repo.GetID())
 		})
 	}
 
 	if p.PrID == 0 {
 		mutation = append(mutation, func(u *ent.PullsUpdateOne) *ent.PullsUpdateOne {
-			return u.SetPrID(payload.GetID())
+			return u.SetPrID(pr.GetID())
 		})
 	}
 
@@ -261,16 +262,16 @@ func (h PRHandle) checkSuite(ctx context.Context, p github.PullRequestEvent) err
 }
 
 func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestEvent) (*ent.User, *ent.Pulls, error) {
-	payload := event.GetPullRequest()
+	pr := event.GetPullRequest()
 
 	u, err := ent.WithTxR(ctx, h.ent, func(tx *ent.Tx) (*ent.User, error) {
-		u, err := h.ent.User.Query().Where(user.GithubID(payload.User.GetID())).Only(ctx)
+		u, err := h.ent.User.Query().Where(user.GithubID(pr.User.GetID())).Only(ctx)
 		if err != nil {
 			if !ent.IsNotFound(err) {
 				return nil, errgo.Trace(err)
 			}
 
-			u, err = h.ent.User.Create().SetGithubID(payload.User.GetID()).Save(ctx)
+			u, err = h.ent.User.Create().SetGithubID(pr.User.GetID()).Save(ctx)
 			if err != nil {
 				return u, errgo.Trace(err)
 			}
@@ -283,12 +284,17 @@ func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestE
 		return nil, nil, errgo.Trace(err)
 	}
 
-	repo := payload.GetBase().GetRepo()
+	repo := pr.GetBase().GetRepo()
 
 	p, err := h.ent.Pulls.Query().Where(
-		pulls.NumberEQ(payload.GetNumber()),
-		pulls.OwnerEQ(repo.GetOwner().GetLogin()),
-		pulls.RepoEQ(repo.GetName()),
+		pulls.Or(
+			pulls.PrIDEQ(pr.GetID()),
+			pulls.And(
+				pulls.NumberEQ(pr.GetNumber()),
+				pulls.OwnerEQ(repo.GetOwner().GetLogin()),
+				pulls.RepoEQ(repo.GetName()),
+			),
+		),
 	).Only(ctx)
 	if err == nil {
 		return u, p, nil
@@ -299,16 +305,16 @@ func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestE
 	}
 
 	q := h.ent.Pulls.Create().
-		SetCreatedAt(payload.CreatedAt.Time).
+		SetCreatedAt(pr.CreatedAt.Time).
 		SetOwner(repo.Owner.GetLogin()).
-		SetNumber(payload.GetNumber()).
 		SetRepo(repo.GetName()).
+		SetNumber(pr.GetNumber()).
 		SetRepoID(repo.GetID()).
-		SetPrID(payload.GetID()).
+		SetPrID(pr.GetID()).
 		SetCreator(u)
 
-	if payload.MergedAt != nil {
-		q = q.SetMergedAt(payload.MergedAt.Time)
+	if pr.MergedAt != nil {
+		q = q.SetMergedAt(pr.MergedAt.Time)
 	}
 
 	p, err = q.Save(ctx)
