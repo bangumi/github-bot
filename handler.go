@@ -177,23 +177,20 @@ func (h PRHandle) checkSuite(
 		return nil
 	}
 
-	repo := pr.Base.Repo
-
-	result := checkRunActionRequired
-	output := &github.CheckRunOutput{
-		Title:   lo.ToPtr("请关联你的 Bangumi 账号"),
-		Summary: &checkRunDetailsMessage,
-	}
-
 	if p.HeadSha == pr.GetHead().GetSHA() {
 		return nil
 	}
 
+	repo := pr.Base.Repo
+
 	cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
 		Name:       githubCheckRunName,
 		HeadSHA:    pr.Head.GetSHA(),
-		Conclusion: &result,
-		Output:     output,
+		Conclusion: &checkRunActionRequired,
+		Output: &github.CheckRunOutput{
+			Title:   lo.ToPtr("请关联你的 Bangumi 账号"),
+			Summary: &checkRunDetailsMessage,
+		},
 	})
 
 	if err != nil {
@@ -203,7 +200,7 @@ func (h PRHandle) checkSuite(
 	err = h.ent.Pulls.UpdateOne(p).
 		SetCheckRunID(cr.GetID()).
 		SetHeadSha(cr.GetHeadSHA()).
-		SetCheckRunResult(result).
+		SetCheckRunResult(githubCheckRunName).
 		Exec(ctx)
 
 	return errgo.Trace(err)

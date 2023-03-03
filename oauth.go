@@ -174,7 +174,10 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 				return errgo.Trace(err)
 			}
 
-			if err := h.ent.Pulls.UpdateOne(pr).SetCheckRunResult(checkRunSuccess).Exec(ctx); err != nil {
+			if err := h.ent.Pulls.UpdateOne(pr).
+				SetCheckRunResult(checkRunSuccess).
+				SetCheckRunID(0).
+				Exec(ctx); err != nil {
 				return errgo.Trace(err)
 			}
 		}
