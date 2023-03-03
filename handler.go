@@ -122,7 +122,7 @@ func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEv
 		return nil
 	}
 
-	if owner := pr.Base.Repo.GetOwner().GetLogin(); owner == "bangumi" {
+	if owner := pr.Base.Repo.GetOwner().GetLogin(); owner != "bangumi" {
 		logger.Info().Str("repo_owner", owner).Msg("skip non-bangumi repo")
 		return nil
 	}
