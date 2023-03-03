@@ -201,6 +201,10 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 		if err != nil {
 			return errgo.Trace(err)
 		}
+
+		if err := h.ent.Pulls.UpdateOne(pr).SetComment(0).Exec(ctx); err != nil {
+			return errgo.Trace(err)
+		}
 	}
 
 	return nil
