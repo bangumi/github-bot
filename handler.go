@@ -43,22 +43,16 @@ func (h PRHandle) Index(c echo.Context) error {
 	}
 
 	githubId := s.GetInt64Default("github_id", 0)
-
-	var html string
 	if githubId == 0 {
 		return c.HTML(http.StatusOK, `<p> github 未链接，请认证 <a href="/oauth/github">github oauth</a> </p>`)
 	}
-
-	html += fmt.Sprintf(`<p> github id %d </p>`, githubId)
 
 	bangumiId := s.GetInt64Default("bangumi_id", 0)
 	if bangumiId == 0 {
 		return c.HTML(http.StatusOK, `<p> bangumi 未链接，请认证 <a href="/oauth/bangumi">bangumi oauth</a> </p>`)
 	}
 
-	html += fmt.Sprintf(`<p> bangumi id %d </p>`, bangumiId)
-
-	html += "<h1>已完成</h1>"
+	html := fmt.Sprintf("<p> github id %d </p>\n<p> bangumi id %d </p>\n<h1>已完成</h1>", githubId, bangumiId)
 
 	if err := h.afterOauth(c.Request().Context(), s); err != nil {
 		return errgo.Trace(err)
