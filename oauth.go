@@ -59,7 +59,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		}
 
 		s := session.Start(c.Response(), c.Request())
-		s.Set("github_id", int(u.GetID()))
+		s.Set("github_id", int64(u.GetID()))
 
 		return c.Redirect(http.StatusFound, "/")
 	})
@@ -123,7 +123,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		}
 
 		s := session.Start(c.Response(), c.Request())
-		s.Set("bangumi_id", data.ID)
+		s.Set("bangumi_id", int64(data.ID))
 
 		if err := h.afterOauth(ctx, s); err != nil {
 			return err
@@ -134,8 +134,8 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 }
 
 func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
-	githubId := s.GetIntDefault("github_id", 0)
-	bangumiId := s.GetIntDefault("bangumi_id", 0)
+	githubId := s.GetInt64Default("github_id", 0)
+	bangumiId := s.GetInt64Default("bangumi_id", 0)
 
 	if githubId == 0 || bangumiId == 0 {
 		return nil
