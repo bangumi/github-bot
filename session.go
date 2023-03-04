@@ -1,13 +1,12 @@
 package main
 
 import (
+	"github.com/jaevor/go-nanoid"
 	"github.com/kataras/go-sessions/v3"
-	gonanoid "github.com/matoous/go-nanoid/v2"
+	"github.com/samber/lo"
 )
 
 var session = sessions.New(sessions.Config{
-	SessionIDGenerator: func() string {
-		return gonanoid.Must()
-	},
+	SessionIDGenerator:          lo.Must(nanoid.Standard(32)),
 	DisableSubdomainPersistence: true,
 })

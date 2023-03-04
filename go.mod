@@ -6,10 +6,10 @@ require (
 	entgo.io/ent v0.11.9
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v50 v50.1.0
+	github.com/jaevor/go-nanoid v1.3.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/lib/pq v1.10.7
-	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/palantir/go-githubapp v0.15.0
 	github.com/rs/zerolog v1.29.0
 	github.com/samber/lo v1.37.0
