@@ -112,7 +112,7 @@ func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEv
 		Str("repo", payload.GetRepo().GetFullName()).
 		Msg("new pull webhook")
 
-	if pr.User.GetType() == "Bot" || strings.HasSuffix(strings.ToLower(pr.User.GetName()), "-bot") {
+	if pr.User.GetType() == "Bot" || strings.HasSuffix(strings.ToLower(pr.User.GetLogin()), "-bot") {
 		logger.Info().Msg("ignore bot pr")
 		return nil
 	}
