@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	entgo.io/ent v0.11.9
+	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/google/go-github/v50 v50.1.0
 	github.com/jaevor/go-nanoid v1.3.0

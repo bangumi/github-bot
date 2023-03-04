@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-github/v50/github"
 	"github.com/labstack/echo/v4"
 	"github.com/palantir/go-githubapp/githubapp"
@@ -39,7 +40,7 @@ func (h PRHandle) Index(c echo.Context) error {
 	s := session.Start(c.Response(), c.Request())
 
 	if c.QueryParams().Has("debug") {
-		return c.JSON(http.StatusOK, s.GetAll())
+		return c.String(http.StatusOK, spew.Sdump(s.GetAll()))
 	}
 
 	githubId := s.GetInt64Default("github_id", 0)
