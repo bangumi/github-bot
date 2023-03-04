@@ -59,7 +59,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		}
 
 		s := session.Start(c.Response(), c.Request())
-		s.Set("github_id", int(*u.ID))
+		s.Set("github_id", int(u.GetID()))
 
 		return c.Redirect(http.StatusFound, "/")
 	})
@@ -134,8 +134,8 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 }
 
 func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
-	githubId := int64(s.GetFloat64Default("github_id", 0))
-	bangumiId := int64(s.GetFloat64Default("bangumi_id", 0))
+	githubId := s.GetIntDefault("github_id", 0)
+	bangumiId := s.GetIntDefault("bangumi_id", 0)
 
 	if githubId == 0 || bangumiId == 0 {
 		return nil
