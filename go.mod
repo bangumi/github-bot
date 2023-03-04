@@ -9,6 +9,7 @@ require (
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/lib/pq v1.10.7
+	github.com/matoous/go-nanoid/v2 v2.0.0
 	github.com/palantir/go-githubapp v0.15.0
 	github.com/rs/zerolog v1.29.0
 	github.com/samber/lo v1.37.0
