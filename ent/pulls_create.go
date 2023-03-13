@@ -331,10 +331,7 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 			Columns: []string{pulls.CreatorColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
