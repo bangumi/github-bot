@@ -6,7 +6,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-resty/resty/v2"
-	"github.com/google/go-github/v50/github"
+	"github.com/google/go-github/v51/github"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/lo"
