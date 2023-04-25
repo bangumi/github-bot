@@ -2,6 +2,11 @@
 
 package user
 
+import (
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
+)
+
 const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
@@ -47,3 +52,42 @@ var (
 	// BangumiIDValidator is a validator for the "bangumi_id" field. It is called by the builders before save.
 	BangumiIDValidator func(int64) error
 )
+
+// OrderOption defines the ordering options for the User queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByGithubID orders the results by the github_id field.
+func ByGithubID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGithubID, opts...).ToFunc()
+}
+
+// ByBangumiID orders the results by the bangumi_id field.
+func ByBangumiID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBangumiID, opts...).ToFunc()
+}
+
+// ByPullRequestsCount orders the results by pull_requests count.
+func ByPullRequestsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPullRequestsStep(), opts...)
+	}
+}
+
+// ByPullRequests orders the results by pull_requests terms.
+func ByPullRequests(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPullRequestsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newPullRequestsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PullRequestsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PullRequestsTable, PullRequestsColumn),
+	)
+}

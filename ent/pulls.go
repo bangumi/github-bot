@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -43,6 +44,7 @@ type Pulls struct {
 	// The values are being populated by the PullsQuery when eager-loading is set.
 	Edges              PullsEdges `json:"edges"`
 	user_pull_requests *int
+	selectValues       sql.SelectValues
 }
 
 // PullsEdges holds the relations/edges for other nodes in the graph.
@@ -81,7 +83,7 @@ func (*Pulls) scanValues(columns []string) ([]any, error) {
 		case pulls.ForeignKeys[0]: // user_pull_requests
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Pulls", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -174,9 +176,17 @@ func (pu *Pulls) assignValues(columns []string, values []any) error {
 				pu.user_pull_requests = new(int)
 				*pu.user_pull_requests = int(value.Int64)
 			}
+		default:
+			pu.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the Pulls.
+// This includes values selected through modifiers, order, etc.
+func (pu *Pulls) Value(name string) (ent.Value, error) {
+	return pu.selectValues.Get(name)
 }
 
 // QueryCreator queries the "Creator" edge of the Pulls entity.

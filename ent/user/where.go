@@ -168,11 +168,7 @@ func HasPullRequests() predicate.User {
 // HasPullRequestsWith applies the HasEdge predicate on the "pull_requests" edge with a given conditions (other predicates).
 func HasPullRequestsWith(preds ...predicate.Pulls) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PullRequestsInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, PullRequestsTable, PullRequestsColumn),
-		)
+		step := newPullRequestsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

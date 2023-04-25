@@ -2,6 +2,11 @@
 
 package pulls
 
+import (
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
+)
+
 const (
 	// Label holds the string label denoting the pulls type in the database.
 	Label = "pulls"
@@ -93,3 +98,80 @@ var (
 	// DefaultHeadSha holds the default value on creation for the "headSha" field.
 	DefaultHeadSha string
 )
+
+// OrderOption defines the ordering options for the Pulls queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByOwner orders the results by the owner field.
+func ByOwner(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOwner, opts...).ToFunc()
+}
+
+// ByPrID orders the results by the prID field.
+func ByPrID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPrID, opts...).ToFunc()
+}
+
+// ByRepo orders the results by the repo field.
+func ByRepo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRepo, opts...).ToFunc()
+}
+
+// ByRepoID orders the results by the repoID field.
+func ByRepoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRepoID, opts...).ToFunc()
+}
+
+// ByNumber orders the results by the number field.
+func ByNumber(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNumber, opts...).ToFunc()
+}
+
+// ByComment orders the results by the comment field.
+func ByComment(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldComment, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the createdAt field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByMergedAt orders the results by the mergedAt field.
+func ByMergedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMergedAt, opts...).ToFunc()
+}
+
+// ByCheckRunID orders the results by the checkRunID field.
+func ByCheckRunID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCheckRunID, opts...).ToFunc()
+}
+
+// ByCheckRunResult orders the results by the checkRunResult field.
+func ByCheckRunResult(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCheckRunResult, opts...).ToFunc()
+}
+
+// ByHeadSha orders the results by the headSha field.
+func ByHeadSha(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHeadSha, opts...).ToFunc()
+}
+
+// ByCreatorField orders the results by Creator field.
+func ByCreatorField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCreatorStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newCreatorStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(CreatorInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, CreatorTable, CreatorColumn),
+	)
+}

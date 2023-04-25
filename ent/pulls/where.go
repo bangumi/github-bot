@@ -674,11 +674,7 @@ func HasCreator() predicate.Pulls {
 // HasCreatorWith applies the HasEdge predicate on the "Creator" edge with a given conditions (other predicates).
 func HasCreatorWith(preds ...predicate.User) predicate.Pulls {
 	return predicate.Pulls(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(CreatorInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, CreatorTable, CreatorColumn),
-		)
+		step := newCreatorStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

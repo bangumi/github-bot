@@ -19,7 +19,7 @@ import (
 type PullsQuery struct {
 	config
 	ctx         *QueryContext
-	order       []OrderFunc
+	order       []pulls.OrderOption
 	inters      []Interceptor
 	predicates  []predicate.Pulls
 	withCreator *UserQuery
@@ -55,7 +55,7 @@ func (pq *PullsQuery) Unique(unique bool) *PullsQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (pq *PullsQuery) Order(o ...OrderFunc) *PullsQuery {
+func (pq *PullsQuery) Order(o ...pulls.OrderOption) *PullsQuery {
 	pq.order = append(pq.order, o...)
 	return pq
 }
@@ -271,7 +271,7 @@ func (pq *PullsQuery) Clone() *PullsQuery {
 	return &PullsQuery{
 		config:      pq.config,
 		ctx:         pq.ctx.Clone(),
-		order:       append([]OrderFunc{}, pq.order...),
+		order:       append([]pulls.OrderOption{}, pq.order...),
 		inters:      append([]Interceptor{}, pq.inters...),
 		predicates:  append([]predicate.Pulls{}, pq.predicates...),
 		withCreator: pq.withCreator.Clone(),
