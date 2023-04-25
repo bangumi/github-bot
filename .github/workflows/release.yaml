@@ -40,7 +40,6 @@ jobs:
             type=sha,prefix={{branch}}-
             type=ref,event=branch
             type=ref,event=branch,suffix=-${{ env.SHA }}
-            type=raw,value=${{ env.SHA }}
 
       - uses: docker/login-action@v2
         with:
