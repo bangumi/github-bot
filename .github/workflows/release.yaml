@@ -24,7 +24,9 @@ jobs:
 
       - run: echo "TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
-      - run: echo "SHA=$(git show --no-patch --no-notes --date=short --pretty='%as-%h')" >> $GITHUB_ENV
+      - run: echo "SHA=$(git show --no-patch --no-notes --date=short-local --pretty='%as-%h')" >> $GITHUB_ENV
+        env:
+          TZ: UTC
 
       - run: go build -o dist/github-bot -trimpath -ldflags "-X 'main.version=${SHA}'"
         name: Build Binary
