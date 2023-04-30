@@ -10,7 +10,7 @@ require (
 	github.com/jaevor/go-nanoid v1.3.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v4 v4.10.2
-	github.com/lib/pq v1.10.8
+	github.com/lib/pq v1.10.9
 	github.com/palantir/go-githubapp v0.16.0
 	github.com/rs/zerolog v1.29.1
 	github.com/samber/lo v1.38.1
