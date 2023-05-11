@@ -15,7 +15,7 @@ require (
 	github.com/rs/zerolog v1.29.1
 	github.com/samber/lo v1.38.1
 	github.com/trim21/errgo v0.0.2
-	golang.org/x/oauth2 v0.7.0
+	golang.org/x/oauth2 v0.8.0
 )
 
 require (
@@ -52,8 +52,8 @@ require (
 	golang.org/x/crypto v0.8.0 // indirect
 	golang.org/x/exp v0.0.0-20230224173230-c95f2b4c22f2 // indirect
 	golang.org/x/mod v0.8.0 // indirect
-	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
