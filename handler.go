@@ -164,10 +164,6 @@ func (h PRHandle) checkSuite(
 	u *ent.User, p *ent.Pulls,
 	pr *github.PullRequest,
 ) error {
-	if u.BangumiID != 0 {
-		return nil
-	}
-
 	if pr.GetState() == "closed" {
 		return nil
 	}
@@ -177,6 +173,19 @@ func (h PRHandle) checkSuite(
 	}
 
 	repo := pr.Base.Repo
+
+	if u.BangumiID != 0 {
+		_, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
+			Name:       githubCheckRunName,
+			HeadSHA:    pr.Head.GetSHA(),
+			Conclusion: &checkRunSuccess,
+			Output: &github.CheckRunOutput{
+				Title:   lo.ToPtr("Bangumi 账号已关联"),
+				Summary: &successMessage,
+			},
+		})
+		return errgo.Trace(err)
+	}
 
 	cr, _, err := h.g.Checks.CreateCheckRun(ctx, repo.Owner.GetLogin(), repo.GetName(), github.CreateCheckRunOptions{
 		Name:       githubCheckRunName,
