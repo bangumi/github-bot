@@ -164,7 +164,7 @@ func (pc *PullsCreate) Mutation() *PullsMutation {
 // Save creates the Pulls in the database.
 func (pc *PullsCreate) Save(ctx context.Context) (*Pulls, error) {
 	pc.defaults()
-	return withHooks[*Pulls, PullsMutation](ctx, pc.sqlSave, pc.mutation, pc.hooks)
+	return withHooks(ctx, pc.sqlSave, pc.mutation, pc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
