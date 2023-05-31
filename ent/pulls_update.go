@@ -216,7 +216,7 @@ func (pu *PullsUpdate) ClearCreator() *PullsUpdate {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (pu *PullsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, PullsMutation](ctx, pu.sqlSave, pu.mutation, pu.hooks)
+	return withHooks(ctx, pu.sqlSave, pu.mutation, pu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -561,7 +561,7 @@ func (puo *PullsUpdateOne) Select(field string, fields ...string) *PullsUpdateOn
 
 // Save executes the query and returns the updated Pulls entity.
 func (puo *PullsUpdateOne) Save(ctx context.Context) (*Pulls, error) {
-	return withHooks[*Pulls, PullsMutation](ctx, puo.sqlSave, puo.mutation, puo.hooks)
+	return withHooks(ctx, puo.sqlSave, puo.mutation, puo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

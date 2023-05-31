@@ -27,7 +27,7 @@ func (pd *PullsDelete) Where(ps ...predicate.Pulls) *PullsDelete {
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (pd *PullsDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, PullsMutation](ctx, pd.sqlExec, pd.mutation, pd.hooks)
+	return withHooks(ctx, pd.sqlExec, pd.mutation, pd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
