@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
-
-	_ "github.com/lib/pq"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	_ "github.com/lib/pq"
 	"github.com/palantir/go-githubapp/githubapp"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 
@@ -18,6 +19,9 @@ import (
 var version = "development"
 
 func main() {
+	zerolog.TimeFieldFormat = time.RFC3339Nano
+	zerolog.MessageFieldName = "msg"
+
 	client, err := ent.Open("postgres", config.PgOption)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed opening connection to pg")
@@ -78,7 +82,10 @@ func main() {
 	}
 
 	// Start server
-	log.Fatal().Err(e.Start(host + ":" + port)).Msg("failed to start server")
+	log.Info().Msg("start server")
+	if err := e.Start(host + ":" + port); err != nil {
+		log.Fatal().Err(err).Msg("failed to start server")
+	}
 }
 
 func getGithubAppClient() githubapp.ClientCreator {
