@@ -9,6 +9,7 @@ import (
 	"github.com/google/go-github/v52/github"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"github.com/trim21/errgo"
 	"golang.org/x/oauth2"
@@ -46,7 +47,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		}
 		token, err := conf.Exchange(c.Request().Context(), code)
 		if err != nil {
-			logger.Err(err).Msg("failed to auth")
+			log.Err(err).Msg("failed to auth")
 			return errgo.Trace(err)
 		}
 
@@ -54,7 +55,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 
 		u, _, err := gh.Users.Get(c.Request().Context(), "")
 		if err != nil {
-			logger.Err(err).Msg("failed to get github user info")
+			log.Err(err).Msg("failed to get github user info")
 			return errgo.Trace(err)
 		}
 
@@ -97,7 +98,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 
 		token, err := conf.Exchange(c.Request().Context(), code)
 		if err != nil {
-			logger.Err(err).Msg("failed to auth")
+			log.Err(err).Msg("failed to auth")
 			return errgo.Trace(err)
 		}
 
@@ -107,12 +108,12 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 
 		res, err := client.R().SetHeader(echo.HeaderAuthorization, "Bearer "+token.AccessToken).SetResult(&data).Get("https://api.bgm.tv/v0/me")
 		if err != nil {
-			logger.Err(err).Msg("failed to fetch user info from API")
+			log.Err(err).Msg("failed to fetch user info from API")
 			return errgo.Trace(err)
 		}
 
 		if res.StatusCode() > 300 {
-			logger.Error().
+			log.Error().
 				Int("response_code", res.StatusCode()).
 				Str("response_body", res.String()).
 				Msg("failed to fetch user info, wrong http code")
@@ -144,7 +145,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 	err := h.ent.User.Create().SetGithubID(githubId).SetBangumiID(bangumiId).
 		OnConflict(sql.ConflictColumns(user.FieldGithubID)).UpdateBangumiID().Exec(ctx)
 	if err != nil {
-		logger.Err(err).Msg("failed to save authorized user to db")
+		log.Err(err).Msg("failed to save authorized user to db")
 		return errgo.Trace(err)
 	}
 
@@ -156,7 +157,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			pulls.MergedAtIsNil(),
 		).All(ctx)
 		if err != nil {
-			logger.Err(err).Msg("failed to get pulls")
+			log.Err(err).Msg("failed to get pulls")
 			return errgo.Trace(err)
 		}
 
@@ -190,7 +191,7 @@ func (h PRHandle) afterOauth(ctx context.Context, s *sessions.Session) error {
 			pulls.MergedAtIsNil(),
 		).All(ctx)
 		if err != nil {
-			logger.Err(err).Msg("failed to get pulls")
+			log.Err(err).Msg("failed to get pulls")
 			return errgo.Trace(err)
 		}
 

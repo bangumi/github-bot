@@ -2,32 +2,30 @@ package main
 
 import (
 	"context"
-	"os"
+
+	_ "github.com/lib/pq"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	_ "github.com/lib/pq"
 	"github.com/palantir/go-githubapp/githubapp"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 
 	"github-bot/config"
 	"github-bot/ent"
 )
 
-var logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
-
 var version = "development"
 
 func main() {
 	client, err := ent.Open("postgres", config.PgOption)
 	if err != nil {
-		logger.Fatal().Err(err).Msg("failed opening connection to pg")
+		log.Fatal().Err(err).Msg("failed opening connection to pg")
 	}
 	defer client.Close()
 	// Run the auto migration tool.
 	if err := client.Schema.Create(context.Background()); err != nil {
-		logger.Fatal().Err(err).Msg("failed creating schema resources")
+		log.Fatal().Err(err).Msg("failed creating schema resources")
 	}
 
 	// Echo instance
@@ -39,7 +37,7 @@ func main() {
 			err := next(c)
 			if err != nil {
 				if _, ok := err.(*echo.HTTPError); !ok {
-					logger.Err(err).Msg("internal error")
+					log.Err(err).Msg("internal error")
 				}
 			}
 
@@ -80,7 +78,7 @@ func main() {
 	}
 
 	// Start server
-	e.Logger.Fatal(e.Start(host + ":" + port))
+	log.Fatal().Err(e.Start(host + ":" + port)).Msg("failed to start server")
 }
 
 func getGithubAppClient() githubapp.ClientCreator {

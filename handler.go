@@ -15,6 +15,7 @@ import (
 	"github.com/google/go-github/v52/github"
 	"github.com/labstack/echo/v4"
 	"github.com/palantir/go-githubapp/githubapp"
+	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"github.com/trim21/errgo"
 
@@ -102,23 +103,23 @@ func (h PRHandle) Handle(c echo.Context) error {
 func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEvent) error {
 	pr := payload.PullRequest
 
-	logger.Info().
+	log.Info().
 		Str("action", payload.GetAction()).
 		Str("repo", payload.GetRepo().GetFullName()).
 		Msg("new pull webhook")
 
 	if pr.User.GetType() == "Bot" || strings.HasSuffix(strings.ToLower(pr.User.GetLogin()), "-bot") {
-		logger.Info().Msg("ignore bot pr")
+		log.Info().Msg("ignore bot pr")
 		return nil
 	}
 
 	if repo := pr.Base.Repo.GetName(); lo.Contains(repoToIgnore, repo) || repo == "" {
-		logger.Info().Str("repo", repo).Msg("skip non-code repo")
+		log.Info().Str("repo", repo).Msg("skip non-code repo")
 		return nil
 	}
 
 	if owner := pr.Base.Repo.GetOwner().GetLogin(); owner != "bangumi" {
-		logger.Info().Str("repo_owner", owner).Msg("skip non-bangumi repo")
+		log.Info().Str("repo_owner", owner).Msg("skip non-bangumi repo")
 		return nil
 	}
 
@@ -148,7 +149,7 @@ func (h PRHandle) handle(ctx context.Context, u *ent.User, p *ent.Pulls) error {
 
 		if err != nil {
 			b, _ := io.ReadAll(res.Body)
-			logger.Err(err).Bytes("body", b).Msg("failed to create issue")
+			log.Err(err).Bytes("body", b).Msg("failed to create issue")
 			return errgo.Trace(err)
 		}
 
@@ -299,7 +300,7 @@ func (h PRHandle) objectFromEvent(ctx context.Context, event github.PullRequestE
 
 		p, err = updateOne.Save(ctx)
 		if err != nil {
-			logger.Err(err).Msg("failed to update pulls")
+			log.Err(err).Msg("failed to update pulls")
 			return nil, nil, errgo.Trace(err)
 		}
 	}
