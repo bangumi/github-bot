@@ -7,26 +7,16 @@
   ],
   "packageRules": [
     {
-      "matchManagers": [
-        "go"
-      ],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch"
-      ],
+      "matchManagers": ["go"],
+      "matchUpdateTypes": ["major", "minor", "patch"],
       "matchPackageNames": [
         "github.com/palantir/go-githubapp",
         "github.com/google/go-github"
       ]
     },
     {
-      "matchManagers": [
-        "docker-compose"
-      ],
-      "matchPackageNames": [
-        "mysql"
-      ],
+      "matchManagers": ["docker-compose"],
+      "matchPackageNames": ["mysql"],
       "enabled": false
     }
   ]
