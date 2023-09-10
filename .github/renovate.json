@@ -9,7 +9,7 @@
     {
       "groupName": "go-github",
       "matchManagers": [
-        "go"
+        "gomod"
       ],
       "matchUpdateTypes": [
         "major",
