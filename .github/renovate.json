@@ -8,6 +8,20 @@
   "packageRules": [
     {
       "matchManagers": [
+        "go"
+      ],
+      "matchUpdateTypes": [
+        "major",
+        "minor",
+        "patch"
+      ],
+      "matchPackageNames": [
+        "github.com/palantir/go-githubapp",
+        "github.com/google/go-github"
+      ]
+    },
+    {
+      "matchManagers": [
         "docker-compose"
       ],
       "matchPackageNames": [
