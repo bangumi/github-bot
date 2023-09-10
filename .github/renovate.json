@@ -7,9 +7,11 @@
   ],
   "packageRules": [
     {
+      "groupName": "go-github",
       "matchManagers": [
         "gomod"
       ],
+      "separateMajorMinor": false,
       "matchUpdateTypes": [
         "major",
         "minor",
