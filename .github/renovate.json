@@ -7,6 +7,7 @@
   ],
   "packageRules": [
     {
+      "groupName": "go-github",
       "matchManagers": [
         "go"
       ],
