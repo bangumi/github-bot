@@ -17,10 +17,12 @@
         "patch"
       ],
       "matchPackageNames": [
+        "github.com/palantir/go-githubapp",
         "github.com/google/go-github"
       ],
       "matchPackagePrefixes": [
-        "github.com/palantir/go-githubapp"
+        "github.com/palantir/go-githubapp",
+        "github.com/google/go-github"
       ]
     },
     {
