@@ -11,11 +11,7 @@
       "matchManagers": [
         "gomod"
       ],
-      "matchUpdateTypes": [
-        "major",
-        "minor",
-        "patch"
-      ],
+      "separateMajorMinor": false,
       "matchPackageNames": [
         "github.com/palantir/go-githubapp",
         "github.com/google/go-github"
