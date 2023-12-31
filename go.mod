@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	entgo.io/ent v0.12.3
+	entgo.io/ent v0.12.5
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.11.0
 	github.com/google/go-github/v56 v56.0.0
@@ -21,7 +21,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf // indirect
+	ariga.io/atlas v0.14.1-0.20230918065911-83ad451a4935 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect

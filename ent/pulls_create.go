@@ -832,12 +832,16 @@ func (u *PullsUpsertOne) IDX(ctx context.Context) int {
 // PullsCreateBulk is the builder for creating many Pulls entities in bulk.
 type PullsCreateBulk struct {
 	config
+	err      error
 	builders []*PullsCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Pulls entities in the database.
 func (pcb *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
+	if pcb.err != nil {
+		return nil, pcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(pcb.builders))
 	nodes := make([]*Pulls, len(pcb.builders))
 	mutators := make([]Mutator, len(pcb.builders))
@@ -1194,6 +1198,9 @@ func (u *PullsUpsertBulk) UpdateHeadSha() *PullsUpsertBulk {
 
 // Exec executes the query.
 func (u *PullsUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the PullsCreateBulk instead", i)

@@ -35,6 +35,14 @@ func (uu *UserUpdate) SetGithubID(i int64) *UserUpdate {
 	return uu
 }
 
+// SetNillableGithubID sets the "github_id" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableGithubID(i *int64) *UserUpdate {
+	if i != nil {
+		uu.SetGithubID(*i)
+	}
+	return uu
+}
+
 // AddGithubID adds i to the "github_id" field.
 func (uu *UserUpdate) AddGithubID(i int64) *UserUpdate {
 	uu.mutation.AddGithubID(i)
@@ -247,6 +255,14 @@ type UserUpdateOne struct {
 func (uuo *UserUpdateOne) SetGithubID(i int64) *UserUpdateOne {
 	uuo.mutation.ResetGithubID()
 	uuo.mutation.SetGithubID(i)
+	return uuo
+}
+
+// SetNillableGithubID sets the "github_id" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableGithubID(i *int64) *UserUpdateOne {
+	if i != nil {
+		uuo.SetGithubID(*i)
+	}
 	return uuo
 }
 
