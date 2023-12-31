@@ -35,6 +35,14 @@ func (pu *PullsUpdate) SetOwner(s string) *PullsUpdate {
 	return pu
 }
 
+// SetNillableOwner sets the "owner" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableOwner(s *string) *PullsUpdate {
+	if s != nil {
+		pu.SetOwner(*s)
+	}
+	return pu
+}
+
 // SetPrID sets the "prID" field.
 func (pu *PullsUpdate) SetPrID(i int64) *PullsUpdate {
 	pu.mutation.ResetPrID()
@@ -59,6 +67,14 @@ func (pu *PullsUpdate) AddPrID(i int64) *PullsUpdate {
 // SetRepo sets the "repo" field.
 func (pu *PullsUpdate) SetRepo(s string) *PullsUpdate {
 	pu.mutation.SetRepo(s)
+	return pu
+}
+
+// SetNillableRepo sets the "repo" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableRepo(s *string) *PullsUpdate {
+	if s != nil {
+		pu.SetRepo(*s)
+	}
 	return pu
 }
 
@@ -87,6 +103,14 @@ func (pu *PullsUpdate) AddRepoID(i int64) *PullsUpdate {
 func (pu *PullsUpdate) SetNumber(i int) *PullsUpdate {
 	pu.mutation.ResetNumber()
 	pu.mutation.SetNumber(i)
+	return pu
+}
+
+// SetNillableNumber sets the "number" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableNumber(i *int) *PullsUpdate {
+	if i != nil {
+		pu.SetNumber(*i)
+	}
 	return pu
 }
 
@@ -120,6 +144,14 @@ func (pu *PullsUpdate) AddComment(i int64) *PullsUpdate {
 // SetCreatedAt sets the "createdAt" field.
 func (pu *PullsUpdate) SetCreatedAt(t time.Time) *PullsUpdate {
 	pu.mutation.SetCreatedAt(t)
+	return pu
+}
+
+// SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
+func (pu *PullsUpdate) SetNillableCreatedAt(t *time.Time) *PullsUpdate {
+	if t != nil {
+		pu.SetCreatedAt(*t)
+	}
 	return pu
 }
 
@@ -367,6 +399,14 @@ func (puo *PullsUpdateOne) SetOwner(s string) *PullsUpdateOne {
 	return puo
 }
 
+// SetNillableOwner sets the "owner" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableOwner(s *string) *PullsUpdateOne {
+	if s != nil {
+		puo.SetOwner(*s)
+	}
+	return puo
+}
+
 // SetPrID sets the "prID" field.
 func (puo *PullsUpdateOne) SetPrID(i int64) *PullsUpdateOne {
 	puo.mutation.ResetPrID()
@@ -391,6 +431,14 @@ func (puo *PullsUpdateOne) AddPrID(i int64) *PullsUpdateOne {
 // SetRepo sets the "repo" field.
 func (puo *PullsUpdateOne) SetRepo(s string) *PullsUpdateOne {
 	puo.mutation.SetRepo(s)
+	return puo
+}
+
+// SetNillableRepo sets the "repo" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableRepo(s *string) *PullsUpdateOne {
+	if s != nil {
+		puo.SetRepo(*s)
+	}
 	return puo
 }
 
@@ -419,6 +467,14 @@ func (puo *PullsUpdateOne) AddRepoID(i int64) *PullsUpdateOne {
 func (puo *PullsUpdateOne) SetNumber(i int) *PullsUpdateOne {
 	puo.mutation.ResetNumber()
 	puo.mutation.SetNumber(i)
+	return puo
+}
+
+// SetNillableNumber sets the "number" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableNumber(i *int) *PullsUpdateOne {
+	if i != nil {
+		puo.SetNumber(*i)
+	}
 	return puo
 }
 
@@ -452,6 +508,14 @@ func (puo *PullsUpdateOne) AddComment(i int64) *PullsUpdateOne {
 // SetCreatedAt sets the "createdAt" field.
 func (puo *PullsUpdateOne) SetCreatedAt(t time.Time) *PullsUpdateOne {
 	puo.mutation.SetCreatedAt(t)
+	return puo
+}
+
+// SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
+func (puo *PullsUpdateOne) SetNillableCreatedAt(t *time.Time) *PullsUpdateOne {
+	if t != nil {
+		puo.SetCreatedAt(*t)
+	}
 	return puo
 }
 
