@@ -9,7 +9,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.12.0
 	github.com/google/go-github/v60 v60.0.0
-	github.com/jaevor/go-nanoid v1.3.0
+	github.com/jaevor/go-nanoid v1.4.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/lib/pq v1.10.9
