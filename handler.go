@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/google/go-github/v61/github"
+	"github.com/google/go-github/v62/github"
 	"github.com/labstack/echo/v4"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog/log"
