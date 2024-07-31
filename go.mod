@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.22.4
 
 require (
-	entgo.io/ent v0.13.1
+	entgo.io/ent v0.14.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.13.1
 	github.com/google/go-github/v62 v62.0.0
