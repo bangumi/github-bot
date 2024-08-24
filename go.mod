@@ -1,11 +1,9 @@
 module github-bot
 
-go 1.21
-
-toolchain go1.22.6
+go 1.23.0
 
 require (
-	entgo.io/ent v0.13.1
+	entgo.io/ent v0.14.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.13.1
 	github.com/google/go-github/v62 v62.0.0
@@ -51,9 +49,9 @@ require (
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.13.0 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/mod v0.17.0 // indirect
+	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 )
