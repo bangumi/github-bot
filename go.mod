@@ -6,12 +6,12 @@ require (
 	entgo.io/ent v0.14.1
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.15.3
-	github.com/google/go-github/v64 v64.0.0
+	github.com/google/go-github/v66 v66.0.0
 	github.com/jaevor/go-nanoid v1.4.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/lib/pq v1.10.9
-	github.com/palantir/go-githubapp v0.28.0
+	github.com/palantir/go-githubapp v0.29.0
 	github.com/rs/zerolog v1.33.0
 	github.com/samber/lo v1.47.0
 	github.com/trim21/errgo v0.0.3
@@ -29,6 +29,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-github/v62 v62.0.0 // indirect
+	github.com/google/go-github/v65 v65.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
