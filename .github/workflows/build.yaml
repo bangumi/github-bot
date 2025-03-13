@@ -16,12 +16,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: "go.mod"
-          cache: true
-
-      - run: go get ./...
+        uses: trim21/actions/setup-go@master
 
       - run: go build ./...
         name: Build Binary

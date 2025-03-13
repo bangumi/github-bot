@@ -17,10 +17,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: "go.mod"
-          cache: true
+        uses: trim21/actions/setup-go@master
 
       - run: echo "TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
