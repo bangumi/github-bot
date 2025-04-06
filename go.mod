@@ -14,7 +14,7 @@ require (
 	github.com/labstack/echo/v4 v4.13.3
 	github.com/lib/pq v1.10.9
 	github.com/palantir/go-githubapp v0.33.0
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	github.com/samber/lo v1.49.1
 	github.com/trim21/errgo v0.0.3
 	golang.org/x/oauth2 v0.28.0
