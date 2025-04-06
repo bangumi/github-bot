@@ -5,7 +5,7 @@ go 1.24.2
 tool golang.org/x/vuln/cmd/govulncheck
 
 require (
-	entgo.io/ent v0.14.3
+	entgo.io/ent v0.14.4
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/go-github/v69 v69.2.0
