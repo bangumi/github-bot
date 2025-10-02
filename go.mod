@@ -1,6 +1,6 @@
 module github-bot
 
-go 1.24.4
+go 1.24.7
 
 tool golang.org/x/vuln/cmd/govulncheck
 
