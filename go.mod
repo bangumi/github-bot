@@ -8,12 +8,12 @@ require (
 	entgo.io/ent v0.14.4
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.16.5
-	github.com/google/go-github/v73 v73.0.0
+	github.com/google/go-github/v75 v75.0.0
 	github.com/jaevor/go-nanoid v1.4.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v4 v4.13.4
 	github.com/lib/pq v1.10.9
-	github.com/palantir/go-githubapp v0.37.0
+	github.com/palantir/go-githubapp v0.38.2
 	github.com/rs/zerolog v1.34.0
 	github.com/samber/lo v1.51.0
 	github.com/trim21/errgo v0.0.6
