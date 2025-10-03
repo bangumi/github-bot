@@ -263,8 +263,8 @@ func (c *PullsClient) Update() *PullsUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *PullsClient) UpdateOne(pu *Pulls) *PullsUpdateOne {
-	mutation := newPullsMutation(c.config, OpUpdateOne, withPulls(pu))
+func (c *PullsClient) UpdateOne(_m *Pulls) *PullsUpdateOne {
+	mutation := newPullsMutation(c.config, OpUpdateOne, withPulls(_m))
 	return &PullsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -281,8 +281,8 @@ func (c *PullsClient) Delete() *PullsDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *PullsClient) DeleteOne(pu *Pulls) *PullsDeleteOne {
-	return c.DeleteOneID(pu.ID)
+func (c *PullsClient) DeleteOne(_m *Pulls) *PullsDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -317,16 +317,16 @@ func (c *PullsClient) GetX(ctx context.Context, id int) *Pulls {
 }
 
 // QueryCreator queries the Creator edge of a Pulls.
-func (c *PullsClient) QueryCreator(pu *Pulls) *UserQuery {
+func (c *PullsClient) QueryCreator(_m *Pulls) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := pu.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(pulls.Table, pulls.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, pulls.CreatorTable, pulls.CreatorColumn),
 		)
-		fromV = sqlgraph.Neighbors(pu.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
@@ -412,8 +412,8 @@ func (c *UserClient) Update() *UserUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
-	mutation := newUserMutation(c.config, OpUpdateOne, withUser(u))
+func (c *UserClient) UpdateOne(_m *User) *UserUpdateOne {
+	mutation := newUserMutation(c.config, OpUpdateOne, withUser(_m))
 	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -430,8 +430,8 @@ func (c *UserClient) Delete() *UserDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
-	return c.DeleteOneID(u.ID)
+func (c *UserClient) DeleteOne(_m *User) *UserDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -466,16 +466,16 @@ func (c *UserClient) GetX(ctx context.Context, id int) *User {
 }
 
 // QueryPullRequests queries the pull_requests edge of a User.
-func (c *UserClient) QueryPullRequests(u *User) *PullsQuery {
+func (c *UserClient) QueryPullRequests(_m *User) *PullsQuery {
 	query := (&PullsClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
+		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(pulls.Table, pulls.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.PullRequestsTable, user.PullRequestsColumn),
 		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query

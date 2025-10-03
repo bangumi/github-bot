@@ -24,236 +24,236 @@ type PullsUpdate struct {
 }
 
 // Where appends a list predicates to the PullsUpdate builder.
-func (pu *PullsUpdate) Where(ps ...predicate.Pulls) *PullsUpdate {
-	pu.mutation.Where(ps...)
-	return pu
+func (_u *PullsUpdate) Where(ps ...predicate.Pulls) *PullsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetOwner sets the "owner" field.
-func (pu *PullsUpdate) SetOwner(s string) *PullsUpdate {
-	pu.mutation.SetOwner(s)
-	return pu
+func (_u *PullsUpdate) SetOwner(v string) *PullsUpdate {
+	_u.mutation.SetOwner(v)
+	return _u
 }
 
 // SetNillableOwner sets the "owner" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableOwner(s *string) *PullsUpdate {
-	if s != nil {
-		pu.SetOwner(*s)
+func (_u *PullsUpdate) SetNillableOwner(v *string) *PullsUpdate {
+	if v != nil {
+		_u.SetOwner(*v)
 	}
-	return pu
+	return _u
 }
 
 // SetPrID sets the "prID" field.
-func (pu *PullsUpdate) SetPrID(i int64) *PullsUpdate {
-	pu.mutation.ResetPrID()
-	pu.mutation.SetPrID(i)
-	return pu
+func (_u *PullsUpdate) SetPrID(v int64) *PullsUpdate {
+	_u.mutation.ResetPrID()
+	_u.mutation.SetPrID(v)
+	return _u
 }
 
 // SetNillablePrID sets the "prID" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillablePrID(i *int64) *PullsUpdate {
-	if i != nil {
-		pu.SetPrID(*i)
+func (_u *PullsUpdate) SetNillablePrID(v *int64) *PullsUpdate {
+	if v != nil {
+		_u.SetPrID(*v)
 	}
-	return pu
+	return _u
 }
 
-// AddPrID adds i to the "prID" field.
-func (pu *PullsUpdate) AddPrID(i int64) *PullsUpdate {
-	pu.mutation.AddPrID(i)
-	return pu
+// AddPrID adds value to the "prID" field.
+func (_u *PullsUpdate) AddPrID(v int64) *PullsUpdate {
+	_u.mutation.AddPrID(v)
+	return _u
 }
 
 // SetRepo sets the "repo" field.
-func (pu *PullsUpdate) SetRepo(s string) *PullsUpdate {
-	pu.mutation.SetRepo(s)
-	return pu
+func (_u *PullsUpdate) SetRepo(v string) *PullsUpdate {
+	_u.mutation.SetRepo(v)
+	return _u
 }
 
 // SetNillableRepo sets the "repo" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableRepo(s *string) *PullsUpdate {
-	if s != nil {
-		pu.SetRepo(*s)
+func (_u *PullsUpdate) SetNillableRepo(v *string) *PullsUpdate {
+	if v != nil {
+		_u.SetRepo(*v)
 	}
-	return pu
+	return _u
 }
 
 // SetRepoID sets the "repoID" field.
-func (pu *PullsUpdate) SetRepoID(i int64) *PullsUpdate {
-	pu.mutation.ResetRepoID()
-	pu.mutation.SetRepoID(i)
-	return pu
+func (_u *PullsUpdate) SetRepoID(v int64) *PullsUpdate {
+	_u.mutation.ResetRepoID()
+	_u.mutation.SetRepoID(v)
+	return _u
 }
 
 // SetNillableRepoID sets the "repoID" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableRepoID(i *int64) *PullsUpdate {
-	if i != nil {
-		pu.SetRepoID(*i)
+func (_u *PullsUpdate) SetNillableRepoID(v *int64) *PullsUpdate {
+	if v != nil {
+		_u.SetRepoID(*v)
 	}
-	return pu
+	return _u
 }
 
-// AddRepoID adds i to the "repoID" field.
-func (pu *PullsUpdate) AddRepoID(i int64) *PullsUpdate {
-	pu.mutation.AddRepoID(i)
-	return pu
+// AddRepoID adds value to the "repoID" field.
+func (_u *PullsUpdate) AddRepoID(v int64) *PullsUpdate {
+	_u.mutation.AddRepoID(v)
+	return _u
 }
 
 // SetNumber sets the "number" field.
-func (pu *PullsUpdate) SetNumber(i int) *PullsUpdate {
-	pu.mutation.ResetNumber()
-	pu.mutation.SetNumber(i)
-	return pu
+func (_u *PullsUpdate) SetNumber(v int) *PullsUpdate {
+	_u.mutation.ResetNumber()
+	_u.mutation.SetNumber(v)
+	return _u
 }
 
 // SetNillableNumber sets the "number" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableNumber(i *int) *PullsUpdate {
-	if i != nil {
-		pu.SetNumber(*i)
+func (_u *PullsUpdate) SetNillableNumber(v *int) *PullsUpdate {
+	if v != nil {
+		_u.SetNumber(*v)
 	}
-	return pu
+	return _u
 }
 
-// AddNumber adds i to the "number" field.
-func (pu *PullsUpdate) AddNumber(i int) *PullsUpdate {
-	pu.mutation.AddNumber(i)
-	return pu
+// AddNumber adds value to the "number" field.
+func (_u *PullsUpdate) AddNumber(v int) *PullsUpdate {
+	_u.mutation.AddNumber(v)
+	return _u
 }
 
 // SetComment sets the "comment" field.
-func (pu *PullsUpdate) SetComment(i int64) *PullsUpdate {
-	pu.mutation.ResetComment()
-	pu.mutation.SetComment(i)
-	return pu
+func (_u *PullsUpdate) SetComment(v int64) *PullsUpdate {
+	_u.mutation.ResetComment()
+	_u.mutation.SetComment(v)
+	return _u
 }
 
 // SetNillableComment sets the "comment" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableComment(i *int64) *PullsUpdate {
-	if i != nil {
-		pu.SetComment(*i)
+func (_u *PullsUpdate) SetNillableComment(v *int64) *PullsUpdate {
+	if v != nil {
+		_u.SetComment(*v)
 	}
-	return pu
+	return _u
 }
 
-// AddComment adds i to the "comment" field.
-func (pu *PullsUpdate) AddComment(i int64) *PullsUpdate {
-	pu.mutation.AddComment(i)
-	return pu
+// AddComment adds value to the "comment" field.
+func (_u *PullsUpdate) AddComment(v int64) *PullsUpdate {
+	_u.mutation.AddComment(v)
+	return _u
 }
 
 // SetCreatedAt sets the "createdAt" field.
-func (pu *PullsUpdate) SetCreatedAt(t time.Time) *PullsUpdate {
-	pu.mutation.SetCreatedAt(t)
-	return pu
+func (_u *PullsUpdate) SetCreatedAt(v time.Time) *PullsUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableCreatedAt(t *time.Time) *PullsUpdate {
-	if t != nil {
-		pu.SetCreatedAt(*t)
+func (_u *PullsUpdate) SetNillableCreatedAt(v *time.Time) *PullsUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return pu
+	return _u
 }
 
 // SetMergedAt sets the "mergedAt" field.
-func (pu *PullsUpdate) SetMergedAt(t time.Time) *PullsUpdate {
-	pu.mutation.SetMergedAt(t)
-	return pu
+func (_u *PullsUpdate) SetMergedAt(v time.Time) *PullsUpdate {
+	_u.mutation.SetMergedAt(v)
+	return _u
 }
 
 // SetNillableMergedAt sets the "mergedAt" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableMergedAt(t *time.Time) *PullsUpdate {
-	if t != nil {
-		pu.SetMergedAt(*t)
+func (_u *PullsUpdate) SetNillableMergedAt(v *time.Time) *PullsUpdate {
+	if v != nil {
+		_u.SetMergedAt(*v)
 	}
-	return pu
+	return _u
 }
 
 // ClearMergedAt clears the value of the "mergedAt" field.
-func (pu *PullsUpdate) ClearMergedAt() *PullsUpdate {
-	pu.mutation.ClearMergedAt()
-	return pu
+func (_u *PullsUpdate) ClearMergedAt() *PullsUpdate {
+	_u.mutation.ClearMergedAt()
+	return _u
 }
 
 // SetCheckRunID sets the "checkRunID" field.
-func (pu *PullsUpdate) SetCheckRunID(i int64) *PullsUpdate {
-	pu.mutation.ResetCheckRunID()
-	pu.mutation.SetCheckRunID(i)
-	return pu
+func (_u *PullsUpdate) SetCheckRunID(v int64) *PullsUpdate {
+	_u.mutation.ResetCheckRunID()
+	_u.mutation.SetCheckRunID(v)
+	return _u
 }
 
 // SetNillableCheckRunID sets the "checkRunID" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableCheckRunID(i *int64) *PullsUpdate {
-	if i != nil {
-		pu.SetCheckRunID(*i)
+func (_u *PullsUpdate) SetNillableCheckRunID(v *int64) *PullsUpdate {
+	if v != nil {
+		_u.SetCheckRunID(*v)
 	}
-	return pu
+	return _u
 }
 
-// AddCheckRunID adds i to the "checkRunID" field.
-func (pu *PullsUpdate) AddCheckRunID(i int64) *PullsUpdate {
-	pu.mutation.AddCheckRunID(i)
-	return pu
+// AddCheckRunID adds value to the "checkRunID" field.
+func (_u *PullsUpdate) AddCheckRunID(v int64) *PullsUpdate {
+	_u.mutation.AddCheckRunID(v)
+	return _u
 }
 
 // SetCheckRunResult sets the "checkRunResult" field.
-func (pu *PullsUpdate) SetCheckRunResult(s string) *PullsUpdate {
-	pu.mutation.SetCheckRunResult(s)
-	return pu
+func (_u *PullsUpdate) SetCheckRunResult(v string) *PullsUpdate {
+	_u.mutation.SetCheckRunResult(v)
+	return _u
 }
 
 // SetNillableCheckRunResult sets the "checkRunResult" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableCheckRunResult(s *string) *PullsUpdate {
-	if s != nil {
-		pu.SetCheckRunResult(*s)
+func (_u *PullsUpdate) SetNillableCheckRunResult(v *string) *PullsUpdate {
+	if v != nil {
+		_u.SetCheckRunResult(*v)
 	}
-	return pu
+	return _u
 }
 
 // SetHeadSha sets the "headSha" field.
-func (pu *PullsUpdate) SetHeadSha(s string) *PullsUpdate {
-	pu.mutation.SetHeadSha(s)
-	return pu
+func (_u *PullsUpdate) SetHeadSha(v string) *PullsUpdate {
+	_u.mutation.SetHeadSha(v)
+	return _u
 }
 
 // SetNillableHeadSha sets the "headSha" field if the given value is not nil.
-func (pu *PullsUpdate) SetNillableHeadSha(s *string) *PullsUpdate {
-	if s != nil {
-		pu.SetHeadSha(*s)
+func (_u *PullsUpdate) SetNillableHeadSha(v *string) *PullsUpdate {
+	if v != nil {
+		_u.SetHeadSha(*v)
 	}
-	return pu
+	return _u
 }
 
 // SetCreatorID sets the "Creator" edge to the User entity by ID.
-func (pu *PullsUpdate) SetCreatorID(id int) *PullsUpdate {
-	pu.mutation.SetCreatorID(id)
-	return pu
+func (_u *PullsUpdate) SetCreatorID(id int) *PullsUpdate {
+	_u.mutation.SetCreatorID(id)
+	return _u
 }
 
 // SetCreator sets the "Creator" edge to the User entity.
-func (pu *PullsUpdate) SetCreator(u *User) *PullsUpdate {
-	return pu.SetCreatorID(u.ID)
+func (_u *PullsUpdate) SetCreator(v *User) *PullsUpdate {
+	return _u.SetCreatorID(v.ID)
 }
 
 // Mutation returns the PullsMutation object of the builder.
-func (pu *PullsUpdate) Mutation() *PullsMutation {
-	return pu.mutation
+func (_u *PullsUpdate) Mutation() *PullsMutation {
+	return _u.mutation
 }
 
 // ClearCreator clears the "Creator" edge to the User entity.
-func (pu *PullsUpdate) ClearCreator() *PullsUpdate {
-	pu.mutation.ClearCreator()
-	return pu
+func (_u *PullsUpdate) ClearCreator() *PullsUpdate {
+	_u.mutation.ClearCreator()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (pu *PullsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, pu.sqlSave, pu.mutation, pu.hooks)
+func (_u *PullsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pu *PullsUpdate) SaveX(ctx context.Context) int {
-	affected, err := pu.Save(ctx)
+func (_u *PullsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -261,90 +261,90 @@ func (pu *PullsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (pu *PullsUpdate) Exec(ctx context.Context) error {
-	_, err := pu.Save(ctx)
+func (_u *PullsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pu *PullsUpdate) ExecX(ctx context.Context) {
-	if err := pu.Exec(ctx); err != nil {
+func (_u *PullsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pu *PullsUpdate) check() error {
-	if _, ok := pu.mutation.CreatorID(); pu.mutation.CreatorCleared() && !ok {
+func (_u *PullsUpdate) check() error {
+	if _u.mutation.CreatorCleared() && len(_u.mutation.CreatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Pulls.Creator"`)
 	}
 	return nil
 }
 
-func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := pu.check(); err != nil {
-		return n, err
+func (_u *PullsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(pulls.Table, pulls.Columns, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
-	if ps := pu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := pu.mutation.Owner(); ok {
+	if value, ok := _u.mutation.Owner(); ok {
 		_spec.SetField(pulls.FieldOwner, field.TypeString, value)
 	}
-	if value, ok := pu.mutation.PrID(); ok {
+	if value, ok := _u.mutation.PrID(); ok {
 		_spec.SetField(pulls.FieldPrID, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.AddedPrID(); ok {
+	if value, ok := _u.mutation.AddedPrID(); ok {
 		_spec.AddField(pulls.FieldPrID, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.Repo(); ok {
+	if value, ok := _u.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 	}
-	if value, ok := pu.mutation.RepoID(); ok {
+	if value, ok := _u.mutation.RepoID(); ok {
 		_spec.SetField(pulls.FieldRepoID, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.AddedRepoID(); ok {
+	if value, ok := _u.mutation.AddedRepoID(); ok {
 		_spec.AddField(pulls.FieldRepoID, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.Number(); ok {
+	if value, ok := _u.mutation.Number(); ok {
 		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
 	}
-	if value, ok := pu.mutation.AddedNumber(); ok {
+	if value, ok := _u.mutation.AddedNumber(); ok {
 		_spec.AddField(pulls.FieldNumber, field.TypeInt, value)
 	}
-	if value, ok := pu.mutation.Comment(); ok {
+	if value, ok := _u.mutation.Comment(); ok {
 		_spec.SetField(pulls.FieldComment, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.AddedComment(); ok {
+	if value, ok := _u.mutation.AddedComment(); ok {
 		_spec.AddField(pulls.FieldComment, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(pulls.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := pu.mutation.MergedAt(); ok {
+	if value, ok := _u.mutation.MergedAt(); ok {
 		_spec.SetField(pulls.FieldMergedAt, field.TypeTime, value)
 	}
-	if pu.mutation.MergedAtCleared() {
+	if _u.mutation.MergedAtCleared() {
 		_spec.ClearField(pulls.FieldMergedAt, field.TypeTime)
 	}
-	if value, ok := pu.mutation.CheckRunID(); ok {
+	if value, ok := _u.mutation.CheckRunID(); ok {
 		_spec.SetField(pulls.FieldCheckRunID, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.AddedCheckRunID(); ok {
+	if value, ok := _u.mutation.AddedCheckRunID(); ok {
 		_spec.AddField(pulls.FieldCheckRunID, field.TypeInt64, value)
 	}
-	if value, ok := pu.mutation.CheckRunResult(); ok {
+	if value, ok := _u.mutation.CheckRunResult(); ok {
 		_spec.SetField(pulls.FieldCheckRunResult, field.TypeString, value)
 	}
-	if value, ok := pu.mutation.HeadSha(); ok {
+	if value, ok := _u.mutation.HeadSha(); ok {
 		_spec.SetField(pulls.FieldHeadSha, field.TypeString, value)
 	}
-	if pu.mutation.CreatorCleared() {
+	if _u.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -357,7 +357,7 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := pu.mutation.CreatorIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.CreatorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -373,7 +373,7 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, pu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{pulls.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -381,8 +381,8 @@ func (pu *PullsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	pu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // PullsUpdateOne is the builder for updating a single Pulls entity.
@@ -394,243 +394,243 @@ type PullsUpdateOne struct {
 }
 
 // SetOwner sets the "owner" field.
-func (puo *PullsUpdateOne) SetOwner(s string) *PullsUpdateOne {
-	puo.mutation.SetOwner(s)
-	return puo
+func (_u *PullsUpdateOne) SetOwner(v string) *PullsUpdateOne {
+	_u.mutation.SetOwner(v)
+	return _u
 }
 
 // SetNillableOwner sets the "owner" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableOwner(s *string) *PullsUpdateOne {
-	if s != nil {
-		puo.SetOwner(*s)
+func (_u *PullsUpdateOne) SetNillableOwner(v *string) *PullsUpdateOne {
+	if v != nil {
+		_u.SetOwner(*v)
 	}
-	return puo
+	return _u
 }
 
 // SetPrID sets the "prID" field.
-func (puo *PullsUpdateOne) SetPrID(i int64) *PullsUpdateOne {
-	puo.mutation.ResetPrID()
-	puo.mutation.SetPrID(i)
-	return puo
+func (_u *PullsUpdateOne) SetPrID(v int64) *PullsUpdateOne {
+	_u.mutation.ResetPrID()
+	_u.mutation.SetPrID(v)
+	return _u
 }
 
 // SetNillablePrID sets the "prID" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillablePrID(i *int64) *PullsUpdateOne {
-	if i != nil {
-		puo.SetPrID(*i)
+func (_u *PullsUpdateOne) SetNillablePrID(v *int64) *PullsUpdateOne {
+	if v != nil {
+		_u.SetPrID(*v)
 	}
-	return puo
+	return _u
 }
 
-// AddPrID adds i to the "prID" field.
-func (puo *PullsUpdateOne) AddPrID(i int64) *PullsUpdateOne {
-	puo.mutation.AddPrID(i)
-	return puo
+// AddPrID adds value to the "prID" field.
+func (_u *PullsUpdateOne) AddPrID(v int64) *PullsUpdateOne {
+	_u.mutation.AddPrID(v)
+	return _u
 }
 
 // SetRepo sets the "repo" field.
-func (puo *PullsUpdateOne) SetRepo(s string) *PullsUpdateOne {
-	puo.mutation.SetRepo(s)
-	return puo
+func (_u *PullsUpdateOne) SetRepo(v string) *PullsUpdateOne {
+	_u.mutation.SetRepo(v)
+	return _u
 }
 
 // SetNillableRepo sets the "repo" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableRepo(s *string) *PullsUpdateOne {
-	if s != nil {
-		puo.SetRepo(*s)
+func (_u *PullsUpdateOne) SetNillableRepo(v *string) *PullsUpdateOne {
+	if v != nil {
+		_u.SetRepo(*v)
 	}
-	return puo
+	return _u
 }
 
 // SetRepoID sets the "repoID" field.
-func (puo *PullsUpdateOne) SetRepoID(i int64) *PullsUpdateOne {
-	puo.mutation.ResetRepoID()
-	puo.mutation.SetRepoID(i)
-	return puo
+func (_u *PullsUpdateOne) SetRepoID(v int64) *PullsUpdateOne {
+	_u.mutation.ResetRepoID()
+	_u.mutation.SetRepoID(v)
+	return _u
 }
 
 // SetNillableRepoID sets the "repoID" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableRepoID(i *int64) *PullsUpdateOne {
-	if i != nil {
-		puo.SetRepoID(*i)
+func (_u *PullsUpdateOne) SetNillableRepoID(v *int64) *PullsUpdateOne {
+	if v != nil {
+		_u.SetRepoID(*v)
 	}
-	return puo
+	return _u
 }
 
-// AddRepoID adds i to the "repoID" field.
-func (puo *PullsUpdateOne) AddRepoID(i int64) *PullsUpdateOne {
-	puo.mutation.AddRepoID(i)
-	return puo
+// AddRepoID adds value to the "repoID" field.
+func (_u *PullsUpdateOne) AddRepoID(v int64) *PullsUpdateOne {
+	_u.mutation.AddRepoID(v)
+	return _u
 }
 
 // SetNumber sets the "number" field.
-func (puo *PullsUpdateOne) SetNumber(i int) *PullsUpdateOne {
-	puo.mutation.ResetNumber()
-	puo.mutation.SetNumber(i)
-	return puo
+func (_u *PullsUpdateOne) SetNumber(v int) *PullsUpdateOne {
+	_u.mutation.ResetNumber()
+	_u.mutation.SetNumber(v)
+	return _u
 }
 
 // SetNillableNumber sets the "number" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableNumber(i *int) *PullsUpdateOne {
-	if i != nil {
-		puo.SetNumber(*i)
+func (_u *PullsUpdateOne) SetNillableNumber(v *int) *PullsUpdateOne {
+	if v != nil {
+		_u.SetNumber(*v)
 	}
-	return puo
+	return _u
 }
 
-// AddNumber adds i to the "number" field.
-func (puo *PullsUpdateOne) AddNumber(i int) *PullsUpdateOne {
-	puo.mutation.AddNumber(i)
-	return puo
+// AddNumber adds value to the "number" field.
+func (_u *PullsUpdateOne) AddNumber(v int) *PullsUpdateOne {
+	_u.mutation.AddNumber(v)
+	return _u
 }
 
 // SetComment sets the "comment" field.
-func (puo *PullsUpdateOne) SetComment(i int64) *PullsUpdateOne {
-	puo.mutation.ResetComment()
-	puo.mutation.SetComment(i)
-	return puo
+func (_u *PullsUpdateOne) SetComment(v int64) *PullsUpdateOne {
+	_u.mutation.ResetComment()
+	_u.mutation.SetComment(v)
+	return _u
 }
 
 // SetNillableComment sets the "comment" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableComment(i *int64) *PullsUpdateOne {
-	if i != nil {
-		puo.SetComment(*i)
+func (_u *PullsUpdateOne) SetNillableComment(v *int64) *PullsUpdateOne {
+	if v != nil {
+		_u.SetComment(*v)
 	}
-	return puo
+	return _u
 }
 
-// AddComment adds i to the "comment" field.
-func (puo *PullsUpdateOne) AddComment(i int64) *PullsUpdateOne {
-	puo.mutation.AddComment(i)
-	return puo
+// AddComment adds value to the "comment" field.
+func (_u *PullsUpdateOne) AddComment(v int64) *PullsUpdateOne {
+	_u.mutation.AddComment(v)
+	return _u
 }
 
 // SetCreatedAt sets the "createdAt" field.
-func (puo *PullsUpdateOne) SetCreatedAt(t time.Time) *PullsUpdateOne {
-	puo.mutation.SetCreatedAt(t)
-	return puo
+func (_u *PullsUpdateOne) SetCreatedAt(v time.Time) *PullsUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "createdAt" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableCreatedAt(t *time.Time) *PullsUpdateOne {
-	if t != nil {
-		puo.SetCreatedAt(*t)
+func (_u *PullsUpdateOne) SetNillableCreatedAt(v *time.Time) *PullsUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return puo
+	return _u
 }
 
 // SetMergedAt sets the "mergedAt" field.
-func (puo *PullsUpdateOne) SetMergedAt(t time.Time) *PullsUpdateOne {
-	puo.mutation.SetMergedAt(t)
-	return puo
+func (_u *PullsUpdateOne) SetMergedAt(v time.Time) *PullsUpdateOne {
+	_u.mutation.SetMergedAt(v)
+	return _u
 }
 
 // SetNillableMergedAt sets the "mergedAt" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableMergedAt(t *time.Time) *PullsUpdateOne {
-	if t != nil {
-		puo.SetMergedAt(*t)
+func (_u *PullsUpdateOne) SetNillableMergedAt(v *time.Time) *PullsUpdateOne {
+	if v != nil {
+		_u.SetMergedAt(*v)
 	}
-	return puo
+	return _u
 }
 
 // ClearMergedAt clears the value of the "mergedAt" field.
-func (puo *PullsUpdateOne) ClearMergedAt() *PullsUpdateOne {
-	puo.mutation.ClearMergedAt()
-	return puo
+func (_u *PullsUpdateOne) ClearMergedAt() *PullsUpdateOne {
+	_u.mutation.ClearMergedAt()
+	return _u
 }
 
 // SetCheckRunID sets the "checkRunID" field.
-func (puo *PullsUpdateOne) SetCheckRunID(i int64) *PullsUpdateOne {
-	puo.mutation.ResetCheckRunID()
-	puo.mutation.SetCheckRunID(i)
-	return puo
+func (_u *PullsUpdateOne) SetCheckRunID(v int64) *PullsUpdateOne {
+	_u.mutation.ResetCheckRunID()
+	_u.mutation.SetCheckRunID(v)
+	return _u
 }
 
 // SetNillableCheckRunID sets the "checkRunID" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableCheckRunID(i *int64) *PullsUpdateOne {
-	if i != nil {
-		puo.SetCheckRunID(*i)
+func (_u *PullsUpdateOne) SetNillableCheckRunID(v *int64) *PullsUpdateOne {
+	if v != nil {
+		_u.SetCheckRunID(*v)
 	}
-	return puo
+	return _u
 }
 
-// AddCheckRunID adds i to the "checkRunID" field.
-func (puo *PullsUpdateOne) AddCheckRunID(i int64) *PullsUpdateOne {
-	puo.mutation.AddCheckRunID(i)
-	return puo
+// AddCheckRunID adds value to the "checkRunID" field.
+func (_u *PullsUpdateOne) AddCheckRunID(v int64) *PullsUpdateOne {
+	_u.mutation.AddCheckRunID(v)
+	return _u
 }
 
 // SetCheckRunResult sets the "checkRunResult" field.
-func (puo *PullsUpdateOne) SetCheckRunResult(s string) *PullsUpdateOne {
-	puo.mutation.SetCheckRunResult(s)
-	return puo
+func (_u *PullsUpdateOne) SetCheckRunResult(v string) *PullsUpdateOne {
+	_u.mutation.SetCheckRunResult(v)
+	return _u
 }
 
 // SetNillableCheckRunResult sets the "checkRunResult" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableCheckRunResult(s *string) *PullsUpdateOne {
-	if s != nil {
-		puo.SetCheckRunResult(*s)
+func (_u *PullsUpdateOne) SetNillableCheckRunResult(v *string) *PullsUpdateOne {
+	if v != nil {
+		_u.SetCheckRunResult(*v)
 	}
-	return puo
+	return _u
 }
 
 // SetHeadSha sets the "headSha" field.
-func (puo *PullsUpdateOne) SetHeadSha(s string) *PullsUpdateOne {
-	puo.mutation.SetHeadSha(s)
-	return puo
+func (_u *PullsUpdateOne) SetHeadSha(v string) *PullsUpdateOne {
+	_u.mutation.SetHeadSha(v)
+	return _u
 }
 
 // SetNillableHeadSha sets the "headSha" field if the given value is not nil.
-func (puo *PullsUpdateOne) SetNillableHeadSha(s *string) *PullsUpdateOne {
-	if s != nil {
-		puo.SetHeadSha(*s)
+func (_u *PullsUpdateOne) SetNillableHeadSha(v *string) *PullsUpdateOne {
+	if v != nil {
+		_u.SetHeadSha(*v)
 	}
-	return puo
+	return _u
 }
 
 // SetCreatorID sets the "Creator" edge to the User entity by ID.
-func (puo *PullsUpdateOne) SetCreatorID(id int) *PullsUpdateOne {
-	puo.mutation.SetCreatorID(id)
-	return puo
+func (_u *PullsUpdateOne) SetCreatorID(id int) *PullsUpdateOne {
+	_u.mutation.SetCreatorID(id)
+	return _u
 }
 
 // SetCreator sets the "Creator" edge to the User entity.
-func (puo *PullsUpdateOne) SetCreator(u *User) *PullsUpdateOne {
-	return puo.SetCreatorID(u.ID)
+func (_u *PullsUpdateOne) SetCreator(v *User) *PullsUpdateOne {
+	return _u.SetCreatorID(v.ID)
 }
 
 // Mutation returns the PullsMutation object of the builder.
-func (puo *PullsUpdateOne) Mutation() *PullsMutation {
-	return puo.mutation
+func (_u *PullsUpdateOne) Mutation() *PullsMutation {
+	return _u.mutation
 }
 
 // ClearCreator clears the "Creator" edge to the User entity.
-func (puo *PullsUpdateOne) ClearCreator() *PullsUpdateOne {
-	puo.mutation.ClearCreator()
-	return puo
+func (_u *PullsUpdateOne) ClearCreator() *PullsUpdateOne {
+	_u.mutation.ClearCreator()
+	return _u
 }
 
 // Where appends a list predicates to the PullsUpdate builder.
-func (puo *PullsUpdateOne) Where(ps ...predicate.Pulls) *PullsUpdateOne {
-	puo.mutation.Where(ps...)
-	return puo
+func (_u *PullsUpdateOne) Where(ps ...predicate.Pulls) *PullsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (puo *PullsUpdateOne) Select(field string, fields ...string) *PullsUpdateOne {
-	puo.fields = append([]string{field}, fields...)
-	return puo
+func (_u *PullsUpdateOne) Select(field string, fields ...string) *PullsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Pulls entity.
-func (puo *PullsUpdateOne) Save(ctx context.Context) (*Pulls, error) {
-	return withHooks(ctx, puo.sqlSave, puo.mutation, puo.hooks)
+func (_u *PullsUpdateOne) Save(ctx context.Context) (*Pulls, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (puo *PullsUpdateOne) SaveX(ctx context.Context) *Pulls {
-	node, err := puo.Save(ctx)
+func (_u *PullsUpdateOne) SaveX(ctx context.Context) *Pulls {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -638,37 +638,37 @@ func (puo *PullsUpdateOne) SaveX(ctx context.Context) *Pulls {
 }
 
 // Exec executes the query on the entity.
-func (puo *PullsUpdateOne) Exec(ctx context.Context) error {
-	_, err := puo.Save(ctx)
+func (_u *PullsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (puo *PullsUpdateOne) ExecX(ctx context.Context) {
-	if err := puo.Exec(ctx); err != nil {
+func (_u *PullsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (puo *PullsUpdateOne) check() error {
-	if _, ok := puo.mutation.CreatorID(); puo.mutation.CreatorCleared() && !ok {
+func (_u *PullsUpdateOne) check() error {
+	if _u.mutation.CreatorCleared() && len(_u.mutation.CreatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Pulls.Creator"`)
 	}
 	return nil
 }
 
-func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error) {
-	if err := puo.check(); err != nil {
+func (_u *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(pulls.Table, pulls.Columns, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
-	id, ok := puo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Pulls.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := puo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, pulls.FieldID)
 		for _, f := range fields {
@@ -680,65 +680,65 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 			}
 		}
 	}
-	if ps := puo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := puo.mutation.Owner(); ok {
+	if value, ok := _u.mutation.Owner(); ok {
 		_spec.SetField(pulls.FieldOwner, field.TypeString, value)
 	}
-	if value, ok := puo.mutation.PrID(); ok {
+	if value, ok := _u.mutation.PrID(); ok {
 		_spec.SetField(pulls.FieldPrID, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.AddedPrID(); ok {
+	if value, ok := _u.mutation.AddedPrID(); ok {
 		_spec.AddField(pulls.FieldPrID, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.Repo(); ok {
+	if value, ok := _u.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 	}
-	if value, ok := puo.mutation.RepoID(); ok {
+	if value, ok := _u.mutation.RepoID(); ok {
 		_spec.SetField(pulls.FieldRepoID, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.AddedRepoID(); ok {
+	if value, ok := _u.mutation.AddedRepoID(); ok {
 		_spec.AddField(pulls.FieldRepoID, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.Number(); ok {
+	if value, ok := _u.mutation.Number(); ok {
 		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
 	}
-	if value, ok := puo.mutation.AddedNumber(); ok {
+	if value, ok := _u.mutation.AddedNumber(); ok {
 		_spec.AddField(pulls.FieldNumber, field.TypeInt, value)
 	}
-	if value, ok := puo.mutation.Comment(); ok {
+	if value, ok := _u.mutation.Comment(); ok {
 		_spec.SetField(pulls.FieldComment, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.AddedComment(); ok {
+	if value, ok := _u.mutation.AddedComment(); ok {
 		_spec.AddField(pulls.FieldComment, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(pulls.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := puo.mutation.MergedAt(); ok {
+	if value, ok := _u.mutation.MergedAt(); ok {
 		_spec.SetField(pulls.FieldMergedAt, field.TypeTime, value)
 	}
-	if puo.mutation.MergedAtCleared() {
+	if _u.mutation.MergedAtCleared() {
 		_spec.ClearField(pulls.FieldMergedAt, field.TypeTime)
 	}
-	if value, ok := puo.mutation.CheckRunID(); ok {
+	if value, ok := _u.mutation.CheckRunID(); ok {
 		_spec.SetField(pulls.FieldCheckRunID, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.AddedCheckRunID(); ok {
+	if value, ok := _u.mutation.AddedCheckRunID(); ok {
 		_spec.AddField(pulls.FieldCheckRunID, field.TypeInt64, value)
 	}
-	if value, ok := puo.mutation.CheckRunResult(); ok {
+	if value, ok := _u.mutation.CheckRunResult(); ok {
 		_spec.SetField(pulls.FieldCheckRunResult, field.TypeString, value)
 	}
-	if value, ok := puo.mutation.HeadSha(); ok {
+	if value, ok := _u.mutation.HeadSha(); ok {
 		_spec.SetField(pulls.FieldHeadSha, field.TypeString, value)
 	}
-	if puo.mutation.CreatorCleared() {
+	if _u.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -751,7 +751,7 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := puo.mutation.CreatorIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.CreatorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -767,10 +767,10 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Pulls{config: puo.config}
+	_node = &Pulls{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, puo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{pulls.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -778,6 +778,6 @@ func (puo *PullsUpdateOne) sqlSave(ctx context.Context) (_node *Pulls, err error
 		}
 		return nil, err
 	}
-	puo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }
