@@ -10,6 +10,7 @@ import (
 	"github-bot/ent/user"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -30,44 +31,44 @@ type PullsQuery struct {
 }
 
 // Where adds a new predicate for the PullsQuery builder.
-func (pq *PullsQuery) Where(ps ...predicate.Pulls) *PullsQuery {
-	pq.predicates = append(pq.predicates, ps...)
-	return pq
+func (_q *PullsQuery) Where(ps ...predicate.Pulls) *PullsQuery {
+	_q.predicates = append(_q.predicates, ps...)
+	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (pq *PullsQuery) Limit(limit int) *PullsQuery {
-	pq.ctx.Limit = &limit
-	return pq
+func (_q *PullsQuery) Limit(limit int) *PullsQuery {
+	_q.ctx.Limit = &limit
+	return _q
 }
 
 // Offset to start from.
-func (pq *PullsQuery) Offset(offset int) *PullsQuery {
-	pq.ctx.Offset = &offset
-	return pq
+func (_q *PullsQuery) Offset(offset int) *PullsQuery {
+	_q.ctx.Offset = &offset
+	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (pq *PullsQuery) Unique(unique bool) *PullsQuery {
-	pq.ctx.Unique = &unique
-	return pq
+func (_q *PullsQuery) Unique(unique bool) *PullsQuery {
+	_q.ctx.Unique = &unique
+	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (pq *PullsQuery) Order(o ...pulls.OrderOption) *PullsQuery {
-	pq.order = append(pq.order, o...)
-	return pq
+func (_q *PullsQuery) Order(o ...pulls.OrderOption) *PullsQuery {
+	_q.order = append(_q.order, o...)
+	return _q
 }
 
 // QueryCreator chains the current query on the "Creator" edge.
-func (pq *PullsQuery) QueryCreator() *UserQuery {
-	query := (&UserClient{config: pq.config}).Query()
+func (_q *PullsQuery) QueryCreator() *UserQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := pq.prepareQuery(ctx); err != nil {
+		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
 		}
-		selector := pq.sqlQuery(ctx)
+		selector := _q.sqlQuery(ctx)
 		if err := selector.Err(); err != nil {
 			return nil, err
 		}
@@ -76,7 +77,7 @@ func (pq *PullsQuery) QueryCreator() *UserQuery {
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, pulls.CreatorTable, pulls.CreatorColumn),
 		)
-		fromU = sqlgraph.SetNeighbors(pq.driver.Dialect(), step)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
 	}
 	return query
@@ -84,8 +85,8 @@ func (pq *PullsQuery) QueryCreator() *UserQuery {
 
 // First returns the first Pulls entity from the query.
 // Returns a *NotFoundError when no Pulls was found.
-func (pq *PullsQuery) First(ctx context.Context) (*Pulls, error) {
-	nodes, err := pq.Limit(1).All(setContextOp(ctx, pq.ctx, "First"))
+func (_q *PullsQuery) First(ctx context.Context) (*Pulls, error) {
+	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -96,8 +97,8 @@ func (pq *PullsQuery) First(ctx context.Context) (*Pulls, error) {
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (pq *PullsQuery) FirstX(ctx context.Context) *Pulls {
-	node, err := pq.First(ctx)
+func (_q *PullsQuery) FirstX(ctx context.Context) *Pulls {
+	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -106,9 +107,9 @@ func (pq *PullsQuery) FirstX(ctx context.Context) *Pulls {
 
 // FirstID returns the first Pulls ID from the query.
 // Returns a *NotFoundError when no Pulls ID was found.
-func (pq *PullsQuery) FirstID(ctx context.Context) (id int, err error) {
+func (_q *PullsQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pq.Limit(1).IDs(setContextOp(ctx, pq.ctx, "FirstID")); err != nil {
+	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -119,8 +120,8 @@ func (pq *PullsQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (pq *PullsQuery) FirstIDX(ctx context.Context) int {
-	id, err := pq.FirstID(ctx)
+func (_q *PullsQuery) FirstIDX(ctx context.Context) int {
+	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
 	}
@@ -130,8 +131,8 @@ func (pq *PullsQuery) FirstIDX(ctx context.Context) int {
 // Only returns a single Pulls entity found by the query, ensuring it only returns one.
 // Returns a *NotSingularError when more than one Pulls entity is found.
 // Returns a *NotFoundError when no Pulls entities are found.
-func (pq *PullsQuery) Only(ctx context.Context) (*Pulls, error) {
-	nodes, err := pq.Limit(2).All(setContextOp(ctx, pq.ctx, "Only"))
+func (_q *PullsQuery) Only(ctx context.Context) (*Pulls, error) {
+	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -146,8 +147,8 @@ func (pq *PullsQuery) Only(ctx context.Context) (*Pulls, error) {
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (pq *PullsQuery) OnlyX(ctx context.Context) *Pulls {
-	node, err := pq.Only(ctx)
+func (_q *PullsQuery) OnlyX(ctx context.Context) *Pulls {
+	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -157,9 +158,9 @@ func (pq *PullsQuery) OnlyX(ctx context.Context) *Pulls {
 // OnlyID is like Only, but returns the only Pulls ID in the query.
 // Returns a *NotSingularError when more than one Pulls ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (pq *PullsQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (_q *PullsQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = pq.Limit(2).IDs(setContextOp(ctx, pq.ctx, "OnlyID")); err != nil {
+	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -174,8 +175,8 @@ func (pq *PullsQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (pq *PullsQuery) OnlyIDX(ctx context.Context) int {
-	id, err := pq.OnlyID(ctx)
+func (_q *PullsQuery) OnlyIDX(ctx context.Context) int {
+	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -183,18 +184,18 @@ func (pq *PullsQuery) OnlyIDX(ctx context.Context) int {
 }
 
 // All executes the query and returns a list of PullsSlice.
-func (pq *PullsQuery) All(ctx context.Context) ([]*Pulls, error) {
-	ctx = setContextOp(ctx, pq.ctx, "All")
-	if err := pq.prepareQuery(ctx); err != nil {
+func (_q *PullsQuery) All(ctx context.Context) ([]*Pulls, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
 	qr := querierAll[[]*Pulls, *PullsQuery]()
-	return withInterceptors[[]*Pulls](ctx, pq, qr, pq.inters)
+	return withInterceptors[[]*Pulls](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (pq *PullsQuery) AllX(ctx context.Context) []*Pulls {
-	nodes, err := pq.All(ctx)
+func (_q *PullsQuery) AllX(ctx context.Context) []*Pulls {
+	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -202,20 +203,20 @@ func (pq *PullsQuery) AllX(ctx context.Context) []*Pulls {
 }
 
 // IDs executes the query and returns a list of Pulls IDs.
-func (pq *PullsQuery) IDs(ctx context.Context) (ids []int, err error) {
-	if pq.ctx.Unique == nil && pq.path != nil {
-		pq.Unique(true)
+func (_q *PullsQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if _q.ctx.Unique == nil && _q.path != nil {
+		_q.Unique(true)
 	}
-	ctx = setContextOp(ctx, pq.ctx, "IDs")
-	if err = pq.Select(pulls.FieldID).Scan(ctx, &ids); err != nil {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
+	if err = _q.Select(pulls.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (pq *PullsQuery) IDsX(ctx context.Context) []int {
-	ids, err := pq.IDs(ctx)
+func (_q *PullsQuery) IDsX(ctx context.Context) []int {
+	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -223,17 +224,17 @@ func (pq *PullsQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (pq *PullsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, pq.ctx, "Count")
-	if err := pq.prepareQuery(ctx); err != nil {
+func (_q *PullsQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
+	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, pq, querierCount[*PullsQuery](), pq.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*PullsQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (pq *PullsQuery) CountX(ctx context.Context) int {
-	count, err := pq.Count(ctx)
+func (_q *PullsQuery) CountX(ctx context.Context) int {
+	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -241,9 +242,9 @@ func (pq *PullsQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (pq *PullsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, pq.ctx, "Exist")
-	switch _, err := pq.FirstID(ctx); {
+func (_q *PullsQuery) Exist(ctx context.Context) (bool, error) {
+	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
+	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
 	case err != nil:
@@ -254,8 +255,8 @@ func (pq *PullsQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (pq *PullsQuery) ExistX(ctx context.Context) bool {
-	exist, err := pq.Exist(ctx)
+func (_q *PullsQuery) ExistX(ctx context.Context) bool {
+	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -264,32 +265,32 @@ func (pq *PullsQuery) ExistX(ctx context.Context) bool {
 
 // Clone returns a duplicate of the PullsQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (pq *PullsQuery) Clone() *PullsQuery {
-	if pq == nil {
+func (_q *PullsQuery) Clone() *PullsQuery {
+	if _q == nil {
 		return nil
 	}
 	return &PullsQuery{
-		config:      pq.config,
-		ctx:         pq.ctx.Clone(),
-		order:       append([]pulls.OrderOption{}, pq.order...),
-		inters:      append([]Interceptor{}, pq.inters...),
-		predicates:  append([]predicate.Pulls{}, pq.predicates...),
-		withCreator: pq.withCreator.Clone(),
+		config:      _q.config,
+		ctx:         _q.ctx.Clone(),
+		order:       append([]pulls.OrderOption{}, _q.order...),
+		inters:      append([]Interceptor{}, _q.inters...),
+		predicates:  append([]predicate.Pulls{}, _q.predicates...),
+		withCreator: _q.withCreator.Clone(),
 		// clone intermediate query.
-		sql:  pq.sql.Clone(),
-		path: pq.path,
+		sql:  _q.sql.Clone(),
+		path: _q.path,
 	}
 }
 
 // WithCreator tells the query-builder to eager-load the nodes that are connected to
 // the "Creator" edge. The optional arguments are used to configure the query builder of the edge.
-func (pq *PullsQuery) WithCreator(opts ...func(*UserQuery)) *PullsQuery {
-	query := (&UserClient{config: pq.config}).Query()
+func (_q *PullsQuery) WithCreator(opts ...func(*UserQuery)) *PullsQuery {
+	query := (&UserClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	pq.withCreator = query
-	return pq
+	_q.withCreator = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -306,10 +307,10 @@ func (pq *PullsQuery) WithCreator(opts ...func(*UserQuery)) *PullsQuery {
 //		GroupBy(pulls.FieldOwner).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (pq *PullsQuery) GroupBy(field string, fields ...string) *PullsGroupBy {
-	pq.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &PullsGroupBy{build: pq}
-	grbuild.flds = &pq.ctx.Fields
+func (_q *PullsQuery) GroupBy(field string, fields ...string) *PullsGroupBy {
+	_q.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &PullsGroupBy{build: _q}
+	grbuild.flds = &_q.ctx.Fields
 	grbuild.label = pulls.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
@@ -327,55 +328,55 @@ func (pq *PullsQuery) GroupBy(field string, fields ...string) *PullsGroupBy {
 //	client.Pulls.Query().
 //		Select(pulls.FieldOwner).
 //		Scan(ctx, &v)
-func (pq *PullsQuery) Select(fields ...string) *PullsSelect {
-	pq.ctx.Fields = append(pq.ctx.Fields, fields...)
-	sbuild := &PullsSelect{PullsQuery: pq}
+func (_q *PullsQuery) Select(fields ...string) *PullsSelect {
+	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
+	sbuild := &PullsSelect{PullsQuery: _q}
 	sbuild.label = pulls.Label
-	sbuild.flds, sbuild.scan = &pq.ctx.Fields, sbuild.Scan
+	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
 // Aggregate returns a PullsSelect configured with the given aggregations.
-func (pq *PullsQuery) Aggregate(fns ...AggregateFunc) *PullsSelect {
-	return pq.Select().Aggregate(fns...)
+func (_q *PullsQuery) Aggregate(fns ...AggregateFunc) *PullsSelect {
+	return _q.Select().Aggregate(fns...)
 }
 
-func (pq *PullsQuery) prepareQuery(ctx context.Context) error {
-	for _, inter := range pq.inters {
+func (_q *PullsQuery) prepareQuery(ctx context.Context) error {
+	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
 		}
 		if trv, ok := inter.(Traverser); ok {
-			if err := trv.Traverse(ctx, pq); err != nil {
+			if err := trv.Traverse(ctx, _q); err != nil {
 				return err
 			}
 		}
 	}
-	for _, f := range pq.ctx.Fields {
+	for _, f := range _q.ctx.Fields {
 		if !pulls.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
-	if pq.path != nil {
-		prev, err := pq.path(ctx)
+	if _q.path != nil {
+		prev, err := _q.path(ctx)
 		if err != nil {
 			return err
 		}
-		pq.sql = prev
+		_q.sql = prev
 	}
 	return nil
 }
 
-func (pq *PullsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pulls, error) {
+func (_q *PullsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pulls, error) {
 	var (
 		nodes       = []*Pulls{}
-		withFKs     = pq.withFKs
-		_spec       = pq.querySpec()
+		withFKs     = _q.withFKs
+		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			pq.withCreator != nil,
+			_q.withCreator != nil,
 		}
 	)
-	if pq.withCreator != nil {
+	if _q.withCreator != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -385,7 +386,7 @@ func (pq *PullsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pulls,
 		return (*Pulls).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Pulls{config: pq.config}
+		node := &Pulls{config: _q.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -393,14 +394,14 @@ func (pq *PullsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pulls,
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
-	if err := sqlgraph.QueryNodes(ctx, pq.driver, _spec); err != nil {
+	if err := sqlgraph.QueryNodes(ctx, _q.driver, _spec); err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := pq.withCreator; query != nil {
-		if err := pq.loadCreator(ctx, query, nodes, nil,
+	if query := _q.withCreator; query != nil {
+		if err := _q.loadCreator(ctx, query, nodes, nil,
 			func(n *Pulls, e *User) { n.Edges.Creator = e }); err != nil {
 			return nil, err
 		}
@@ -408,7 +409,7 @@ func (pq *PullsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Pulls,
 	return nodes, nil
 }
 
-func (pq *PullsQuery) loadCreator(ctx context.Context, query *UserQuery, nodes []*Pulls, init func(*Pulls), assign func(*Pulls, *User)) error {
+func (_q *PullsQuery) loadCreator(ctx context.Context, query *UserQuery, nodes []*Pulls, init func(*Pulls), assign func(*Pulls, *User)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Pulls)
 	for i := range nodes {
@@ -441,24 +442,24 @@ func (pq *PullsQuery) loadCreator(ctx context.Context, query *UserQuery, nodes [
 	return nil
 }
 
-func (pq *PullsQuery) sqlCount(ctx context.Context) (int, error) {
-	_spec := pq.querySpec()
-	_spec.Node.Columns = pq.ctx.Fields
-	if len(pq.ctx.Fields) > 0 {
-		_spec.Unique = pq.ctx.Unique != nil && *pq.ctx.Unique
+func (_q *PullsQuery) sqlCount(ctx context.Context) (int, error) {
+	_spec := _q.querySpec()
+	_spec.Node.Columns = _q.ctx.Fields
+	if len(_q.ctx.Fields) > 0 {
+		_spec.Unique = _q.ctx.Unique != nil && *_q.ctx.Unique
 	}
-	return sqlgraph.CountNodes(ctx, pq.driver, _spec)
+	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (pq *PullsQuery) querySpec() *sqlgraph.QuerySpec {
+func (_q *PullsQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := sqlgraph.NewQuerySpec(pulls.Table, pulls.Columns, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
-	_spec.From = pq.sql
-	if unique := pq.ctx.Unique; unique != nil {
+	_spec.From = _q.sql
+	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
-	} else if pq.path != nil {
+	} else if _q.path != nil {
 		_spec.Unique = true
 	}
-	if fields := pq.ctx.Fields; len(fields) > 0 {
+	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, pulls.FieldID)
 		for i := range fields {
@@ -467,20 +468,20 @@ func (pq *PullsQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if ps := pq.predicates; len(ps) > 0 {
+	if ps := _q.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if limit := pq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := pq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
-	if ps := pq.order; len(ps) > 0 {
+	if ps := _q.order; len(ps) > 0 {
 		_spec.Order = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
@@ -490,33 +491,33 @@ func (pq *PullsQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (pq *PullsQuery) sqlQuery(ctx context.Context) *sql.Selector {
-	builder := sql.Dialect(pq.driver.Dialect())
+func (_q *PullsQuery) sqlQuery(ctx context.Context) *sql.Selector {
+	builder := sql.Dialect(_q.driver.Dialect())
 	t1 := builder.Table(pulls.Table)
-	columns := pq.ctx.Fields
+	columns := _q.ctx.Fields
 	if len(columns) == 0 {
 		columns = pulls.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
-	if pq.sql != nil {
-		selector = pq.sql
+	if _q.sql != nil {
+		selector = _q.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if pq.ctx.Unique != nil && *pq.ctx.Unique {
+	if _q.ctx.Unique != nil && *_q.ctx.Unique {
 		selector.Distinct()
 	}
-	for _, p := range pq.predicates {
+	for _, p := range _q.predicates {
 		p(selector)
 	}
-	for _, p := range pq.order {
+	for _, p := range _q.order {
 		p(selector)
 	}
-	if offset := pq.ctx.Offset; offset != nil {
+	if offset := _q.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := pq.ctx.Limit; limit != nil {
+	if limit := _q.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -529,41 +530,41 @@ type PullsGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (pgb *PullsGroupBy) Aggregate(fns ...AggregateFunc) *PullsGroupBy {
-	pgb.fns = append(pgb.fns, fns...)
-	return pgb
+func (_g *PullsGroupBy) Aggregate(fns ...AggregateFunc) *PullsGroupBy {
+	_g.fns = append(_g.fns, fns...)
+	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (pgb *PullsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pgb.build.ctx, "GroupBy")
-	if err := pgb.build.prepareQuery(ctx); err != nil {
+func (_g *PullsGroupBy) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
+	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PullsQuery, *PullsGroupBy](ctx, pgb.build, pgb, pgb.build.inters, v)
+	return scanWithInterceptors[*PullsQuery, *PullsGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (pgb *PullsGroupBy) sqlScan(ctx context.Context, root *PullsQuery, v any) error {
+func (_g *PullsGroupBy) sqlScan(ctx context.Context, root *PullsQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
-	aggregation := make([]string, 0, len(pgb.fns))
-	for _, fn := range pgb.fns {
+	aggregation := make([]string, 0, len(_g.fns))
+	for _, fn := range _g.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
 	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(*pgb.flds)+len(pgb.fns))
-		for _, f := range *pgb.flds {
+		columns := make([]string, 0, len(*_g.flds)+len(_g.fns))
+		for _, f := range *_g.flds {
 			columns = append(columns, selector.C(f))
 		}
 		columns = append(columns, aggregation...)
 		selector.Select(columns...)
 	}
-	selector.GroupBy(selector.Columns(*pgb.flds...)...)
+	selector.GroupBy(selector.Columns(*_g.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := pgb.build.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _g.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
@@ -577,27 +578,27 @@ type PullsSelect struct {
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (ps *PullsSelect) Aggregate(fns ...AggregateFunc) *PullsSelect {
-	ps.fns = append(ps.fns, fns...)
-	return ps
+func (_s *PullsSelect) Aggregate(fns ...AggregateFunc) *PullsSelect {
+	_s.fns = append(_s.fns, fns...)
+	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (ps *PullsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ps.ctx, "Select")
-	if err := ps.prepareQuery(ctx); err != nil {
+func (_s *PullsSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
+	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*PullsQuery, *PullsSelect](ctx, ps.PullsQuery, ps, ps.inters, v)
+	return scanWithInterceptors[*PullsQuery, *PullsSelect](ctx, _s.PullsQuery, _s, _s.inters, v)
 }
 
-func (ps *PullsSelect) sqlScan(ctx context.Context, root *PullsQuery, v any) error {
+func (_s *PullsSelect) sqlScan(ctx context.Context, root *PullsQuery, v any) error {
 	selector := root.sqlQuery(ctx)
-	aggregation := make([]string, 0, len(ps.fns))
-	for _, fn := range ps.fns {
+	aggregation := make([]string, 0, len(_s.fns))
+	for _, fn := range _s.fns {
 		aggregation = append(aggregation, fn(selector))
 	}
-	switch n := len(*ps.selector.flds); {
+	switch n := len(*_s.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
 		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
@@ -605,7 +606,7 @@ func (ps *PullsSelect) sqlScan(ctx context.Context, root *PullsQuery, v any) err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := ps.driver.Query(ctx, query, args, rows); err != nil {
+	if err := _s.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()

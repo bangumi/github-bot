@@ -89,7 +89,7 @@ func (*Pulls) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Pulls fields.
-func (pu *Pulls) assignValues(columns []string, values []any) error {
+func (_m *Pulls) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -100,82 +100,82 @@ func (pu *Pulls) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			pu.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case pulls.FieldOwner:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field owner", values[i])
 			} else if value.Valid {
-				pu.Owner = value.String
+				_m.Owner = value.String
 			}
 		case pulls.FieldPrID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field prID", values[i])
 			} else if value.Valid {
-				pu.PrID = value.Int64
+				_m.PrID = value.Int64
 			}
 		case pulls.FieldRepo:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field repo", values[i])
 			} else if value.Valid {
-				pu.Repo = value.String
+				_m.Repo = value.String
 			}
 		case pulls.FieldRepoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field repoID", values[i])
 			} else if value.Valid {
-				pu.RepoID = value.Int64
+				_m.RepoID = value.Int64
 			}
 		case pulls.FieldNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field number", values[i])
 			} else if value.Valid {
-				pu.Number = int(value.Int64)
+				_m.Number = int(value.Int64)
 			}
 		case pulls.FieldComment:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field comment", values[i])
 			} else if value.Valid {
-				pu.Comment = value.Int64
+				_m.Comment = value.Int64
 			}
 		case pulls.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field createdAt", values[i])
 			} else if value.Valid {
-				pu.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case pulls.FieldMergedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field mergedAt", values[i])
 			} else if value.Valid {
-				pu.MergedAt = value.Time
+				_m.MergedAt = value.Time
 			}
 		case pulls.FieldCheckRunID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field checkRunID", values[i])
 			} else if value.Valid {
-				pu.CheckRunID = value.Int64
+				_m.CheckRunID = value.Int64
 			}
 		case pulls.FieldCheckRunResult:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field checkRunResult", values[i])
 			} else if value.Valid {
-				pu.CheckRunResult = value.String
+				_m.CheckRunResult = value.String
 			}
 		case pulls.FieldHeadSha:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field headSha", values[i])
 			} else if value.Valid {
-				pu.HeadSha = value.String
+				_m.HeadSha = value.String
 			}
 		case pulls.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field user_pull_requests", value)
 			} else if value.Valid {
-				pu.user_pull_requests = new(int)
-				*pu.user_pull_requests = int(value.Int64)
+				_m.user_pull_requests = new(int)
+				*_m.user_pull_requests = int(value.Int64)
 			}
 		default:
-			pu.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -183,70 +183,70 @@ func (pu *Pulls) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Pulls.
 // This includes values selected through modifiers, order, etc.
-func (pu *Pulls) Value(name string) (ent.Value, error) {
-	return pu.selectValues.Get(name)
+func (_m *Pulls) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryCreator queries the "Creator" edge of the Pulls entity.
-func (pu *Pulls) QueryCreator() *UserQuery {
-	return NewPullsClient(pu.config).QueryCreator(pu)
+func (_m *Pulls) QueryCreator() *UserQuery {
+	return NewPullsClient(_m.config).QueryCreator(_m)
 }
 
 // Update returns a builder for updating this Pulls.
 // Note that you need to call Pulls.Unwrap() before calling this method if this Pulls
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (pu *Pulls) Update() *PullsUpdateOne {
-	return NewPullsClient(pu.config).UpdateOne(pu)
+func (_m *Pulls) Update() *PullsUpdateOne {
+	return NewPullsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Pulls entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (pu *Pulls) Unwrap() *Pulls {
-	_tx, ok := pu.config.driver.(*txDriver)
+func (_m *Pulls) Unwrap() *Pulls {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Pulls is not a transactional entity")
 	}
-	pu.config.driver = _tx.drv
-	return pu
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (pu *Pulls) String() string {
+func (_m *Pulls) String() string {
 	var builder strings.Builder
 	builder.WriteString("Pulls(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", pu.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("owner=")
-	builder.WriteString(pu.Owner)
+	builder.WriteString(_m.Owner)
 	builder.WriteString(", ")
 	builder.WriteString("prID=")
-	builder.WriteString(fmt.Sprintf("%v", pu.PrID))
+	builder.WriteString(fmt.Sprintf("%v", _m.PrID))
 	builder.WriteString(", ")
 	builder.WriteString("repo=")
-	builder.WriteString(pu.Repo)
+	builder.WriteString(_m.Repo)
 	builder.WriteString(", ")
 	builder.WriteString("repoID=")
-	builder.WriteString(fmt.Sprintf("%v", pu.RepoID))
+	builder.WriteString(fmt.Sprintf("%v", _m.RepoID))
 	builder.WriteString(", ")
 	builder.WriteString("number=")
-	builder.WriteString(fmt.Sprintf("%v", pu.Number))
+	builder.WriteString(fmt.Sprintf("%v", _m.Number))
 	builder.WriteString(", ")
 	builder.WriteString("comment=")
-	builder.WriteString(fmt.Sprintf("%v", pu.Comment))
+	builder.WriteString(fmt.Sprintf("%v", _m.Comment))
 	builder.WriteString(", ")
 	builder.WriteString("createdAt=")
-	builder.WriteString(pu.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("mergedAt=")
-	builder.WriteString(pu.MergedAt.Format(time.ANSIC))
+	builder.WriteString(_m.MergedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("checkRunID=")
-	builder.WriteString(fmt.Sprintf("%v", pu.CheckRunID))
+	builder.WriteString(fmt.Sprintf("%v", _m.CheckRunID))
 	builder.WriteString(", ")
 	builder.WriteString("checkRunResult=")
-	builder.WriteString(pu.CheckRunResult)
+	builder.WriteString(_m.CheckRunResult)
 	builder.WriteString(", ")
 	builder.WriteString("headSha=")
-	builder.WriteString(pu.HeadSha)
+	builder.WriteString(_m.HeadSha)
 	builder.WriteByte(')')
 	return builder.String()
 }

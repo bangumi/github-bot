@@ -23,108 +23,108 @@ type UserUpdate struct {
 }
 
 // Where appends a list predicates to the UserUpdate builder.
-func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
-	uu.mutation.Where(ps...)
-	return uu
+func (_u *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetGithubID sets the "github_id" field.
-func (uu *UserUpdate) SetGithubID(i int64) *UserUpdate {
-	uu.mutation.ResetGithubID()
-	uu.mutation.SetGithubID(i)
-	return uu
+func (_u *UserUpdate) SetGithubID(v int64) *UserUpdate {
+	_u.mutation.ResetGithubID()
+	_u.mutation.SetGithubID(v)
+	return _u
 }
 
 // SetNillableGithubID sets the "github_id" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableGithubID(i *int64) *UserUpdate {
-	if i != nil {
-		uu.SetGithubID(*i)
+func (_u *UserUpdate) SetNillableGithubID(v *int64) *UserUpdate {
+	if v != nil {
+		_u.SetGithubID(*v)
 	}
-	return uu
+	return _u
 }
 
-// AddGithubID adds i to the "github_id" field.
-func (uu *UserUpdate) AddGithubID(i int64) *UserUpdate {
-	uu.mutation.AddGithubID(i)
-	return uu
+// AddGithubID adds value to the "github_id" field.
+func (_u *UserUpdate) AddGithubID(v int64) *UserUpdate {
+	_u.mutation.AddGithubID(v)
+	return _u
 }
 
 // SetBangumiID sets the "bangumi_id" field.
-func (uu *UserUpdate) SetBangumiID(i int64) *UserUpdate {
-	uu.mutation.ResetBangumiID()
-	uu.mutation.SetBangumiID(i)
-	return uu
+func (_u *UserUpdate) SetBangumiID(v int64) *UserUpdate {
+	_u.mutation.ResetBangumiID()
+	_u.mutation.SetBangumiID(v)
+	return _u
 }
 
 // SetNillableBangumiID sets the "bangumi_id" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableBangumiID(i *int64) *UserUpdate {
-	if i != nil {
-		uu.SetBangumiID(*i)
+func (_u *UserUpdate) SetNillableBangumiID(v *int64) *UserUpdate {
+	if v != nil {
+		_u.SetBangumiID(*v)
 	}
-	return uu
+	return _u
 }
 
-// AddBangumiID adds i to the "bangumi_id" field.
-func (uu *UserUpdate) AddBangumiID(i int64) *UserUpdate {
-	uu.mutation.AddBangumiID(i)
-	return uu
+// AddBangumiID adds value to the "bangumi_id" field.
+func (_u *UserUpdate) AddBangumiID(v int64) *UserUpdate {
+	_u.mutation.AddBangumiID(v)
+	return _u
 }
 
 // ClearBangumiID clears the value of the "bangumi_id" field.
-func (uu *UserUpdate) ClearBangumiID() *UserUpdate {
-	uu.mutation.ClearBangumiID()
-	return uu
+func (_u *UserUpdate) ClearBangumiID() *UserUpdate {
+	_u.mutation.ClearBangumiID()
+	return _u
 }
 
 // AddPullRequestIDs adds the "pull_requests" edge to the Pulls entity by IDs.
-func (uu *UserUpdate) AddPullRequestIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddPullRequestIDs(ids...)
-	return uu
+func (_u *UserUpdate) AddPullRequestIDs(ids ...int) *UserUpdate {
+	_u.mutation.AddPullRequestIDs(ids...)
+	return _u
 }
 
 // AddPullRequests adds the "pull_requests" edges to the Pulls entity.
-func (uu *UserUpdate) AddPullRequests(p ...*Pulls) *UserUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *UserUpdate) AddPullRequests(v ...*Pulls) *UserUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return uu.AddPullRequestIDs(ids...)
+	return _u.AddPullRequestIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
-func (uu *UserUpdate) Mutation() *UserMutation {
-	return uu.mutation
+func (_u *UserUpdate) Mutation() *UserMutation {
+	return _u.mutation
 }
 
 // ClearPullRequests clears all "pull_requests" edges to the Pulls entity.
-func (uu *UserUpdate) ClearPullRequests() *UserUpdate {
-	uu.mutation.ClearPullRequests()
-	return uu
+func (_u *UserUpdate) ClearPullRequests() *UserUpdate {
+	_u.mutation.ClearPullRequests()
+	return _u
 }
 
 // RemovePullRequestIDs removes the "pull_requests" edge to Pulls entities by IDs.
-func (uu *UserUpdate) RemovePullRequestIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemovePullRequestIDs(ids...)
-	return uu
+func (_u *UserUpdate) RemovePullRequestIDs(ids ...int) *UserUpdate {
+	_u.mutation.RemovePullRequestIDs(ids...)
+	return _u
 }
 
 // RemovePullRequests removes "pull_requests" edges to Pulls entities.
-func (uu *UserUpdate) RemovePullRequests(p ...*Pulls) *UserUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *UserUpdate) RemovePullRequests(v ...*Pulls) *UserUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return uu.RemovePullRequestIDs(ids...)
+	return _u.RemovePullRequestIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (uu *UserUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, uu.sqlSave, uu.mutation, uu.hooks)
+func (_u *UserUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uu *UserUpdate) SaveX(ctx context.Context) int {
-	affected, err := uu.Save(ctx)
+func (_u *UserUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -132,26 +132,26 @@ func (uu *UserUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (uu *UserUpdate) Exec(ctx context.Context) error {
-	_, err := uu.Save(ctx)
+func (_u *UserUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uu *UserUpdate) ExecX(ctx context.Context) {
-	if err := uu.Exec(ctx); err != nil {
+func (_u *UserUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uu *UserUpdate) check() error {
-	if v, ok := uu.mutation.GithubID(); ok {
+func (_u *UserUpdate) check() error {
+	if v, ok := _u.mutation.GithubID(); ok {
 		if err := user.GithubIDValidator(v); err != nil {
 			return &ValidationError{Name: "github_id", err: fmt.Errorf(`ent: validator failed for field "User.github_id": %w`, err)}
 		}
 	}
-	if v, ok := uu.mutation.BangumiID(); ok {
+	if v, ok := _u.mutation.BangumiID(); ok {
 		if err := user.BangumiIDValidator(v); err != nil {
 			return &ValidationError{Name: "bangumi_id", err: fmt.Errorf(`ent: validator failed for field "User.bangumi_id": %w`, err)}
 		}
@@ -159,34 +159,34 @@ func (uu *UserUpdate) check() error {
 	return nil
 }
 
-func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := uu.check(); err != nil {
-		return n, err
+func (_u *UserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
-	if ps := uu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uu.mutation.GithubID(); ok {
+	if value, ok := _u.mutation.GithubID(); ok {
 		_spec.SetField(user.FieldGithubID, field.TypeInt64, value)
 	}
-	if value, ok := uu.mutation.AddedGithubID(); ok {
+	if value, ok := _u.mutation.AddedGithubID(); ok {
 		_spec.AddField(user.FieldGithubID, field.TypeInt64, value)
 	}
-	if value, ok := uu.mutation.BangumiID(); ok {
+	if value, ok := _u.mutation.BangumiID(); ok {
 		_spec.SetField(user.FieldBangumiID, field.TypeInt64, value)
 	}
-	if value, ok := uu.mutation.AddedBangumiID(); ok {
+	if value, ok := _u.mutation.AddedBangumiID(); ok {
 		_spec.AddField(user.FieldBangumiID, field.TypeInt64, value)
 	}
-	if uu.mutation.BangumiIDCleared() {
+	if _u.mutation.BangumiIDCleared() {
 		_spec.ClearField(user.FieldBangumiID, field.TypeInt64)
 	}
-	if uu.mutation.PullRequestsCleared() {
+	if _u.mutation.PullRequestsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -199,7 +199,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedPullRequestsIDs(); len(nodes) > 0 && !uu.mutation.PullRequestsCleared() {
+	if nodes := _u.mutation.RemovedPullRequestsIDs(); len(nodes) > 0 && !_u.mutation.PullRequestsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -215,7 +215,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.PullRequestsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PullRequestsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -231,7 +231,7 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -239,8 +239,8 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	uu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // UserUpdateOne is the builder for updating a single User entity.
@@ -252,115 +252,115 @@ type UserUpdateOne struct {
 }
 
 // SetGithubID sets the "github_id" field.
-func (uuo *UserUpdateOne) SetGithubID(i int64) *UserUpdateOne {
-	uuo.mutation.ResetGithubID()
-	uuo.mutation.SetGithubID(i)
-	return uuo
+func (_u *UserUpdateOne) SetGithubID(v int64) *UserUpdateOne {
+	_u.mutation.ResetGithubID()
+	_u.mutation.SetGithubID(v)
+	return _u
 }
 
 // SetNillableGithubID sets the "github_id" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableGithubID(i *int64) *UserUpdateOne {
-	if i != nil {
-		uuo.SetGithubID(*i)
+func (_u *UserUpdateOne) SetNillableGithubID(v *int64) *UserUpdateOne {
+	if v != nil {
+		_u.SetGithubID(*v)
 	}
-	return uuo
+	return _u
 }
 
-// AddGithubID adds i to the "github_id" field.
-func (uuo *UserUpdateOne) AddGithubID(i int64) *UserUpdateOne {
-	uuo.mutation.AddGithubID(i)
-	return uuo
+// AddGithubID adds value to the "github_id" field.
+func (_u *UserUpdateOne) AddGithubID(v int64) *UserUpdateOne {
+	_u.mutation.AddGithubID(v)
+	return _u
 }
 
 // SetBangumiID sets the "bangumi_id" field.
-func (uuo *UserUpdateOne) SetBangumiID(i int64) *UserUpdateOne {
-	uuo.mutation.ResetBangumiID()
-	uuo.mutation.SetBangumiID(i)
-	return uuo
+func (_u *UserUpdateOne) SetBangumiID(v int64) *UserUpdateOne {
+	_u.mutation.ResetBangumiID()
+	_u.mutation.SetBangumiID(v)
+	return _u
 }
 
 // SetNillableBangumiID sets the "bangumi_id" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableBangumiID(i *int64) *UserUpdateOne {
-	if i != nil {
-		uuo.SetBangumiID(*i)
+func (_u *UserUpdateOne) SetNillableBangumiID(v *int64) *UserUpdateOne {
+	if v != nil {
+		_u.SetBangumiID(*v)
 	}
-	return uuo
+	return _u
 }
 
-// AddBangumiID adds i to the "bangumi_id" field.
-func (uuo *UserUpdateOne) AddBangumiID(i int64) *UserUpdateOne {
-	uuo.mutation.AddBangumiID(i)
-	return uuo
+// AddBangumiID adds value to the "bangumi_id" field.
+func (_u *UserUpdateOne) AddBangumiID(v int64) *UserUpdateOne {
+	_u.mutation.AddBangumiID(v)
+	return _u
 }
 
 // ClearBangumiID clears the value of the "bangumi_id" field.
-func (uuo *UserUpdateOne) ClearBangumiID() *UserUpdateOne {
-	uuo.mutation.ClearBangumiID()
-	return uuo
+func (_u *UserUpdateOne) ClearBangumiID() *UserUpdateOne {
+	_u.mutation.ClearBangumiID()
+	return _u
 }
 
 // AddPullRequestIDs adds the "pull_requests" edge to the Pulls entity by IDs.
-func (uuo *UserUpdateOne) AddPullRequestIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddPullRequestIDs(ids...)
-	return uuo
+func (_u *UserUpdateOne) AddPullRequestIDs(ids ...int) *UserUpdateOne {
+	_u.mutation.AddPullRequestIDs(ids...)
+	return _u
 }
 
 // AddPullRequests adds the "pull_requests" edges to the Pulls entity.
-func (uuo *UserUpdateOne) AddPullRequests(p ...*Pulls) *UserUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *UserUpdateOne) AddPullRequests(v ...*Pulls) *UserUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return uuo.AddPullRequestIDs(ids...)
+	return _u.AddPullRequestIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
-func (uuo *UserUpdateOne) Mutation() *UserMutation {
-	return uuo.mutation
+func (_u *UserUpdateOne) Mutation() *UserMutation {
+	return _u.mutation
 }
 
 // ClearPullRequests clears all "pull_requests" edges to the Pulls entity.
-func (uuo *UserUpdateOne) ClearPullRequests() *UserUpdateOne {
-	uuo.mutation.ClearPullRequests()
-	return uuo
+func (_u *UserUpdateOne) ClearPullRequests() *UserUpdateOne {
+	_u.mutation.ClearPullRequests()
+	return _u
 }
 
 // RemovePullRequestIDs removes the "pull_requests" edge to Pulls entities by IDs.
-func (uuo *UserUpdateOne) RemovePullRequestIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemovePullRequestIDs(ids...)
-	return uuo
+func (_u *UserUpdateOne) RemovePullRequestIDs(ids ...int) *UserUpdateOne {
+	_u.mutation.RemovePullRequestIDs(ids...)
+	return _u
 }
 
 // RemovePullRequests removes "pull_requests" edges to Pulls entities.
-func (uuo *UserUpdateOne) RemovePullRequests(p ...*Pulls) *UserUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *UserUpdateOne) RemovePullRequests(v ...*Pulls) *UserUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return uuo.RemovePullRequestIDs(ids...)
+	return _u.RemovePullRequestIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
-func (uuo *UserUpdateOne) Where(ps ...predicate.User) *UserUpdateOne {
-	uuo.mutation.Where(ps...)
-	return uuo
+func (_u *UserUpdateOne) Where(ps ...predicate.User) *UserUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (uuo *UserUpdateOne) Select(field string, fields ...string) *UserUpdateOne {
-	uuo.fields = append([]string{field}, fields...)
-	return uuo
+func (_u *UserUpdateOne) Select(field string, fields ...string) *UserUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated User entity.
-func (uuo *UserUpdateOne) Save(ctx context.Context) (*User, error) {
-	return withHooks(ctx, uuo.sqlSave, uuo.mutation, uuo.hooks)
+func (_u *UserUpdateOne) Save(ctx context.Context) (*User, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (uuo *UserUpdateOne) SaveX(ctx context.Context) *User {
-	node, err := uuo.Save(ctx)
+func (_u *UserUpdateOne) SaveX(ctx context.Context) *User {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -368,26 +368,26 @@ func (uuo *UserUpdateOne) SaveX(ctx context.Context) *User {
 }
 
 // Exec executes the query on the entity.
-func (uuo *UserUpdateOne) Exec(ctx context.Context) error {
-	_, err := uuo.Save(ctx)
+func (_u *UserUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
-	if err := uuo.Exec(ctx); err != nil {
+func (_u *UserUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (uuo *UserUpdateOne) check() error {
-	if v, ok := uuo.mutation.GithubID(); ok {
+func (_u *UserUpdateOne) check() error {
+	if v, ok := _u.mutation.GithubID(); ok {
 		if err := user.GithubIDValidator(v); err != nil {
 			return &ValidationError{Name: "github_id", err: fmt.Errorf(`ent: validator failed for field "User.github_id": %w`, err)}
 		}
 	}
-	if v, ok := uuo.mutation.BangumiID(); ok {
+	if v, ok := _u.mutation.BangumiID(); ok {
 		if err := user.BangumiIDValidator(v); err != nil {
 			return &ValidationError{Name: "bangumi_id", err: fmt.Errorf(`ent: validator failed for field "User.bangumi_id": %w`, err)}
 		}
@@ -395,17 +395,17 @@ func (uuo *UserUpdateOne) check() error {
 	return nil
 }
 
-func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
-	if err := uuo.check(); err != nil {
+func (_u *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
-	id, ok := uuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "User.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := uuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, user.FieldID)
 		for _, f := range fields {
@@ -417,29 +417,29 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			}
 		}
 	}
-	if ps := uuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := uuo.mutation.GithubID(); ok {
+	if value, ok := _u.mutation.GithubID(); ok {
 		_spec.SetField(user.FieldGithubID, field.TypeInt64, value)
 	}
-	if value, ok := uuo.mutation.AddedGithubID(); ok {
+	if value, ok := _u.mutation.AddedGithubID(); ok {
 		_spec.AddField(user.FieldGithubID, field.TypeInt64, value)
 	}
-	if value, ok := uuo.mutation.BangumiID(); ok {
+	if value, ok := _u.mutation.BangumiID(); ok {
 		_spec.SetField(user.FieldBangumiID, field.TypeInt64, value)
 	}
-	if value, ok := uuo.mutation.AddedBangumiID(); ok {
+	if value, ok := _u.mutation.AddedBangumiID(); ok {
 		_spec.AddField(user.FieldBangumiID, field.TypeInt64, value)
 	}
-	if uuo.mutation.BangumiIDCleared() {
+	if _u.mutation.BangumiIDCleared() {
 		_spec.ClearField(user.FieldBangumiID, field.TypeInt64)
 	}
-	if uuo.mutation.PullRequestsCleared() {
+	if _u.mutation.PullRequestsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -452,7 +452,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedPullRequestsIDs(); len(nodes) > 0 && !uuo.mutation.PullRequestsCleared() {
+	if nodes := _u.mutation.RemovedPullRequestsIDs(); len(nodes) > 0 && !_u.mutation.PullRequestsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -468,7 +468,7 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.PullRequestsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PullRequestsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
@@ -484,10 +484,10 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &User{config: uuo.config}
+	_node = &User{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, uuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{user.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -495,6 +495,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		return nil, err
 	}
-	uuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

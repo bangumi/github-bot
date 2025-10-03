@@ -24,152 +24,152 @@ type PullsCreate struct {
 }
 
 // SetOwner sets the "owner" field.
-func (pc *PullsCreate) SetOwner(s string) *PullsCreate {
-	pc.mutation.SetOwner(s)
-	return pc
+func (_c *PullsCreate) SetOwner(v string) *PullsCreate {
+	_c.mutation.SetOwner(v)
+	return _c
 }
 
 // SetPrID sets the "prID" field.
-func (pc *PullsCreate) SetPrID(i int64) *PullsCreate {
-	pc.mutation.SetPrID(i)
-	return pc
+func (_c *PullsCreate) SetPrID(v int64) *PullsCreate {
+	_c.mutation.SetPrID(v)
+	return _c
 }
 
 // SetNillablePrID sets the "prID" field if the given value is not nil.
-func (pc *PullsCreate) SetNillablePrID(i *int64) *PullsCreate {
-	if i != nil {
-		pc.SetPrID(*i)
+func (_c *PullsCreate) SetNillablePrID(v *int64) *PullsCreate {
+	if v != nil {
+		_c.SetPrID(*v)
 	}
-	return pc
+	return _c
 }
 
 // SetRepo sets the "repo" field.
-func (pc *PullsCreate) SetRepo(s string) *PullsCreate {
-	pc.mutation.SetRepo(s)
-	return pc
+func (_c *PullsCreate) SetRepo(v string) *PullsCreate {
+	_c.mutation.SetRepo(v)
+	return _c
 }
 
 // SetRepoID sets the "repoID" field.
-func (pc *PullsCreate) SetRepoID(i int64) *PullsCreate {
-	pc.mutation.SetRepoID(i)
-	return pc
+func (_c *PullsCreate) SetRepoID(v int64) *PullsCreate {
+	_c.mutation.SetRepoID(v)
+	return _c
 }
 
 // SetNillableRepoID sets the "repoID" field if the given value is not nil.
-func (pc *PullsCreate) SetNillableRepoID(i *int64) *PullsCreate {
-	if i != nil {
-		pc.SetRepoID(*i)
+func (_c *PullsCreate) SetNillableRepoID(v *int64) *PullsCreate {
+	if v != nil {
+		_c.SetRepoID(*v)
 	}
-	return pc
+	return _c
 }
 
 // SetNumber sets the "number" field.
-func (pc *PullsCreate) SetNumber(i int) *PullsCreate {
-	pc.mutation.SetNumber(i)
-	return pc
+func (_c *PullsCreate) SetNumber(v int) *PullsCreate {
+	_c.mutation.SetNumber(v)
+	return _c
 }
 
 // SetComment sets the "comment" field.
-func (pc *PullsCreate) SetComment(i int64) *PullsCreate {
-	pc.mutation.SetComment(i)
-	return pc
+func (_c *PullsCreate) SetComment(v int64) *PullsCreate {
+	_c.mutation.SetComment(v)
+	return _c
 }
 
 // SetNillableComment sets the "comment" field if the given value is not nil.
-func (pc *PullsCreate) SetNillableComment(i *int64) *PullsCreate {
-	if i != nil {
-		pc.SetComment(*i)
+func (_c *PullsCreate) SetNillableComment(v *int64) *PullsCreate {
+	if v != nil {
+		_c.SetComment(*v)
 	}
-	return pc
+	return _c
 }
 
 // SetCreatedAt sets the "createdAt" field.
-func (pc *PullsCreate) SetCreatedAt(t time.Time) *PullsCreate {
-	pc.mutation.SetCreatedAt(t)
-	return pc
+func (_c *PullsCreate) SetCreatedAt(v time.Time) *PullsCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetMergedAt sets the "mergedAt" field.
-func (pc *PullsCreate) SetMergedAt(t time.Time) *PullsCreate {
-	pc.mutation.SetMergedAt(t)
-	return pc
+func (_c *PullsCreate) SetMergedAt(v time.Time) *PullsCreate {
+	_c.mutation.SetMergedAt(v)
+	return _c
 }
 
 // SetNillableMergedAt sets the "mergedAt" field if the given value is not nil.
-func (pc *PullsCreate) SetNillableMergedAt(t *time.Time) *PullsCreate {
-	if t != nil {
-		pc.SetMergedAt(*t)
+func (_c *PullsCreate) SetNillableMergedAt(v *time.Time) *PullsCreate {
+	if v != nil {
+		_c.SetMergedAt(*v)
 	}
-	return pc
+	return _c
 }
 
 // SetCheckRunID sets the "checkRunID" field.
-func (pc *PullsCreate) SetCheckRunID(i int64) *PullsCreate {
-	pc.mutation.SetCheckRunID(i)
-	return pc
+func (_c *PullsCreate) SetCheckRunID(v int64) *PullsCreate {
+	_c.mutation.SetCheckRunID(v)
+	return _c
 }
 
 // SetNillableCheckRunID sets the "checkRunID" field if the given value is not nil.
-func (pc *PullsCreate) SetNillableCheckRunID(i *int64) *PullsCreate {
-	if i != nil {
-		pc.SetCheckRunID(*i)
+func (_c *PullsCreate) SetNillableCheckRunID(v *int64) *PullsCreate {
+	if v != nil {
+		_c.SetCheckRunID(*v)
 	}
-	return pc
+	return _c
 }
 
 // SetCheckRunResult sets the "checkRunResult" field.
-func (pc *PullsCreate) SetCheckRunResult(s string) *PullsCreate {
-	pc.mutation.SetCheckRunResult(s)
-	return pc
+func (_c *PullsCreate) SetCheckRunResult(v string) *PullsCreate {
+	_c.mutation.SetCheckRunResult(v)
+	return _c
 }
 
 // SetNillableCheckRunResult sets the "checkRunResult" field if the given value is not nil.
-func (pc *PullsCreate) SetNillableCheckRunResult(s *string) *PullsCreate {
-	if s != nil {
-		pc.SetCheckRunResult(*s)
+func (_c *PullsCreate) SetNillableCheckRunResult(v *string) *PullsCreate {
+	if v != nil {
+		_c.SetCheckRunResult(*v)
 	}
-	return pc
+	return _c
 }
 
 // SetHeadSha sets the "headSha" field.
-func (pc *PullsCreate) SetHeadSha(s string) *PullsCreate {
-	pc.mutation.SetHeadSha(s)
-	return pc
+func (_c *PullsCreate) SetHeadSha(v string) *PullsCreate {
+	_c.mutation.SetHeadSha(v)
+	return _c
 }
 
 // SetNillableHeadSha sets the "headSha" field if the given value is not nil.
-func (pc *PullsCreate) SetNillableHeadSha(s *string) *PullsCreate {
-	if s != nil {
-		pc.SetHeadSha(*s)
+func (_c *PullsCreate) SetNillableHeadSha(v *string) *PullsCreate {
+	if v != nil {
+		_c.SetHeadSha(*v)
 	}
-	return pc
+	return _c
 }
 
 // SetCreatorID sets the "Creator" edge to the User entity by ID.
-func (pc *PullsCreate) SetCreatorID(id int) *PullsCreate {
-	pc.mutation.SetCreatorID(id)
-	return pc
+func (_c *PullsCreate) SetCreatorID(id int) *PullsCreate {
+	_c.mutation.SetCreatorID(id)
+	return _c
 }
 
 // SetCreator sets the "Creator" edge to the User entity.
-func (pc *PullsCreate) SetCreator(u *User) *PullsCreate {
-	return pc.SetCreatorID(u.ID)
+func (_c *PullsCreate) SetCreator(v *User) *PullsCreate {
+	return _c.SetCreatorID(v.ID)
 }
 
 // Mutation returns the PullsMutation object of the builder.
-func (pc *PullsCreate) Mutation() *PullsMutation {
-	return pc.mutation
+func (_c *PullsCreate) Mutation() *PullsMutation {
+	return _c.mutation
 }
 
 // Save creates the Pulls in the database.
-func (pc *PullsCreate) Save(ctx context.Context) (*Pulls, error) {
-	pc.defaults()
-	return withHooks(ctx, pc.sqlSave, pc.mutation, pc.hooks)
+func (_c *PullsCreate) Save(ctx context.Context) (*Pulls, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (pc *PullsCreate) SaveX(ctx context.Context) *Pulls {
-	v, err := pc.Save(ctx)
+func (_c *PullsCreate) SaveX(ctx context.Context) *Pulls {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -177,90 +177,90 @@ func (pc *PullsCreate) SaveX(ctx context.Context) *Pulls {
 }
 
 // Exec executes the query.
-func (pc *PullsCreate) Exec(ctx context.Context) error {
-	_, err := pc.Save(ctx)
+func (_c *PullsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pc *PullsCreate) ExecX(ctx context.Context) {
-	if err := pc.Exec(ctx); err != nil {
+func (_c *PullsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (pc *PullsCreate) defaults() {
-	if _, ok := pc.mutation.PrID(); !ok {
+func (_c *PullsCreate) defaults() {
+	if _, ok := _c.mutation.PrID(); !ok {
 		v := pulls.DefaultPrID
-		pc.mutation.SetPrID(v)
+		_c.mutation.SetPrID(v)
 	}
-	if _, ok := pc.mutation.RepoID(); !ok {
+	if _, ok := _c.mutation.RepoID(); !ok {
 		v := pulls.DefaultRepoID
-		pc.mutation.SetRepoID(v)
+		_c.mutation.SetRepoID(v)
 	}
-	if _, ok := pc.mutation.Comment(); !ok {
+	if _, ok := _c.mutation.Comment(); !ok {
 		v := pulls.DefaultComment
-		pc.mutation.SetComment(v)
+		_c.mutation.SetComment(v)
 	}
-	if _, ok := pc.mutation.CheckRunID(); !ok {
+	if _, ok := _c.mutation.CheckRunID(); !ok {
 		v := pulls.DefaultCheckRunID
-		pc.mutation.SetCheckRunID(v)
+		_c.mutation.SetCheckRunID(v)
 	}
-	if _, ok := pc.mutation.CheckRunResult(); !ok {
+	if _, ok := _c.mutation.CheckRunResult(); !ok {
 		v := pulls.DefaultCheckRunResult
-		pc.mutation.SetCheckRunResult(v)
+		_c.mutation.SetCheckRunResult(v)
 	}
-	if _, ok := pc.mutation.HeadSha(); !ok {
+	if _, ok := _c.mutation.HeadSha(); !ok {
 		v := pulls.DefaultHeadSha
-		pc.mutation.SetHeadSha(v)
+		_c.mutation.SetHeadSha(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (pc *PullsCreate) check() error {
-	if _, ok := pc.mutation.Owner(); !ok {
+func (_c *PullsCreate) check() error {
+	if _, ok := _c.mutation.Owner(); !ok {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required field "Pulls.owner"`)}
 	}
-	if _, ok := pc.mutation.PrID(); !ok {
+	if _, ok := _c.mutation.PrID(); !ok {
 		return &ValidationError{Name: "prID", err: errors.New(`ent: missing required field "Pulls.prID"`)}
 	}
-	if _, ok := pc.mutation.Repo(); !ok {
+	if _, ok := _c.mutation.Repo(); !ok {
 		return &ValidationError{Name: "repo", err: errors.New(`ent: missing required field "Pulls.repo"`)}
 	}
-	if _, ok := pc.mutation.RepoID(); !ok {
+	if _, ok := _c.mutation.RepoID(); !ok {
 		return &ValidationError{Name: "repoID", err: errors.New(`ent: missing required field "Pulls.repoID"`)}
 	}
-	if _, ok := pc.mutation.Number(); !ok {
+	if _, ok := _c.mutation.Number(); !ok {
 		return &ValidationError{Name: "number", err: errors.New(`ent: missing required field "Pulls.number"`)}
 	}
-	if _, ok := pc.mutation.Comment(); !ok {
+	if _, ok := _c.mutation.Comment(); !ok {
 		return &ValidationError{Name: "comment", err: errors.New(`ent: missing required field "Pulls.comment"`)}
 	}
-	if _, ok := pc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "Pulls.createdAt"`)}
 	}
-	if _, ok := pc.mutation.CheckRunID(); !ok {
+	if _, ok := _c.mutation.CheckRunID(); !ok {
 		return &ValidationError{Name: "checkRunID", err: errors.New(`ent: missing required field "Pulls.checkRunID"`)}
 	}
-	if _, ok := pc.mutation.CheckRunResult(); !ok {
+	if _, ok := _c.mutation.CheckRunResult(); !ok {
 		return &ValidationError{Name: "checkRunResult", err: errors.New(`ent: missing required field "Pulls.checkRunResult"`)}
 	}
-	if _, ok := pc.mutation.HeadSha(); !ok {
+	if _, ok := _c.mutation.HeadSha(); !ok {
 		return &ValidationError{Name: "headSha", err: errors.New(`ent: missing required field "Pulls.headSha"`)}
 	}
-	if _, ok := pc.mutation.CreatorID(); !ok {
+	if len(_c.mutation.CreatorIDs()) == 0 {
 		return &ValidationError{Name: "Creator", err: errors.New(`ent: missing required edge "Pulls.Creator"`)}
 	}
 	return nil
 }
 
-func (pc *PullsCreate) sqlSave(ctx context.Context) (*Pulls, error) {
-	if err := pc.check(); err != nil {
+func (_c *PullsCreate) sqlSave(ctx context.Context) (*Pulls, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := pc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, pc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -268,62 +268,62 @@ func (pc *PullsCreate) sqlSave(ctx context.Context) (*Pulls, error) {
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	pc.mutation.id = &_node.ID
-	pc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
+func (_c *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Pulls{config: pc.config}
+		_node = &Pulls{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(pulls.Table, sqlgraph.NewFieldSpec(pulls.FieldID, field.TypeInt))
 	)
-	_spec.OnConflict = pc.conflict
-	if value, ok := pc.mutation.Owner(); ok {
+	_spec.OnConflict = _c.conflict
+	if value, ok := _c.mutation.Owner(); ok {
 		_spec.SetField(pulls.FieldOwner, field.TypeString, value)
 		_node.Owner = value
 	}
-	if value, ok := pc.mutation.PrID(); ok {
+	if value, ok := _c.mutation.PrID(); ok {
 		_spec.SetField(pulls.FieldPrID, field.TypeInt64, value)
 		_node.PrID = value
 	}
-	if value, ok := pc.mutation.Repo(); ok {
+	if value, ok := _c.mutation.Repo(); ok {
 		_spec.SetField(pulls.FieldRepo, field.TypeString, value)
 		_node.Repo = value
 	}
-	if value, ok := pc.mutation.RepoID(); ok {
+	if value, ok := _c.mutation.RepoID(); ok {
 		_spec.SetField(pulls.FieldRepoID, field.TypeInt64, value)
 		_node.RepoID = value
 	}
-	if value, ok := pc.mutation.Number(); ok {
+	if value, ok := _c.mutation.Number(); ok {
 		_spec.SetField(pulls.FieldNumber, field.TypeInt, value)
 		_node.Number = value
 	}
-	if value, ok := pc.mutation.Comment(); ok {
+	if value, ok := _c.mutation.Comment(); ok {
 		_spec.SetField(pulls.FieldComment, field.TypeInt64, value)
 		_node.Comment = value
 	}
-	if value, ok := pc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(pulls.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := pc.mutation.MergedAt(); ok {
+	if value, ok := _c.mutation.MergedAt(); ok {
 		_spec.SetField(pulls.FieldMergedAt, field.TypeTime, value)
 		_node.MergedAt = value
 	}
-	if value, ok := pc.mutation.CheckRunID(); ok {
+	if value, ok := _c.mutation.CheckRunID(); ok {
 		_spec.SetField(pulls.FieldCheckRunID, field.TypeInt64, value)
 		_node.CheckRunID = value
 	}
-	if value, ok := pc.mutation.CheckRunResult(); ok {
+	if value, ok := _c.mutation.CheckRunResult(); ok {
 		_spec.SetField(pulls.FieldCheckRunResult, field.TypeString, value)
 		_node.CheckRunResult = value
 	}
-	if value, ok := pc.mutation.HeadSha(); ok {
+	if value, ok := _c.mutation.HeadSha(); ok {
 		_spec.SetField(pulls.FieldHeadSha, field.TypeString, value)
 		_node.HeadSha = value
 	}
-	if nodes := pc.mutation.CreatorIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.CreatorIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
@@ -359,10 +359,10 @@ func (pc *PullsCreate) createSpec() (*Pulls, *sqlgraph.CreateSpec) {
 //			SetOwner(v+v).
 //		}).
 //		Exec(ctx)
-func (pc *PullsCreate) OnConflict(opts ...sql.ConflictOption) *PullsUpsertOne {
-	pc.conflict = opts
+func (_c *PullsCreate) OnConflict(opts ...sql.ConflictOption) *PullsUpsertOne {
+	_c.conflict = opts
 	return &PullsUpsertOne{
-		create: pc,
+		create: _c,
 	}
 }
 
@@ -372,10 +372,10 @@ func (pc *PullsCreate) OnConflict(opts ...sql.ConflictOption) *PullsUpsertOne {
 //	client.Pulls.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pc *PullsCreate) OnConflictColumns(columns ...string) *PullsUpsertOne {
-	pc.conflict = append(pc.conflict, sql.ConflictColumns(columns...))
+func (_c *PullsCreate) OnConflictColumns(columns ...string) *PullsUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PullsUpsertOne{
-		create: pc,
+		create: _c,
 	}
 }
 
@@ -838,16 +838,16 @@ type PullsCreateBulk struct {
 }
 
 // Save creates the Pulls entities in the database.
-func (pcb *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
-	if pcb.err != nil {
-		return nil, pcb.err
+func (_c *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(pcb.builders))
-	nodes := make([]*Pulls, len(pcb.builders))
-	mutators := make([]Mutator, len(pcb.builders))
-	for i := range pcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Pulls, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := pcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*PullsMutation)
@@ -861,12 +861,12 @@ func (pcb *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, pcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = pcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, pcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -890,7 +890,7 @@ func (pcb *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, pcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -898,8 +898,8 @@ func (pcb *PullsCreateBulk) Save(ctx context.Context) ([]*Pulls, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (pcb *PullsCreateBulk) SaveX(ctx context.Context) []*Pulls {
-	v, err := pcb.Save(ctx)
+func (_c *PullsCreateBulk) SaveX(ctx context.Context) []*Pulls {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -907,14 +907,14 @@ func (pcb *PullsCreateBulk) SaveX(ctx context.Context) []*Pulls {
 }
 
 // Exec executes the query.
-func (pcb *PullsCreateBulk) Exec(ctx context.Context) error {
-	_, err := pcb.Save(ctx)
+func (_c *PullsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (pcb *PullsCreateBulk) ExecX(ctx context.Context) {
-	if err := pcb.Exec(ctx); err != nil {
+func (_c *PullsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -934,10 +934,10 @@ func (pcb *PullsCreateBulk) ExecX(ctx context.Context) {
 //			SetOwner(v+v).
 //		}).
 //		Exec(ctx)
-func (pcb *PullsCreateBulk) OnConflict(opts ...sql.ConflictOption) *PullsUpsertBulk {
-	pcb.conflict = opts
+func (_c *PullsCreateBulk) OnConflict(opts ...sql.ConflictOption) *PullsUpsertBulk {
+	_c.conflict = opts
 	return &PullsUpsertBulk{
-		create: pcb,
+		create: _c,
 	}
 }
 
@@ -947,10 +947,10 @@ func (pcb *PullsCreateBulk) OnConflict(opts ...sql.ConflictOption) *PullsUpsertB
 //	client.Pulls.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (pcb *PullsCreateBulk) OnConflictColumns(columns ...string) *PullsUpsertBulk {
-	pcb.conflict = append(pcb.conflict, sql.ConflictColumns(columns...))
+func (_c *PullsCreateBulk) OnConflictColumns(columns ...string) *PullsUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &PullsUpsertBulk{
-		create: pcb,
+		create: _c,
 	}
 }
 

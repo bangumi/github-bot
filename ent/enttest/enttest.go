@@ -4,6 +4,7 @@ package enttest
 
 import (
 	"context"
+
 	"github-bot/ent"
 	// required by schema hooks.
 	_ "github-bot/ent/runtime"

@@ -5,7 +5,7 @@ go 1.25.1
 tool golang.org/x/vuln/cmd/govulncheck
 
 require (
-	entgo.io/ent v0.14.4
+	entgo.io/ent v0.14.5
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/google/go-github/v75 v75.0.0
@@ -21,10 +21,9 @@ require (
 )
 
 require (
-	ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83 // indirect
+	ariga.io/atlas v0.32.1-0.20250325101103-175b25e1c1b9 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/bradleyfalzon/ghinstallation/v2 v2.16.0 // indirect
@@ -36,7 +35,7 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
-	github.com/hashicorp/hcl/v2 v2.16.1 // indirect
+	github.com/hashicorp/hcl/v2 v2.18.1 // indirect
 	github.com/klauspost/compress v1.16.0 // indirect
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
