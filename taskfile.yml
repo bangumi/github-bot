@@ -1,0 +1,6 @@
+version: "3"
+
+tasks:
+  gen:
+    cmds:
+      - go run -mod=mod entgo.io/ent/cmd/ent generate ./ent/schema  --feature sql/upsert
