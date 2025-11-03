@@ -15,7 +15,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/palantir/go-githubapp v0.38.2
 	github.com/rs/zerolog v1.34.0
-	github.com/samber/lo v1.51.0
+	github.com/samber/lo v1.52.0
 	github.com/trim21/errgo v0.0.6
 	golang.org/x/oauth2 v0.31.0
 )
