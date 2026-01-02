@@ -36,7 +36,7 @@ jobs:
 
       - name: Notify failed build
         uses: jayqi/failed-build-issue-action@v1
-        if: failure()
+        if: "failure() && github.event_name != 'pull_request'"
         with:
           github-token: ${{ github.token }}
           label-name: vulncheck
