@@ -13,7 +13,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-github/v82/github"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"

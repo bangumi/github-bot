@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 	_ "github.com/lib/pq"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
