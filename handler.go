@@ -13,7 +13,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/google/go-github/v82/github"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
@@ -37,7 +37,7 @@ type PRHandle struct {
 
 const githubCheckRunName = "bangumi contributors"
 
-func (h PRHandle) Index(c echo.Context) error {
+func (h PRHandle) Index(c *echo.Context) error {
 	s := session.Start(c.Response(), c.Request())
 
 	if c.QueryParams().Has("debug") {
@@ -78,7 +78,7 @@ func verifySign(body []byte, header string) bool {
 	return hmac.Equal([]byte(sha), []byte(header))
 }
 
-func (h PRHandle) Handle(c echo.Context) error {
+func (h PRHandle) Handle(c *echo.Context) error {
 	if c.Request().Header.Get(github.EventTypeHeader) != "pull_request" {
 		return nil
 	}
@@ -100,7 +100,7 @@ func (h PRHandle) Handle(c echo.Context) error {
 	return h.handlePullRequest(c, payload)
 }
 
-func (h PRHandle) handlePullRequest(c echo.Context, payload github.PullRequestEvent) error {
+func (h PRHandle) handlePullRequest(c *echo.Context, payload github.PullRequestEvent) error {
 	pr := payload.PullRequest
 
 	log.Info().

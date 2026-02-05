@@ -8,7 +8,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/google/go-github/v82/github"
 	"github.com/kataras/go-sessions/v3"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"github.com/trim21/errgo"
@@ -35,12 +35,12 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 		// for the scopes specified above.
 		url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline)
 
-		e.GET("/oauth/github", func(c echo.Context) error {
+		e.GET("/oauth/github", func(c *echo.Context) error {
 			return c.Redirect(http.StatusFound, url)
 		})
 	}
 
-	e.GET("/oauth/github/callback", func(c echo.Context) error {
+	e.GET("/oauth/github/callback", func(c *echo.Context) error {
 		code := c.QueryParams().Get("code")
 		if code == "" {
 			return c.String(http.StatusBadRequest, "missing code")
@@ -82,14 +82,14 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 		// for the scopes specified above.
 		url := conf.AuthCodeURL("state", oauth2.AccessTypeOffline)
 
-		e.GET("/oauth/bangumi", func(c echo.Context) error {
+		e.GET("/oauth/bangumi", func(c *echo.Context) error {
 			return c.Redirect(http.StatusFound, url)
 		})
 	}
 
 	var client = resty.New().SetHeader("user-agent", "bangumi-github-bot")
 
-	e.GET("/oauth/bangumi/callback", func(c echo.Context) error {
+	e.GET("/oauth/bangumi/callback", func(c *echo.Context) error {
 		ctx := c.Request().Context()
 		code := c.QueryParams().Get("code")
 		if code == "" {
@@ -117,7 +117,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 				Int("response_code", res.StatusCode()).
 				Str("response_body", res.String()).
 				Msg("failed to fetch user info, wrong http code")
-			return c.JSON(http.StatusInternalServerError, echo.Map{
+			return c.JSON(http.StatusInternalServerError, map[string]any{
 				"code": res.StatusCode(),
 				"body": res.String(),
 			})

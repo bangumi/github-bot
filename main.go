@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 	_ "github.com/lib/pq"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog"
@@ -34,10 +34,9 @@ func main() {
 
 	// Echo instance
 	e := echo.New()
-	e.HideBanner = true
 
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			err := next(c)
 			if err != nil {
 				if _, ok := err.(*echo.HTTPError); !ok {
@@ -50,7 +49,7 @@ func main() {
 	})
 
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
+		return func(c *echo.Context) error {
 			c.Response().Header().Set("x-version", version)
 			return next(c)
 		}
