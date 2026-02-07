@@ -23,7 +23,7 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
 		ClientID:     config.GitHubOAuthAppID,
 		ClientSecret: config.GitHubOAuthSecret,
-		RedirectURL:  "https://contributors.bgm38.com/oauth/github/callback",
+		RedirectURL:  "https://contributors.bgm38.tv/oauth/github/callback",
 		Endpoint: oauth2.Endpoint{
 			TokenURL: "https://github.com/login/oauth/access_token",
 			AuthURL:  "https://github.com/login/oauth/authorize",
@@ -70,7 +70,7 @@ func (h PRHandle) setupBangumiOAuth(e *echo.Echo) {
 	conf := &oauth2.Config{
 		ClientID:     config.BangumiClientID,
 		ClientSecret: config.BangumiClientSecret,
-		RedirectURL:  "https://contributors.bgm38.com/oauth/bangumi/callback",
+		RedirectURL:  "https://contributors.bgm38.tv/oauth/bangumi/callback",
 		Endpoint: oauth2.Endpoint{
 			TokenURL: "https://bgm.tv/oauth/access_token",
 			AuthURL:  "https://bgm.tv/oauth/authorize",
