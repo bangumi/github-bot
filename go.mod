@@ -11,7 +11,7 @@ require (
 	github.com/google/go-github/v85 v85.0.0
 	github.com/jaevor/go-nanoid v1.4.0
 	github.com/kataras/go-sessions/v3 v3.3.1
-	github.com/labstack/echo/v5 v5.1.1
+	github.com/labstack/echo/v5 v5.2.1
 	github.com/lib/pq v1.12.3
 	github.com/palantir/go-githubapp v0.44.0
 	github.com/rs/zerolog v1.35.1
