@@ -6,7 +6,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/go-resty/resty/v2"
-	"github.com/google/go-github/v85/github"
+	"github.com/google/go-github/v89/github"
 	"github.com/kataras/go-sessions/v3"
 	"github.com/labstack/echo/v5"
 	"github.com/rs/zerolog/log"
@@ -51,7 +51,11 @@ func (h PRHandle) setupGithubOAuth(e *echo.Echo) {
 			return errgo.Trace(err)
 		}
 
-		gh := github.NewClient(oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(token)))
+		gh, err := github.NewClient(github.WithHTTPClient(oauth2.NewClient(context.TODO(), oauth2.StaticTokenSource(token))))
+		if err != nil {
+			log.Err(err).Msg("failed to create github client")
+			return errgo.Trace(err)
+		}
 
 		u, _, err := gh.Users.Get(c.Request().Context(), "")
 		if err != nil {
