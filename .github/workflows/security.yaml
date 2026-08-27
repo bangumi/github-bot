@@ -35,7 +35,7 @@ jobs:
       - run: go run golang.org/x/vuln/cmd/govulncheck ./...
 
       - name: Notify failed build
-        uses: jayqi/failed-build-issue-action@v1.2.0
+        uses: jayqi/failed-build-issue-action@v1.3.0
         if: "failure() && github.event_name != 'pull_request'"
         with:
           github-token: ${{ github.token }}
