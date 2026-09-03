@@ -13,7 +13,7 @@ require (
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v5 v5.3.1
 	github.com/lib/pq v1.12.3
-	github.com/palantir/go-githubapp v0.47.1
+	github.com/palantir/go-githubapp v0.47.2
 	github.com/rs/zerolog v1.35.1
 	github.com/samber/lo v1.53.0
 	github.com/trim21/errgo v0.0.6
