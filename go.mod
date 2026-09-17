@@ -1,6 +1,6 @@
 module github-bot
 
-go 1.26.8
+go 1.27.0
 
 tool golang.org/x/vuln/cmd/govulncheck
 
@@ -8,16 +8,16 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.17.2
-	github.com/google/go-github/v90 v90.0.0
+	github.com/google/go-github/v92 v92.0.0
 	github.com/jaevor/go-nanoid v1.4.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v5 v5.3.1
 	github.com/lib/pq v1.12.3
-	github.com/palantir/go-githubapp v0.47.2
+	github.com/palantir/go-githubapp v0.48.0
 	github.com/rs/zerolog v1.35.1
 	github.com/samber/lo v1.53.0
 	github.com/trim21/errgo v0.0.6
-	golang.org/x/oauth2 v0.36.0
+	golang.org/x/oauth2 v0.37.0
 )
 
 require (
@@ -51,7 +51,7 @@ require (
 	golang.org/x/mod v0.40.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/telemetry v0.0.0-20260811182544-a038080d80e5 // indirect
 	golang.org/x/text v0.41.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
