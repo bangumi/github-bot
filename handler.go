@@ -143,8 +143,8 @@ func (h PRHandle) handlePullRequest(c *echo.Context, payload github.PullRequestE
 
 func (h PRHandle) handle(ctx context.Context, u *ent.User, p *ent.Pulls) error {
 	if u.BangumiID == 0 && p.Comment == 0 {
-		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, p.Number, &github.IssueComment{
-			Body: lo.ToPtr(checkRunDetailsMessage),
+		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, p.Number, github.IssueCommentRequest{
+			Body: checkRunDetailsMessage,
 		})
 
 		if err != nil {
