@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/google/go-github/v90/github"
+	"github.com/google/go-github/v92/github"
 	"github.com/labstack/echo/v5"
 	"github.com/palantir/go-githubapp/githubapp"
 	"github.com/rs/zerolog/log"
@@ -143,8 +143,8 @@ func (h PRHandle) handlePullRequest(c *echo.Context, payload github.PullRequestE
 
 func (h PRHandle) handle(ctx context.Context, u *ent.User, p *ent.Pulls) error {
 	if u.BangumiID == 0 && p.Comment == 0 {
-		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, p.Number, &github.IssueComment{
-			Body: lo.ToPtr(checkRunDetailsMessage),
+		c, res, err := h.g.Issues.CreateComment(ctx, p.Owner, p.Repo, p.Number, github.IssueCommentRequest{
+			Body: checkRunDetailsMessage,
 		})
 
 		if err != nil {
