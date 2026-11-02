@@ -8,12 +8,12 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-resty/resty/v2 v2.17.2
-	github.com/google/go-github/v92 v92.0.0
+	github.com/google/go-github/v93 v93.0.0
 	github.com/jaevor/go-nanoid v1.4.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/labstack/echo/v5 v5.4.4
 	github.com/lib/pq v1.12.3
-	github.com/palantir/go-githubapp v0.48.0
+	github.com/palantir/go-githubapp v0.49.0
 	github.com/rs/zerolog v1.35.1
 	github.com/samber/lo v1.53.0
 	github.com/trim21/errgo v0.0.6
@@ -37,7 +37,7 @@ require (
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hashicorp/hcl/v2 v2.18.1 // indirect
 	github.com/klauspost/compress v1.18.7 // indirect
-	github.com/mattn/go-colorable v0.1.15 // indirect
+	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
